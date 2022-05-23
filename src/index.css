@@ -1,0 +1,26 @@
+body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+    font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+/* Change rules for Switch in PilotPage.js */
+.css-113qkos-MuiSwitch-root .MuiSwitch-track {
+    background-color: #D32F2F !important;
+}
+
+.css-113qkos-MuiSwitch-root .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track {
+    background-color: #65C466 !important;
+}
+
+.fancyButton {
+    background: linear-gradient(to right, #1A88C9, #2AB683);
+}
