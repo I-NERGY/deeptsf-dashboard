@@ -146,11 +146,12 @@ export default function Layout({children}) {
                         sx={{mr: 2, ...(drawerOpen && {display: 'none'})}}>
                         <MenuIcon/>
                     </IconButton>
+                    <h3 style={{color: 'white'}}>I-NERGY Load Forecasting</h3>
                     {/* Appbar main logo */}
-                    <img src={'/images/matrycs_logo.png'}
-                         style={drawerOpen ? {display: 'none', height: '50px'} : {
-                             display: 'block', height: '50px'
-                         }}/>
+                    {/*<img src={'/images/i-nergy_logo_trans_back.png'}*/}
+                    {/*     style={drawerOpen ? {display: 'none', height: '50px'} : {*/}
+                    {/*         display: 'block', height: '50px'*/}
+                    {/*     }}/>*/}
                     {auth.username && <React.Fragment>
                         <Typography style={{marginLeft: 'auto'}}>Welcome, {auth.username}</Typography>
                         <MenuButton subLinks={appbarMenuButtonItems} signout={handleSignOut}/>
@@ -169,7 +170,7 @@ export default function Layout({children}) {
                 open={drawerOpen}>
                 <DrawerHeader>
                     {/* Drawer top left banner logo */}
-                    <img src="/images/MATRYCS_logo_banner.png" alt="" height={'60px'} style={{objectFit: 'cover'}}/>
+                    <img src="/images/i-nergy_logo_trans_back.png" alt="" height={'60px'} style={{objectFit: 'cover'}}/>
                     <IconButton onClick={handleDrawerClose}>
                         {theme.direction === 'ltr' ? <ChevronLeftIcon/> : <ChevronRightIcon/>}
                     </IconButton>
