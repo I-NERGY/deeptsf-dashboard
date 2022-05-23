@@ -12,13 +12,89 @@ code {
     monospace;
 }
 
-/* Change rules for Switch in PilotPage.js */
-.css-113qkos-MuiSwitch-root .MuiSwitch-track {
-    background-color: #D32F2F !important;
+.css-1hjt71s-MuiTypography-root {
+    justify-content: flex-end !important;
+    display: flex !important;
 }
 
-.css-113qkos-MuiSwitch-root .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track {
-    background-color: #65C466 !important;
+.css-nrdprl-MuiTypography-root {
+    display: flex !important;
+    align-items: flex-end !important;
+    justify-content: flex-end !important;
+    font-weight: bold !important;
+}
+
+.css-1qvr50w-MuiTypography-root {
+    font-size: 1.2rem !important;
+}
+
+.serviceItemTitle:hover {
+    font-weight: 500;
+}
+
+/* Homepage */
+.serviceCategoryDescriptionOdd {
+    background: linear-gradient(to right, #008DD2, #2478BF);
+}
+
+.serviceCategoryDescriptionEven {
+    background: linear-gradient(to right, #2478BF, #535CA6);
+}
+
+.linkAvatar {
+    background-color: rgba(244, 244, 244, 0.3) !important;
+    border: 2px solid white !important;
+    color: white;
+    width: 70px !important;
+    height: 70px !important;
+    position: absolute !important;
+    top: calc(50% - 35px) !important;
+    left: calc(50% - 35px) !important;
+    transform: rotateY(0deg) rotate(45deg) !important;
+    z-index: 3 !important;
+}
+
+.linkAvatar:hover {
+    background-color: rgba(244, 244, 244, 0.7) !important;
+    border: 3px solid white !important;
+    cursor: pointer;
+    width: 80px !important;
+    height: 80px !important;
+    transition: linear 200ms;
+    top: calc(50% - 40px) !important;
+    left: calc(50% - 40px) !important;
+}
+
+.linkAvatar:hover .serviceCategoryLinkIcon {
+    font-size: 50px !important;
+    transition: linear 200ms;
+}
+
+.serviceCategoryLinkIcon {
+    font-size: 40px !important;
+}
+
+.homepageServiceImage {
+    overflow: hidden !important;
+}
+
+.homepageServiceImage:hover {
+    opacity: 0.9 !important;
+    transform: scale(1.05) rotateY(0deg) rotate(1deg) !important;
+    overflow: hidden !important;
+    transition: linear 200ms;
+}
+
+.iconButtonMenuItemStack:hover {
+    background: #f3f3f3 !important;
+}
+
+.iconButtonMenuItem {
+    width: 100% !important;
+}
+
+.iconButtonMenuItem:hover {
+    background: none !important;
 }
 
 .fancyButton {
