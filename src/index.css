@@ -34,11 +34,11 @@ code {
 
 /* Homepage */
 .serviceCategoryDescriptionOdd {
-    background: linear-gradient(to right, #008DD2, #2478BF);
+    background: linear-gradient(to right, #97A94D, #B2C561);
 }
 
 .serviceCategoryDescriptionEven {
-    background: linear-gradient(to right, #2478BF, #535CA6);
+    background: linear-gradient(to right, #B2C561, #97A94D);
 }
 
 .linkAvatar {

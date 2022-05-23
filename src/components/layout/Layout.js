@@ -220,7 +220,7 @@ export default function Layout({children}) {
                 <Divider/>
 
             </Drawer>
-            <Main open={drawerOpen} style={{overflow: 'hidden'}}>
+            <Main open={drawerOpen} style={{overflow: 'hidden', paddingBottom: 0}}>
                 <DrawerHeader/>
                 {children}
             </Main>
