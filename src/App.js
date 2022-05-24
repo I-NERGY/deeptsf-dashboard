@@ -8,6 +8,7 @@ import UserProfile from "./pages/UserProfile";
 import RequireNotAuth from "./components/RequireNotAuth";
 
 import {ThemeProvider, createTheme} from '@mui/material/styles';
+import LoadForecast from "./pages/LoadForecast";
 
 // Set primary color here
 let primary = '#97A94D'
@@ -53,6 +54,10 @@ function App() {
                         <Route element={<RequireAuth/>}>
                             <Route path="/user/profile" element={<UserProfile/>}/>
                         </Route>
+
+                        {/*<Route element={<RequireAuth/>}>*/}
+                        <Route path="/load-forecast" element={<LoadForecast/>}/>
+                        {/*</Route>*/}
 
                         {/*<Route element={<RequireAuth/>}>*/}
                         {/*    <Route path="/data/:pilot" element={<PilotPage/>}/>*/}

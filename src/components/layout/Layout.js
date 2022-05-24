@@ -116,9 +116,13 @@ export default function Layout({children}) {
     const handleDrawerOpen = () => setDrawerOpen(true);
     const handleDrawerClose = () => setDrawerOpen(false);
 
-    const menuItems = [{
-        text: 'Home', icon: <HomeOutlinedIcon color="secondary" className={classes.menuButtonColor}/>, path: "/"
-    },
+    const menuItems = [
+        {
+            text: 'Home', icon: <HomeOutlinedIcon color="secondary" className={classes.menuButtonColor}/>, path: "/"
+        },
+        {
+            text: 'Load Forecast', icon: <HomeOutlinedIcon color="secondary" className={classes.menuButtonColor}/>, path: "/load-forecast"
+        },
         // {
         //     text: 'Οι συσκευές μου',
         //     icon: <LoginOutlinedIcon color="secondary"/>,
