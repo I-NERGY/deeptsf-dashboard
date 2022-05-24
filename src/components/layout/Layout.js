@@ -26,12 +26,14 @@ import ListItemText from '@mui/material/ListItemText';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import UpdateIcon from '@mui/icons-material/Update';
 
 import SignedOutLinks from "./SignedOutLinks";
 import SignedInLinks from "./SignedInLinks";
 import FooterContent from "../FooterContent";
-import {appbarMenuButtonItems} from "../../appbarMenuButtonItems";
 import MenuButton from "./MenuButton";
+
+import {appbarMenuButtonItems} from "../../appbarMenuButtonItems";
 
 const drawerWidth = 260;
 
@@ -118,10 +120,10 @@ export default function Layout({children}) {
 
     const menuItems = [
         {
-            text: 'Home', icon: <HomeOutlinedIcon color="secondary" className={classes.menuButtonColor}/>, path: "/"
+            text: 'Home', icon: <HomeOutlinedIcon color="secondary"/>, path: "/"
         },
         {
-            text: 'Load Forecast', icon: <HomeOutlinedIcon color="secondary" className={classes.menuButtonColor}/>, path: "/load-forecast"
+            text: 'Load Forecast', icon: <UpdateIcon color="secondary"/>, path: "/load-forecast"
         },
         // {
         //     text: 'Οι συσκευές μου',
