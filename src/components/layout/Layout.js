@@ -139,11 +139,10 @@ export default function Layout({children}) {
             <AppBar position="fixed" open={drawerOpen}>
                 <Toolbar>
                     <IconButton
-                        color="inherit"
                         aria-label="open drawer"
                         onClick={handleDrawerOpen}
                         edge="start"
-                        sx={{mr: 2, ...(drawerOpen && {display: 'none'})}}>
+                        sx={{mr: 2, color: 'white', ...(drawerOpen && {display: 'none'})}}>
                         <MenuIcon/>
                     </IconButton>
                     <h3 style={{color: 'white'}}>I-NERGY Load Forecasting</h3>
@@ -153,7 +152,7 @@ export default function Layout({children}) {
                     {/*         display: 'block', height: '50px'*/}
                     {/*     }}/>*/}
                     {auth.username && <React.Fragment>
-                        <Typography style={{marginLeft: 'auto'}}>Welcome, {auth.username}</Typography>
+                        <Typography style={{marginLeft: 'auto', color: 'white'}}>Welcome, {auth.username}</Typography>
                         <MenuButton subLinks={appbarMenuButtonItems} signout={handleSignOut}/>
                     </React.Fragment>}
                 </Toolbar>
