@@ -53,7 +53,7 @@ const LoadForecast = () => {
             .then(response => {
                 console.log('Upload response: ', response.data)
                 const payload = {
-                    fname: response.data.fname, day_first: false,
+                    fname: response.data.fname, day_first: dayFirst,
                 }
                 console.log(payload)
                 axios.post('/upload/validateCSVfile/', payload)
