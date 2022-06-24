@@ -20,6 +20,7 @@ import UploadFileOutlinedIcon from '@mui/icons-material/UploadFileOutlined';
 import ModelTrainingIcon from '@mui/icons-material/ModelTraining';
 
 import Breadcrumb from "../components/layout/Breadcrumb";
+import FullPageLoading from "../components/layout/FullPageLoading";
 
 const AlertCustom = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -124,7 +125,7 @@ const LoadForecast = () => {
                     <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
                         <label htmlFor="raised-button-file">
                             <IconButton component={'span'} size={'large'}>
-                                <UploadFileOutlinedIcon fontSize="large" sx={{width: '80px', height: '80px', border: '1px solid red'}}/>
+                                <UploadFileOutlinedIcon fontSize="large" sx={{width: '80px', height: '80px', color: '#A1B927'}}/>
                             </IconButton>
                         </label>
                         <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>
@@ -165,7 +166,7 @@ const LoadForecast = () => {
                     <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
                         <label htmlFor="raised-button-file">
                             <IconButton component={'span'} size={'large'}>
-                                <ModelTrainingIcon fontSize="large" sx={{width: '80px', height: '80px', border: '1px solid red'}}/>
+                                <ModelTrainingIcon fontSize="large" sx={{width: '80px', height: '80px', color: '#A1B927'}}/>
                             </IconButton>
                         </label>
                         <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>Choose a model</Typography>
@@ -191,6 +192,8 @@ const LoadForecast = () => {
             </Grid>
         </Container>
         <hr/>
+
+        {loading && <FullPageLoading/>}
 
         <Snackbar open={newFileSuccess} autoHideDuration={3000} onClose={closeSnackbar}>
             <AlertCustom onClose={closeSnackbar} severity="success" sx={{width: '100%', mb: 5}}>
