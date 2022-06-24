@@ -125,7 +125,8 @@ const LoadForecast = () => {
                     <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
                         <label htmlFor="raised-button-file">
                             <IconButton component={'span'} size={'large'}>
-                                <UploadFileOutlinedIcon fontSize="large" sx={{width: '80px', height: '80px', color: '#A1B927'}}/>
+                                <UploadFileOutlinedIcon fontSize="large"
+                                                        sx={{width: '80px', height: '80px', color: '#A1B927'}}/>
                             </IconButton>
                         </label>
                         <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>
@@ -164,11 +165,9 @@ const LoadForecast = () => {
             <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
                 <Grid item xs={12} md={6}>
                     <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
-                        <label htmlFor="raised-button-file">
-                            <IconButton component={'span'} size={'large'}>
-                                <ModelTrainingIcon fontSize="large" sx={{width: '80px', height: '80px', color: '#A1B927'}}/>
-                            </IconButton>
-                        </label>
+                        <IconButton component={'span'} size={'large'}>
+                            <ModelTrainingIcon fontSize="large" sx={{width: '80px', height: '80px', color: '#A1B927'}}/>
+                        </IconButton>
                         <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>Choose a model</Typography>
                     </Stack>
                 </Grid>
