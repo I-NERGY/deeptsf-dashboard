@@ -22,7 +22,7 @@ const breadcrumbs = [
         fontSize={'20px'}
         fontWeight={600}
     >
-        Pilots
+        Load Forecasting
     </Typography>,
 ];
 
@@ -40,7 +40,7 @@ const LoadForecast = () => {
             <Container maxWidth={'xl'} sx={{mt: 5}}>
                 <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
                     <input
-                        // accept=".csv"
+                        accept=".csv"
                         style={{display: 'none'}}
                         id="raised-button-file"
                         type="file"
