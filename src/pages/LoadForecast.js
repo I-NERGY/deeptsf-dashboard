@@ -36,6 +36,8 @@ const breadcrumbs = [<Link fontSize={'20px'} underline="hover" key="1" color="in
 const LoadForecast = () => {
     const [newFile, setNewFile] = useState()
     const [dayFirst, setDayFirst] = useState(false)
+
+    const [loading, setLoading] = useState(false)
     const [newFileSuccess, setNewFileSuccess] = useState(false)
     const [newFileFailure, setNewFileFailure] = useState(false)
     const [newFileSnackbar, setNewFileSnackbar] = useState(false)
@@ -45,6 +47,7 @@ const LoadForecast = () => {
     }
 
     const handleUploadFile = (file) => {
+        setLoading(true)
         const data = new FormData()
 
         data.append('file', newFile)
@@ -63,9 +66,11 @@ const LoadForecast = () => {
                         setNewFileSuccess(true)
                         setNewFileFailure(false)
                         setNewFile(null)
+                        setLoading(false)
                         document.getElementById('raised-button-file').value = ''
                     })
                     .catch(error => {
+                        setLoading(false)
                         setNewFileSnackbar(true)
                         setNewFileSuccess(false)
                         setNewFileFailure(true)
@@ -75,6 +80,7 @@ const LoadForecast = () => {
                     })
             })
             .catch(error => {
+                setLoading(false)
                 setNewFileSnackbar(true)
                 setNewFileSuccess(false)
                 setNewFileFailure(true)
