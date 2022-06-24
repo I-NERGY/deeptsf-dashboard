@@ -24,26 +24,26 @@ const SignedInLinks = ({classes, navigate, location, setAuth, handleSignOut}) =>
 
     const pilotItems = [
         {
-            text: 'Pilot Data',
-            icon: <DataObjectIcon color="secondary"/>,
-            subItems: [
-                {text: 'ASM', icon: <FileOpenIcon color="secondary"/>, path: "/data/asm"},
-                {text: 'BTC', icon: <FileOpenIcon color="secondary"/>, path: "/data/btc"},
-                {text: 'COOPERNICO', icon: <FileOpenIcon color="secondary"/>, path: "/data/coopernico"},
-                {text: 'EREN', icon: <FileOpenIcon color="secondary"/>, path: "/data/eren"},
-                {text: 'FASADA', icon: <FileOpenIcon color="secondary"/>, path: "/data/fasada"},
-                {text: 'GDYNIA', icon: <FileOpenIcon color="secondary"/>, path: "/data/gdynia"},
-                {text: 'HOUSING EUROPE', icon: <FileOpenIcon color="secondary"/>, path: "/data/housing_europe"},
-                {text: 'ICLEI', icon: <FileOpenIcon color="secondary"/>, path: "/data/iclei"},
-                {text: 'LEIF', icon: <FileOpenIcon color="secondary"/>, path: "/data/leif"},
-                {text: 'VEOLIA', icon: <FileOpenIcon color="secondary"/>, path: "/data/veolia"},
-            ],
-            handleNested: () => handleNestedPilots()
+            // text: 'Pilot Data',
+            // icon: <DataObjectIcon color="secondary"/>,
+            // subItems: [
+            //     {text: 'ASM', icon: <FileOpenIcon color="secondary"/>, path: "/data/asm"},
+            //     {text: 'BTC', icon: <FileOpenIcon color="secondary"/>, path: "/data/btc"},
+            //     {text: 'COOPERNICO', icon: <FileOpenIcon color="secondary"/>, path: "/data/coopernico"},
+            //     {text: 'EREN', icon: <FileOpenIcon color="secondary"/>, path: "/data/eren"},
+            //     {text: 'FASADA', icon: <FileOpenIcon color="secondary"/>, path: "/data/fasada"},
+            //     {text: 'GDYNIA', icon: <FileOpenIcon color="secondary"/>, path: "/data/gdynia"},
+            //     {text: 'HOUSING EUROPE', icon: <FileOpenIcon color="secondary"/>, path: "/data/housing_europe"},
+            //     {text: 'ICLEI', icon: <FileOpenIcon color="secondary"/>, path: "/data/iclei"},
+            //     {text: 'LEIF', icon: <FileOpenIcon color="secondary"/>, path: "/data/leif"},
+            //     {text: 'VEOLIA', icon: <FileOpenIcon color="secondary"/>, path: "/data/veolia"},
+            // ],
+            // handleNested: () => handleNestedPilots()
         },
     ]
 
     return (
-        <React.Fragment>
+        <>
             {pilotItems.map(item => (
                 <div key={item.text}>
                     <ListItem
@@ -97,7 +97,7 @@ const SignedInLinks = ({classes, navigate, location, setAuth, handleSignOut}) =>
                 <ListItemIcon>{<LogoutOutlinedIcon color="secondary"/>}</ListItemIcon>
                 <ListItemText primary={'Sign Out'}></ListItemText>
             </ListItem>
-        </React.Fragment>
+        </>
     );
 }
 
