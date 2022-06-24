@@ -1,3 +1,4 @@
+import axios from "axios";
 import {Route, Routes} from 'react-router-dom';
 import RequireAuth from "./components/RequireAuth";
 
@@ -9,6 +10,9 @@ import RequireNotAuth from "./components/RequireNotAuth";
 
 import {ThemeProvider, createTheme} from '@mui/material/styles';
 import LoadForecast from "./pages/LoadForecast";
+
+axios.defaults.baseURL = 'http://131.154.97.48:8000';
+
 
 // Set primary color here
 let primary = '#97A94D'
