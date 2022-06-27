@@ -9,6 +9,7 @@ import Button from '@mui/material/Button';
 import Stack from "@mui/material/Stack";
 import IconButton from '@mui/material/IconButton';
 import MuiAlert from '@mui/material/Alert';
+import Alert from '@mui/material/Alert';
 import Snackbar from '@mui/material/Snackbar';
 import Checkbox from '@mui/material/Checkbox';
 import InputLabel from '@mui/material/InputLabel';
@@ -18,6 +19,7 @@ import Select from '@mui/material/Select';
 import Grid from '@mui/material/Grid';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
+import Box from '@mui/material/Box';
 
 import UploadFileOutlinedIcon from '@mui/icons-material/UploadFileOutlined';
 import ModelTrainingIcon from '@mui/icons-material/ModelTraining';
@@ -26,7 +28,6 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
 import Breadcrumb from "../components/layout/Breadcrumb";
 import FullPageLoading from "../components/layout/FullPageLoading";
-import {green} from "@mui/material/colors";
 
 const AlertCustom = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -117,6 +118,7 @@ const LoadForecast = () => {
         let myArray = Object.entries(modelConfigurations)
         const myArrayFiltered = myArray.filter(element => (element[0].includes(model)))
         setAvailableConfigurations(myArrayFiltered)
+        setChosenConfiguration('')
     }, [model])
 
     const handleChooseConfiguration = index => {
@@ -236,14 +238,19 @@ const LoadForecast = () => {
                                 </Stack>
 
                                 <hr style={{borderBottom: 0}}/>
+
                                 {Object.entries(config[1]).map(([parameterName, parameterValue]) => {
-                                    return (<Typography variant={'subtitle1'}>
-                                            <span style={{fontWeight: 'bold'}}>{parameterName}</span>: {parameterValue}
-                                        </Typography>);
+                                    return (<Typography variant={'subtitle2'}>
+                                        <span style={{fontWeight: 'bold'}}>{parameterName}</span>: {parameterValue}
+                                    </Typography>);
                                 })}
                             </CardContent>
                         </Card>
                     </Grid>))}
+                {availableConfigurations.length === 0 &&
+                    <Container maxWidth={'lg'} sx={{my: 4}}>
+                        <Alert severity="error">No available configurations for this model!</Alert>
+                    </Container>}
             </Grid>
 
         </Container>
