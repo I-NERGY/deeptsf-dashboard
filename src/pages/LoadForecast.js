@@ -19,15 +19,16 @@ import Select from '@mui/material/Select';
 import Grid from '@mui/material/Grid';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
-import Box from '@mui/material/Box';
 
 import UploadFileOutlinedIcon from '@mui/icons-material/UploadFileOutlined';
 import ModelTrainingIcon from '@mui/icons-material/ModelTraining';
 import SettingsApplicationsIcon from '@mui/icons-material/SettingsApplications';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import TerminalIcon from '@mui/icons-material/Terminal';
 
 import Breadcrumb from "../components/layout/Breadcrumb";
 import FullPageLoading from "../components/layout/FullPageLoading";
+import {ChevronRight} from "@mui/icons-material";
 
 const AlertCustom = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -125,6 +126,10 @@ const LoadForecast = () => {
         setChosenConfiguration(index)
     }
 
+    const handleExecute = () => {
+
+    }
+
     return (<div>
         <Breadcrumb breadcrumbs={breadcrumbs} welcome_msg={'Welcome to I-NERGY Load Forecasting'}/>
 
@@ -146,7 +151,7 @@ const LoadForecast = () => {
                                                         sx={{width: '80px', height: '80px', color: '#A1B927'}}/>
                             </IconButton>
                         </label>
-                        <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>
+                        <Typography variant={'h4'} color={'inherit'} sx={{width: '100%'}}>
                             Upload your .csv file
                         </Typography>
                     </Stack>
@@ -185,7 +190,7 @@ const LoadForecast = () => {
                         <IconButton component={'span'} size={'large'}>
                             <ModelTrainingIcon fontSize="large" sx={{width: '80px', height: '80px', color: '#A1B927'}}/>
                         </IconButton>
-                        <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>Choose a model</Typography>
+                        <Typography variant={'h4'} color={'inherit'} sx={{width: '100%'}}>Choose a model</Typography>
                     </Stack>
                 </Grid>
                 <Grid item xs={12} md={6}>
@@ -215,7 +220,7 @@ const LoadForecast = () => {
                             <SettingsApplicationsIcon fontSize="large"
                                                       sx={{width: '80px', height: '80px', color: '#A1B927'}}/>
                         </IconButton>
-                        <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>Select
+                        <Typography variant={'h4'} color={'inherit'} sx={{width: '100%'}}>Select
                             Configuration</Typography>
                     </Stack>
                 </Grid>
@@ -252,11 +257,31 @@ const LoadForecast = () => {
                         <Alert severity="error">No available configurations for this model!</Alert>
                     </Container>}
             </Grid>
+        </Container>
+        <hr/>
 
+        <Container maxWidth={'xl'} sx={{my: 5}}>
+            <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
+                <Grid item xs={12} md={6}>
+                    <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
+                        <IconButton component={'span'} size={'large'}>
+                            <TerminalIcon fontSize="large"
+                                          sx={{width: '80px', height: '80px', color: '#A1B927'}}/>
+                        </IconButton>
+                        <Typography variant={'h4'} color={'inherit'} sx={{width: '100%'}}>Run the model</Typography>
+                    </Stack>
+                </Grid>
+                <Grid item xs={12} md={6} display={'flex'}>
+                    <Button variant={'contained'} component={'span'} size={'large'} color={'success'}
+                            sx={{ml: 'auto'}} fullWidth
+                            endIcon={<ChevronRight/>} onClick={handleExecute}>
+                        <Typography variant={'h6'}>EXECUTE</Typography>
+                    </Button>
+                </Grid>
+            </Grid>
         </Container>
 
         {loading && <FullPageLoading/>}
-
         <Snackbar open={newFileSuccess} autoHideDuration={3000} onClose={closeSnackbar}>
             <AlertCustom onClose={closeSnackbar} severity="success" sx={{width: '100%', mb: 5}}>
                 The new file has been successfully uploaded!
