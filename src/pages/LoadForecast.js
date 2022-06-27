@@ -16,13 +16,17 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import Grid from '@mui/material/Grid';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
 
 import UploadFileOutlinedIcon from '@mui/icons-material/UploadFileOutlined';
 import ModelTrainingIcon from '@mui/icons-material/ModelTraining';
 import SettingsApplicationsIcon from '@mui/icons-material/SettingsApplications';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
 import Breadcrumb from "../components/layout/Breadcrumb";
 import FullPageLoading from "../components/layout/FullPageLoading";
+import {green} from "@mui/material/colors";
 
 const AlertCustom = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -51,6 +55,7 @@ const LoadForecast = () => {
     // const [newFileSnackbar, setNewFileSnackbar] = useState(false)
 
     const [availableConfigurations, setAvailableConfigurations] = useState([])
+    const [chosenConfiguration, setChosenConfiguration] = useState()
 
     useEffect(() => {
         axios.get('/models/get_model_names')
@@ -75,7 +80,6 @@ const LoadForecast = () => {
                 }
                 axios.post('/upload/validateCSVfile/', payload)
                     .then(response => {
-                        console.log('Validate response: ', response.data)
                         // setNewFileSnackbar(true)
                         setNewFileSuccess(true)
                         setNewFileFailure(false)
@@ -111,12 +115,13 @@ const LoadForecast = () => {
 
     useEffect(() => {
         let myArray = Object.entries(modelConfigurations)
-        const myArrayFiltered = myArray.filter(element => (
-            element[0].includes(model)
-        ))
-
+        const myArrayFiltered = myArray.filter(element => (element[0].includes(model)))
         setAvailableConfigurations(myArrayFiltered)
     }, [model])
+
+    const handleChooseConfiguration = index => {
+        setChosenConfiguration(index)
+    }
 
     return (<div>
         <Breadcrumb breadcrumbs={breadcrumbs} welcome_msg={'Welcome to I-NERGY Load Forecasting'}/>
@@ -205,13 +210,42 @@ const LoadForecast = () => {
                 <Grid item xs={12} md={6}>
                     <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
                         <IconButton component={'span'} size={'large'}>
-                            <SettingsApplicationsIcon fontSize="large" sx={{width: '80px', height: '80px', color: '#A1B927'}}/>
+                            <SettingsApplicationsIcon fontSize="large"
+                                                      sx={{width: '80px', height: '80px', color: '#A1B927'}}/>
                         </IconButton>
-                        <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>Select Configuration</Typography>
+                        <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>Select
+                            Configuration</Typography>
                     </Stack>
                 </Grid>
                 <Grid item xs={12} md={6}></Grid>
             </Grid>
+
+            <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
+                {model && availableConfigurations && availableConfigurations.map(config => (
+                    <Grid item xs={6} md={3} key={config[0]}>
+                        <Card elevation={chosenConfiguration === availableConfigurations.indexOf(config) ? 10 : 1}
+                              onClick={() => handleChooseConfiguration(availableConfigurations.indexOf(config))}
+                              sx={{background: chosenConfiguration === availableConfigurations.indexOf(config) ? '#ACBF5D' : ''}}>
+                            <CardContent>
+                                <Stack direction={'row'}>
+                                    <Typography variant={'h6'} gutterBottom>
+                                        {config[0]}
+                                    </Typography>
+                                    {chosenConfiguration === availableConfigurations.indexOf(config) &&
+                                        <CheckCircleIcon color={'success'} sx={{ml: 'auto'}}/>}
+                                </Stack>
+
+                                <hr style={{borderBottom: 0}}/>
+                                {Object.entries(config[1]).map(([parameterName, parameterValue]) => {
+                                    return (<Typography variant={'subtitle1'}>
+                                            <span style={{fontWeight: 'bold'}}>{parameterName}</span>: {parameterValue}
+                                        </Typography>);
+                                })}
+                            </CardContent>
+                        </Card>
+                    </Grid>))}
+            </Grid>
+
         </Container>
 
         {loading && <FullPageLoading/>}
