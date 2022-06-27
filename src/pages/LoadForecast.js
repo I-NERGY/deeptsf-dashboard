@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import axios from "axios";
+import {modelConfigurations} from "../modelConfigurations";
 
 import Link from '@mui/material/Link';
 import Typography from '@mui/material/Typography';
@@ -18,6 +19,7 @@ import Grid from '@mui/material/Grid';
 
 import UploadFileOutlinedIcon from '@mui/icons-material/UploadFileOutlined';
 import ModelTrainingIcon from '@mui/icons-material/ModelTraining';
+import SettingsApplicationsIcon from '@mui/icons-material/SettingsApplications';
 
 import Breadcrumb from "../components/layout/Breadcrumb";
 import FullPageLoading from "../components/layout/FullPageLoading";
@@ -33,8 +35,7 @@ const breadcrumbs = [<Link fontSize={'20px'} underline="hover" key="1" color="in
     key="2"
     color="secondary"
     fontSize={'20px'}
-    fontWeight={600}
->
+    fontWeight={600}>
     Load Forecasting
 </Typography>,];
 
@@ -47,19 +48,21 @@ const LoadForecast = () => {
     const [loading, setLoading] = useState(false)
     const [newFileSuccess, setNewFileSuccess] = useState(false)
     const [newFileFailure, setNewFileFailure] = useState(false)
-    const [newFileSnackbar, setNewFileSnackbar] = useState(false)
+    // const [newFileSnackbar, setNewFileSnackbar] = useState(false)
+
+    const [availableConfigurations, setAvailableConfigurations] = useState([])
 
     useEffect(() => {
         axios.get('/models/get_model_names')
             .then(response => setModels(response.data.models))
             .catch(error => console.log(error))
-    })
+    }, [])
 
     const handleAddNewFile = file => {
         setNewFile(file)
     }
 
-    const handleUploadFile = (file) => {
+    const handleUploadFile = () => {
         setLoading(true)
         const data = new FormData()
 
@@ -67,15 +70,13 @@ const LoadForecast = () => {
 
         axios.post('/upload/uploadCSVfile/', data, {headers: {"Content-Type": "multipart/form-data"}})
             .then(response => {
-                console.log('Upload response: ', response.data)
                 const payload = {
                     fname: response.data.fname, day_first: dayFirst,
                 }
-                console.log(payload)
                 axios.post('/upload/validateCSVfile/', payload)
                     .then(response => {
                         console.log('Validate response: ', response.data)
-                        setNewFileSnackbar(true)
+                        // setNewFileSnackbar(true)
                         setNewFileSuccess(true)
                         setNewFileFailure(false)
                         setNewFile(null)
@@ -84,7 +85,7 @@ const LoadForecast = () => {
                     })
                     .catch(error => {
                         setLoading(false)
-                        setNewFileSnackbar(true)
+                        // setNewFileSnackbar(true)
                         setNewFileSuccess(false)
                         setNewFileFailure(true)
                         setNewFile(null)
@@ -94,7 +95,7 @@ const LoadForecast = () => {
             })
             .catch(error => {
                 setLoading(false)
-                setNewFileSnackbar(true)
+                // setNewFileSnackbar(true)
                 setNewFileSuccess(false)
                 setNewFileFailure(true)
                 setNewFile(null)
@@ -107,6 +108,15 @@ const LoadForecast = () => {
         setNewFileSuccess(false)
         setNewFileFailure(false)
     }
+
+    useEffect(() => {
+        let myArray = Object.entries(modelConfigurations)
+        const myArrayFiltered = myArray.filter(element => (
+            element[0].includes(model)
+        ))
+
+        setAvailableConfigurations(myArrayFiltered)
+    }, [model])
 
     return (<div>
         <Breadcrumb breadcrumbs={breadcrumbs} welcome_msg={'Welcome to I-NERGY Load Forecasting'}/>
@@ -181,16 +191,28 @@ const LoadForecast = () => {
                             label="Choose a model"
                             onChange={e => setModel(e.target.value)}
                         >
-                            <>
-                                {models && models.map(modelItem => (
-                                    <MenuItem value={modelItem}>{modelItem}</MenuItem>))}
-                            </>
+                            {models && models.map(modelItem => (
+                                <MenuItem key={modelItem} value={modelItem}>{modelItem}</MenuItem>))}
                         </Select>
                     </FormControl>
                 </Grid>
             </Grid>
         </Container>
         <hr/>
+
+        <Container maxWidth={'xl'} sx={{my: 5}}>
+            <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
+                <Grid item xs={12} md={6}>
+                    <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
+                        <IconButton component={'span'} size={'large'}>
+                            <SettingsApplicationsIcon fontSize="large" sx={{width: '80px', height: '80px', color: '#A1B927'}}/>
+                        </IconButton>
+                        <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>Select Configuration</Typography>
+                    </Stack>
+                </Grid>
+                <Grid item xs={12} md={6}></Grid>
+            </Grid>
+        </Container>
 
         {loading && <FullPageLoading/>}
 
