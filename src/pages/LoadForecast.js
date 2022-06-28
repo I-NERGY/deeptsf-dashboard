@@ -62,6 +62,7 @@ const LoadForecast = () => {
     const [model, setModel] = useState('')
 
     const [loading, setLoading] = useState(false)
+    const [uploadSuccess, setUploadSuccess] = useState(false)
     const [newFileSuccess, setNewFileSuccess] = useState(false)
     const [newFileFailure, setNewFileFailure] = useState(false)
     // const [newFileSnackbar, setNewFileSnackbar] = useState(false)
@@ -109,6 +110,7 @@ const LoadForecast = () => {
 
     const handleUploadFile = () => {
         setLoading(true)
+        setUploadSuccess(false)
         const data = new FormData()
 
         data.append('file', newFile)
@@ -117,7 +119,7 @@ const LoadForecast = () => {
         axios.post('/upload/uploadCSVfile/', data, {headers: {"Content-Type": "multipart/form-data"}})
             .then(response => {
                 console.log('Response from uploadCSVfile: ', response.data)
-
+                setUploadSuccess(true)
                 // Set MIN/MAX values for date fields
                 setMinDate(new Date(response.data.dataset_start))
                 setMaxDate(new Date(response.data.dataset_end))
@@ -461,7 +463,7 @@ const LoadForecast = () => {
                     <Button variant={'contained'} component={'span'} size={'large'} color={'success'}
                             sx={{ml: 'auto'}} fullWidth
                             endIcon={<ChevronRight/>} onClick={handleExecute}
-                            disabled={!newFile}
+                            disabled={!uploadSuccess || !experimentResolution || !dateVal || !dateTest || !dateEnd || !experimentName || !model || !chosenConfiguration || !forecastHorizon}
                     >
                         <Typography variant={'h6'}>EXECUTE</Typography>
                     </Button>
