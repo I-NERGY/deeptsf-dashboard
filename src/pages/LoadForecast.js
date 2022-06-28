@@ -65,7 +65,8 @@ const LoadForecast = () => {
     const [uploadSuccess, setUploadSuccess] = useState(false)
     const [newFileSuccess, setNewFileSuccess] = useState(false)
     const [newFileFailure, setNewFileFailure] = useState(false)
-    // const [newFileSnackbar, setNewFileSnackbar] = useState(false)
+    const [executionSuccess, setExecutionSuccess] = useState(false)
+    const [executionFailure, setExecutionFailure] = useState(false)
 
     const [availableConfigurations, setAvailableConfigurations] = useState([])
     const [chosenConfiguration, setChosenConfiguration] = useState()
@@ -111,6 +112,9 @@ const LoadForecast = () => {
     const handleUploadFile = () => {
         setLoading(true)
         setUploadSuccess(false)
+        setExecutionSuccess(false)
+        setExecutionFailure(false)
+
         const data = new FormData()
 
         data.append('file', newFile)
@@ -147,6 +151,9 @@ const LoadForecast = () => {
     const closeSnackbar = () => {
         setNewFileSuccess(false)
         setNewFileFailure(false)
+
+        setExecutionSuccess(false)
+        setExecutionFailure(false)
     }
 
     useEffect(() => {
@@ -165,6 +172,10 @@ const LoadForecast = () => {
     }
 
     const handleExecute = () => {
+        setLoading(true)
+        setExecutionSuccess(false)
+        setExecutionFailure(false)
+
         const payload = {
             series_url: '',
             experiment_name: experimentName,
@@ -178,7 +189,20 @@ const LoadForecast = () => {
             ignore_previous_runs: ignorePrevious
         }
 
-        console.log(payload)
+        // TODO FIX
+        axios.post('/experimentation_pipeline/run_all', payload)
+            .then(response => {
+                console.log(response.data)
+                setExecutionSuccess(true)
+                setExecutionFailure(false)
+                setLoading(false)
+            })
+            .catch(error => {
+                console.log(error)
+                setExecutionFailure(true)
+                setExecutionSuccess(false)
+                setLoading(false)
+            })
     }
 
     return (<div>
@@ -448,14 +472,6 @@ const LoadForecast = () => {
                     />
                 </Grid>
             </Grid>
-
-            <Container>
-                <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
-                    <Grid item xs={12} md={6} sx={{ml: 'auto'}} display={'flex'} alignItems={'center'}>
-
-                    </Grid>
-                </Grid>
-            </Container>
         </Container>
         <hr/>
 
@@ -482,7 +498,7 @@ const LoadForecast = () => {
                     </Button>
                 </Grid>
             </Grid>
-            <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
+            {executionSuccess && <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
                 <Grid item xs={12} md={6}>
                     <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
                         <IconButton component={'span'} size={'large'}>
@@ -500,7 +516,7 @@ const LoadForecast = () => {
                         <Typography variant={'h6'}>Visit MLFlow Server</Typography>
                     </Button>
                 </Grid>
-            </Grid>
+            </Grid>}
         </Container>
 
         {loading && <FullPageLoading/>}
@@ -512,6 +528,17 @@ const LoadForecast = () => {
         <Snackbar open={newFileFailure} autoHideDuration={3000} onClose={closeSnackbar}>
             <AlertCustom onClose={closeSnackbar} severity="error" sx={{width: '100%', mb: 5}}>
                 Something went wrong! Please try again!
+            </AlertCustom>
+        </Snackbar>
+
+        <Snackbar open={executionSuccess} autoHideDuration={3000} onClose={closeSnackbar}>
+            <AlertCustom onClose={closeSnackbar} severity="success" sx={{width: '100%', mb: 5}}>
+                Execution successful!
+            </AlertCustom>
+        </Snackbar>
+        <Snackbar open={executionFailure} autoHideDuration={3000} onClose={closeSnackbar}>
+            <AlertCustom onClose={closeSnackbar} severity="error" sx={{width: '100%', mb: 5}}>
+                Something went wrong with the execution! Please try again!
             </AlertCustom>
         </Snackbar>
     </div>);
