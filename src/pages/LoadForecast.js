@@ -362,12 +362,12 @@ const LoadForecast = () => {
                 </Grid>
                 <Grid item xs={12} md={6}>
                     <Grid container spacing={2} display={'flex'} alignItems={'center'}>
-                        <Grid item xs={12} md={8}>
+                        <Grid item xs={6} md={8}>
                             <TextField id="outlined-basic" label="Experiment name" variant="outlined" required fullWidth
                                        value={experimentName} error={experimentNameError && experimentName === ''}
                                        onChange={e => setExperimentName(e.target.value)}/>
                         </Grid>
-                        <Grid item xs={12} md={4} display={'flex'} alignItems={'center'}>
+                        <Grid item xs={6} md={4} display={'flex'} alignItems={'center'}>
                             <Typography sx={{ml: 'auto'}} variant={'body1'} fontWeight={'bold'}>Ignore Previous
                                 Runs</Typography>
                             <Checkbox
