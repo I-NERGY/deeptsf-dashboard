@@ -30,8 +30,12 @@ import ModelTrainingIcon from '@mui/icons-material/ModelTraining';
 import SettingsApplicationsIcon from '@mui/icons-material/SettingsApplications';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import TerminalIcon from '@mui/icons-material/Terminal';
-import SettingsEthernetIcon from '@mui/icons-material/SettingsEthernet';
+import DoneAllIcon from '@mui/icons-material/DoneAll';
 import ChevronRight from '@mui/icons-material/ChevronRight';
+import DataThresholdingIcon from '@mui/icons-material/DataThresholding';
+import DateRangeIcon from '@mui/icons-material/DateRange';
+import LabelOutlinedIcon from '@mui/icons-material/LabelOutlined';
+import LineAxisOutlinedIcon from '@mui/icons-material/LineAxisOutlined';
 
 import Breadcrumb from "../components/layout/Breadcrumb";
 import FullPageLoading from "../components/layout/FullPageLoading";
@@ -40,17 +44,16 @@ const AlertCustom = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
-const breadcrumbs = [
-    <Link fontSize={'20px'} underline="hover" key="1" color="inherit" href="/">
-        Dashboard
-    </Link>, <Typography
-        underline="hover"
-        key="2"
-        color="secondary"
-        fontSize={'20px'}
-        fontWeight={600}>
-        Load Forecasting
-    </Typography>,];
+const breadcrumbs = [<Link fontSize={'20px'} underline="hover" key="1" color="inherit" href="/">
+    Dashboard
+</Link>, <Typography
+    underline="hover"
+    key="2"
+    color="secondary"
+    fontSize={'20px'}
+    fontWeight={600}>
+    Load Forecasting
+</Typography>,];
 
 const LoadForecast = () => {
     const [newFile, setNewFile] = useState()
@@ -97,6 +100,13 @@ const LoadForecast = () => {
             .catch(error => console.log(error))
     }, [])
 
+    useEffect(() => {
+        experimentResolution === 60 && setForecastHorizon(24)
+        experimentResolution === 30 && setForecastHorizon(48)
+        experimentResolution === 15 && setForecastHorizon(96)
+        experimentResolution === 5 && setForecastHorizon(288)
+    }, [experimentResolution])
+
     const handleAddNewFile = file => {
         setNewFile(file)
     }
@@ -109,12 +119,13 @@ const LoadForecast = () => {
 
         axios.post('/upload/uploadCSVfile/', data, {headers: {"Content-Type": "multipart/form-data"}})
             .then(response => {
+                console.log('Response from uploadCSVfile: ', response.data)
                 const payload = {
                     fname: response.data.fname, day_first: dayFirst,
                 }
                 axios.post('/upload/validateCSVfile/', payload)
                     .then(response => {
-                        // setNewFileSnackbar(true)
+                        console.log('Response from validateCSVfile: ', response.data)
                         setNewFileSuccess(true)
                         setNewFileFailure(false)
                         setNewFile(null)
@@ -123,7 +134,6 @@ const LoadForecast = () => {
                     })
                     .catch(error => {
                         setLoading(false)
-                        // setNewFileSnackbar(true)
                         setNewFileSuccess(false)
                         setNewFileFailure(true)
                         setNewFile(null)
@@ -133,7 +143,6 @@ const LoadForecast = () => {
             })
             .catch(error => {
                 setLoading(false)
-                // setNewFileSnackbar(true)
                 setNewFileSuccess(false)
                 setNewFileFailure(true)
                 setNewFile(null)
@@ -167,8 +176,9 @@ const LoadForecast = () => {
 
         {/* Upload your .csv file */}
         <Container maxWidth={'xl'} sx={{my: 5}}>
+            <Typography variant={'h4'} fontWeight={'bold'} sx={{mb: 3}}>Dataset Configuration</Typography>
             <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
-                <Grid item xs={12} md={6}>
+                <Grid item xs={12} md={8}>
                     <input
                         accept=".csv"
                         style={{display: 'none'}}
@@ -184,13 +194,12 @@ const LoadForecast = () => {
                                                         sx={{width: '80px', height: '80px', color: '#A1B927'}}/>
                             </IconButton>
                         </label>
-                        <Typography variant={'h4'} color={'inherit'} sx={{width: '100%'}}>
+                        <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>
                             Upload your .csv file
                         </Typography>
                     </Stack>
                 </Grid>
-
-                <Grid item xs={12} md={6}>
+                <Grid item xs={12} md={4}>
                     {newFile && <Typography variant={'h5'} color={'inherit'} align={'right'} sx={{width: '100%'}}>Chosen
                         file: <Typography fontWeight={'bold'}
                                           color={'secondary'}>{newFile.name}</Typography></Typography>}
@@ -203,8 +212,6 @@ const LoadForecast = () => {
                                 sx={{'& .MuiSvgIcon-root': {fontSize: 28}}}
                             />
                         </>}
-                    </Stack>
-                    <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
                         {newFile && <Button variant={'contained'} component={'span'} size={'large'} color={'success'}
                                             sx={{ml: 'auto'}}
                                             endIcon={<UploadFileOutlinedIcon/>} onClick={handleUploadFile}>
@@ -213,18 +220,131 @@ const LoadForecast = () => {
                     </Stack>
                 </Grid>
             </Grid>
+
+            <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
+                <Grid item xs={12} md={8}>
+                    <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
+                        <IconButton component={'span'} size={'large'}>
+                            <DataThresholdingIcon fontSize="large"
+                                                    sx={{width: '80px', height: '80px', color: '#A1B927'}}/>
+                        </IconButton>
+                        <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>
+                            Select Timeseries Resolution
+                        </Typography>
+                    </Stack>
+                </Grid>
+                <Grid item xs={12} md={4}>
+                    <FormControl fullWidth>
+                        <InputLabel id="demo-simple-select-label">Dataset Resolution (Minutes)</InputLabel>
+                        <Select
+                            fullWidth
+                            labelId="demo-simple-select-label"
+                            id="demo-simple-select"
+                            value={experimentResolution}
+                            label="Dataset Resolution (Minutes)"
+                            onChange={e => setExperimentResolution(e.target.value)}
+                        >
+                            {resolutions.map(resolution => (
+                                <MenuItem key={resolution} value={resolution}>{resolution}</MenuItem>))}
+                        </Select>
+                    </FormControl>
+                </Grid>
+            </Grid>
+
+            <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
+                <Grid item xs={12} md={6}>
+                    <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
+                        <IconButton component={'span'} size={'large'}>
+                            <DateRangeIcon fontSize="large" sx={{width: '80px', height: '80px', color: '#A1B927'}}/>
+                        </IconButton>
+                        <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>Dataset Split</Typography>
+                    </Stack>
+                </Grid>
+                <Grid item xs={12} md={6}>
+                    <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
+                        <Grid item xs={12} md={4}>
+                            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                <DatePicker
+                                    views={['day']}
+                                    label="Validation Start Date"
+                                    value={dateVal}
+                                    onChange={(newValue) => {
+                                        setDateVal(newValue);
+                                    }}
+                                    renderInput={(params) => <TextField fullWidth {...params} helperText={null}/>}
+                                />
+                            </LocalizationProvider>
+                        </Grid>
+                        <Grid item xs={12} md={4}>
+                            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                <DatePicker
+                                    views={['day']}
+                                    label="Test Start Date"
+                                    value={dateTest}
+                                    onChange={(newValue) => {
+                                        setDateTest(newValue);
+                                    }}
+                                    renderInput={(params) => <TextField fullWidth {...params} helperText={null}/>}
+                                />
+                            </LocalizationProvider>
+                        </Grid>
+                        <Grid item xs={12} md={4}>
+                            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                <DatePicker
+                                    views={['day']}
+                                    label="Test End Date"
+                                    value={dateEnd}
+                                    onChange={(newValue) => {
+                                        setDateEnd(newValue);
+                                    }}
+                                    renderInput={(params) => <TextField fullWidth {...params} helperText={null}/>}
+                                />
+                            </LocalizationProvider>
+                        </Grid>
+                    </Grid>
+                </Grid>
+            </Grid>
         </Container>
         <hr/>
 
         {/* Choose a model */}
         <Container maxWidth={'xl'} sx={{my: 5}}>
+            <Typography variant={'h4'} fontWeight={'bold'} sx={{mb: 3}}>Model Training Setup</Typography>
+            <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
+                <Grid item xs={12} md={6}>
+                    <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
+                        <IconButton component={'span'} size={'large'}>
+                            <LabelOutlinedIcon fontSize="large" sx={{width: '80px', height: '80px', color: '#A1B927'}}/>
+                        </IconButton>
+                        <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>MLFlow Experiment
+                            Name</Typography>
+                    </Stack>
+                </Grid>
+                <Grid item xs={12} md={6}>
+                    <Grid container spacing={2} display={'flex'} alignItems={'center'}>
+                        <Grid item xs={12} md={8}>
+                            <TextField id="outlined-basic" label="Experiment name" variant="outlined" required fullWidth
+                                       value={experimentName} error={experimentNameError && experimentName === ''}/>
+                        </Grid>
+                        <Grid item xs={12} md={4} display={'flex'} alignItems={'center'}>
+                            <Typography sx={{ml: 'auto'}} variant={'body1'} fontWeight={'bold'}>Ignore Previous
+                                Runs</Typography>
+                            <Checkbox
+                                value={ignorePrevious}
+                                onChange={() => setIgnorePrevious(!ignorePrevious)}
+                                sx={{'& .MuiSvgIcon-root': {fontSize: 28}}}
+                            />
+                        </Grid>
+                    </Grid>
+                </Grid>
+            </Grid>
             <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
                 <Grid item xs={12} md={6}>
                     <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
                         <IconButton component={'span'} size={'large'}>
                             <ModelTrainingIcon fontSize="large" sx={{width: '80px', height: '80px', color: '#A1B927'}}/>
                         </IconButton>
-                        <Typography variant={'h4'} color={'inherit'} sx={{width: '100%'}}>Choose a model</Typography>
+                        <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>Choose a model</Typography>
                     </Stack>
                 </Grid>
                 <Grid item xs={12} md={6}>
@@ -243,11 +363,6 @@ const LoadForecast = () => {
                     </FormControl>
                 </Grid>
             </Grid>
-        </Container>
-        <hr/>
-
-        {/* Select Configuration */}
-        <Container maxWidth={'xl'} sx={{my: 5}}>
             <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
                 <Grid item xs={12} md={6}>
                     <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
@@ -255,15 +370,14 @@ const LoadForecast = () => {
                             <SettingsApplicationsIcon fontSize="large"
                                                       sx={{width: '80px', height: '80px', color: '#A1B927'}}/>
                         </IconButton>
-                        <Typography variant={'h4'} color={'inherit'} sx={{width: '100%'}}>Select
-                            Configuration</Typography>
+                        <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>
+                            Select Hyperparameters</Typography>
                     </Stack>
                 </Grid>
                 <Grid item xs={12} md={6}>
                     {!model && <Alert severity="warning">Choose a model to see the available configurations!</Alert>}
                 </Grid>
             </Grid>
-
             <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
                 {model && availableConfigurations && availableConfigurations.map(config => (
                     <Grid item xs={6} md={2} key={config[0]}>
@@ -278,7 +392,6 @@ const LoadForecast = () => {
                                     {chosenConfiguration === availableConfigurations.indexOf(config) &&
                                         <CheckCircleIcon color={'success'} sx={{ml: 'auto'}}/>}
                                 </Stack>
-
                                 <hr style={{borderBottom: 0}}/>
 
                                 {Object.entries(config[1]).map(([parameterName, parameterValue]) => {
@@ -289,107 +402,40 @@ const LoadForecast = () => {
                             </CardContent>
                         </Card>
                     </Grid>))}
-                {availableConfigurations.length === 0 &&
-                    <Container maxWidth={'lg'} sx={{my: 4}}>
-                        <Alert severity="error">No available configurations for this model!</Alert>
-                    </Container>}
+                {availableConfigurations.length === 0 && <Container maxWidth={'lg'} sx={{my: 4}}>
+                    <Alert severity="error">No available configurations for this model!</Alert>
+                </Container>}
             </Grid>
         </Container>
         <hr/>
 
-        {/* Select Parameters */}
+        {/* Model Evaluation Setup */}
         <Container maxWidth={'xl'} sx={{my: 5}}>
+            <Typography variant={'h4'} fontWeight={'bold'} sx={{mb: 3}}>Model Evaluation Setup</Typography>
             <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
                 <Grid item xs={12} md={6}>
                     <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
                         <IconButton component={'span'} size={'large'}>
-                            <SettingsEthernetIcon fontSize="large"
+                            <LineAxisOutlinedIcon fontSize="large"
                                                   sx={{width: '80px', height: '80px', color: '#A1B927'}}/>
                         </IconButton>
-                        <Typography variant={'h4'} color={'inherit'} sx={{width: '100%'}}>Select
-                            Parameters</Typography>
+                        <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>Choose Backtest Forecast
+                            Horizon</Typography>
                     </Stack>
                 </Grid>
-                <Grid item xs={12} md={6}></Grid>
+                <Grid item xs={12} md={6}>
+                    <TextField id="outlined-basic" label="Forecast Horizon" variant="outlined" required fullWidth
+                               value={forecastHorizon} type="number"
+                               onChange={e => setForecastHorizon(e.target.value)}
+                               InputProps={{inputProps: {min: 0}}}
+                    />
+                </Grid>
             </Grid>
 
             <Container>
                 <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
-                    <Grid item xs={12} md={4}>
-                        <TextField id="outlined-basic" label="Experiment name" variant="outlined" required fullWidth
-                                   value={experimentName} error={experimentNameError && experimentName === ''}/>
-                    </Grid>
-                    <Grid item xs={12} md={4}>
-                        <FormControl fullWidth>
-                            <InputLabel id="demo-simple-select-label">Experiment Resolution</InputLabel>
-                            <Select
-                                fullWidth
-                                labelId="demo-simple-select-label"
-                                id="demo-simple-select"
-                                value={experimentResolution}
-                                label="Experiment Resolution"
-                                onChange={e => setExperimentResolution(e.target.value)}
-                            >
-                                {resolutions.map(resolution => (
-                                    <MenuItem key={resolution} value={resolution}>{resolution}</MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>
-                    </Grid>
-                    <Grid item xs={12} md={4}>
-                        <TextField id="outlined-basic" label="Forecast Horizon" variant="outlined" required fullWidth
-                                   value={forecastHorizon} type="number"
-                                   onChange={e => setForecastHorizon(e.target.value)}
-                                   InputProps={{inputProps: {min: 0}}}
-                        />
-                    </Grid>
-
-                    <Grid item xs={12} md={4}>
-                        <LocalizationProvider dateAdapter={AdapterDateFns}>
-                            <DatePicker
-                                views={['day']}
-                                label="Date Val"
-                                value={dateVal}
-                                onChange={(newValue) => {
-                                    setDateVal(newValue);
-                                }}
-                                renderInput={(params) => <TextField fullWidth {...params} helperText={null}/>}
-                            />
-                        </LocalizationProvider>
-                    </Grid>
-                    <Grid item xs={12} md={4}>
-                        <LocalizationProvider dateAdapter={AdapterDateFns}>
-                            <DatePicker
-                                views={['day']}
-                                label="Date Test"
-                                value={dateTest}
-                                onChange={(newValue) => {
-                                    setDateTest(newValue);
-                                }}
-                                renderInput={(params) => <TextField fullWidth {...params} helperText={null}/>}
-                            />
-                        </LocalizationProvider>
-                    </Grid>
-                    <Grid item xs={12} md={4}>
-                        <LocalizationProvider dateAdapter={AdapterDateFns}>
-                            <DatePicker
-                                views={['day']}
-                                label="Date End"
-                                value={dateEnd}
-                                onChange={(newValue) => {
-                                    setDateEnd(newValue);
-                                }}
-                                renderInput={(params) => <TextField fullWidth {...params} helperText={null}/>}
-                            />
-                        </LocalizationProvider>
-                    </Grid>
                     <Grid item xs={12} md={6} sx={{ml: 'auto'}} display={'flex'} alignItems={'center'}>
-                        <Typography sx={{ml: 'auto'}} variant={'body1'}>Ignore Previous Runs</Typography>
-                        <Checkbox
-                            value={ignorePrevious}
-                            onChange={() => setIgnorePrevious(!ignorePrevious)}
-                            sx={{'& .MuiSvgIcon-root': {fontSize: 28}}}
-                        />
+
                     </Grid>
                 </Grid>
             </Container>
@@ -398,6 +444,7 @@ const LoadForecast = () => {
 
         {/* Run the model */}
         <Container maxWidth={'xl'} sx={{my: 5}}>
+            <Typography variant={'h4'} fontWeight={'bold'} sx={{mb: 3}}>Expreriment Execution</Typography>
             <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
                 <Grid item xs={12} md={6}>
                     <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
@@ -405,14 +452,35 @@ const LoadForecast = () => {
                             <TerminalIcon fontSize="large"
                                           sx={{width: '80px', height: '80px', color: '#A1B927'}}/>
                         </IconButton>
-                        <Typography variant={'h4'} color={'inherit'} sx={{width: '100%'}}>Run the model</Typography>
+                        <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>Run the model</Typography>
                     </Stack>
                 </Grid>
                 <Grid item xs={12} md={6} display={'flex'}>
                     <Button variant={'contained'} component={'span'} size={'large'} color={'success'}
                             sx={{ml: 'auto'}} fullWidth
-                            endIcon={<ChevronRight/>} onClick={handleExecute}>
+                            endIcon={<ChevronRight/>} onClick={handleExecute}
+                            disabled={!newFile}
+                    >
                         <Typography variant={'h6'}>EXECUTE</Typography>
+                    </Button>
+                </Grid>
+            </Grid>
+            <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
+                <Grid item xs={12} md={6}>
+                    <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
+                        <IconButton component={'span'} size={'large'}>
+                            <DoneAllIcon fontSize="large"
+                                          sx={{width: '80px', height: '80px', color: '#A1B927'}}/>
+                        </IconButton>
+                        <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>Results</Typography>
+                    </Stack>
+                </Grid>
+                <Grid item xs={12} md={6} display={'flex'}>
+                    <Button variant={'contained'} component={'span'} size={'large'} color={'warning'}
+                            sx={{ml: 'auto'}} fullWidth
+                            endIcon={<ChevronRight/>} onClick={handleExecute}
+                    >
+                        <Typography variant={'h6'}>Visit MLFlow Server</Typography>
                     </Button>
                 </Grid>
             </Grid>
