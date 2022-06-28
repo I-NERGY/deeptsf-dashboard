@@ -19,16 +19,22 @@ import Select from '@mui/material/Select';
 import Grid from '@mui/material/Grid';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
+import TextField from '@mui/material/TextField';
+
+import {AdapterDateFns} from '@mui/x-date-pickers/AdapterDateFns';
+import {LocalizationProvider} from '@mui/x-date-pickers/LocalizationProvider';
+import {DatePicker} from '@mui/x-date-pickers/DatePicker';
 
 import UploadFileOutlinedIcon from '@mui/icons-material/UploadFileOutlined';
 import ModelTrainingIcon from '@mui/icons-material/ModelTraining';
 import SettingsApplicationsIcon from '@mui/icons-material/SettingsApplications';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import TerminalIcon from '@mui/icons-material/Terminal';
+import SettingsEthernetIcon from '@mui/icons-material/SettingsEthernet';
+import ChevronRight from '@mui/icons-material/ChevronRight';
 
 import Breadcrumb from "../components/layout/Breadcrumb";
 import FullPageLoading from "../components/layout/FullPageLoading";
-import {ChevronRight} from "@mui/icons-material";
 
 const AlertCustom = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -58,6 +64,25 @@ const LoadForecast = () => {
 
     const [availableConfigurations, setAvailableConfigurations] = useState([])
     const [chosenConfiguration, setChosenConfiguration] = useState()
+
+    // Parameter variables
+    const [experimentName, setExperimentName] = useState('')
+    const [experimentNameError, setExperimentNameError] = useState(false)
+    const [experimentResolution, setExperimentResolution] = useState('')
+    const [experimentResolutionError, setExperimentResolutionError] = useState(false)
+
+    const [dateVal, setDateVal] = useState(null)
+    const [dateTest, setDateTest] = useState(null)
+    const [dateEnd, setDateEnd] = useState(null)
+    const [forecastHorizon, setForecastHorizon] = useState(24)
+    const [ignorePrevious, setIgnorePrevious] = useState(true)
+
+    useEffect(() => {
+        if (dateVal) {
+            const offset = dateVal.getTimezoneOffset()
+            console.log(new Date(dateVal.getTime() - (offset * 60 * 1000)).toISOString().split('T')[0])
+        }
+    }, [dateVal])
 
     useEffect(() => {
         axios.get('/models/get_model_names')
@@ -133,6 +158,7 @@ const LoadForecast = () => {
     return (<div>
         <Breadcrumb breadcrumbs={breadcrumbs} welcome_msg={'Welcome to I-NERGY Load Forecasting'}/>
 
+        {/* Upload your .csv file */}
         <Container maxWidth={'xl'} sx={{my: 5}}>
             <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
                 <Grid item xs={12} md={6}>
@@ -183,6 +209,7 @@ const LoadForecast = () => {
         </Container>
         <hr/>
 
+        {/* Choose a model */}
         <Container maxWidth={'xl'} sx={{my: 5}}>
             <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
                 <Grid item xs={12} md={6}>
@@ -212,6 +239,7 @@ const LoadForecast = () => {
         </Container>
         <hr/>
 
+        {/* Select Configuration */}
         <Container maxWidth={'xl'} sx={{my: 5}}>
             <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
                 <Grid item xs={12} md={6}>
@@ -224,12 +252,14 @@ const LoadForecast = () => {
                             Configuration</Typography>
                     </Stack>
                 </Grid>
-                <Grid item xs={12} md={6}></Grid>
+                <Grid item xs={12} md={6}>
+                    {!model && <Alert severity="warning">Choose a model to see the available configurations!</Alert>}
+                </Grid>
             </Grid>
 
             <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
                 {model && availableConfigurations && availableConfigurations.map(config => (
-                    <Grid item xs={6} md={3} key={config[0]}>
+                    <Grid item xs={6} md={2} key={config[0]}>
                         <Card elevation={chosenConfiguration === availableConfigurations.indexOf(config) ? 10 : 1}
                               onClick={() => handleChooseConfiguration(availableConfigurations.indexOf(config))}
                               sx={{background: chosenConfiguration === availableConfigurations.indexOf(config) ? '#ACBF5D' : ''}}>
@@ -260,6 +290,94 @@ const LoadForecast = () => {
         </Container>
         <hr/>
 
+        {/* Select Parameters */}
+        <Container maxWidth={'xl'} sx={{my: 5}}>
+            <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
+                <Grid item xs={12} md={6}>
+                    <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
+                        <IconButton component={'span'} size={'large'}>
+                            <SettingsEthernetIcon fontSize="large"
+                                                  sx={{width: '80px', height: '80px', color: '#A1B927'}}/>
+                        </IconButton>
+                        <Typography variant={'h4'} color={'inherit'} sx={{width: '100%'}}>Select
+                            Parameters</Typography>
+                    </Stack>
+                </Grid>
+                <Grid item xs={12} md={6}></Grid>
+            </Grid>
+
+            <Container>
+                <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
+                    <Grid item xs={12} md={4}>
+                        <TextField id="outlined-basic" label="Experiment name" variant="outlined" required fullWidth
+                                   value={experimentName} error={experimentNameError && experimentName === ''}/>
+                    </Grid>
+                    <Grid item xs={12} md={4}>
+                        <TextField id="outlined-basic" label="Experiment name" variant="outlined" required fullWidth
+                                   value={experimentResolution}
+                                   error={experimentResolutionError && experimentResolution === ''}/>
+                    </Grid>
+                    <Grid item xs={12} md={4}>
+                        <TextField id="outlined-basic" label="Forecast Horizon" variant="outlined" required fullWidth
+                                   value={forecastHorizon} type="number"
+                                   onChange={e => setForecastHorizon(e.target.value)}
+                                   InputProps={{inputProps: {min: 0}}}
+                        />
+                    </Grid>
+
+                    <Grid item xs={12} md={4}>
+                        <LocalizationProvider dateAdapter={AdapterDateFns}>
+                            <DatePicker
+                                views={['day']}
+                                label="Date Val"
+                                value={dateVal}
+                                onChange={(newValue) => {
+                                    setDateVal(newValue);
+                                }}
+                                renderInput={(params) => <TextField fullWidth {...params} helperText={null}/>}
+                            />
+                        </LocalizationProvider>
+                    </Grid>
+                    <Grid item xs={12} md={4}>
+                        <LocalizationProvider dateAdapter={AdapterDateFns}>
+                            <DatePicker
+                                views={['day']}
+                                label="Date Test"
+                                value={dateTest}
+                                onChange={(newValue) => {
+                                    setDateTest(newValue);
+                                }}
+                                renderInput={(params) => <TextField fullWidth {...params} helperText={null}/>}
+                            />
+                        </LocalizationProvider>
+                    </Grid>
+                    <Grid item xs={12} md={4}>
+                        <LocalizationProvider dateAdapter={AdapterDateFns}>
+                            <DatePicker
+                                views={['day']}
+                                label="Date End"
+                                value={dateEnd}
+                                onChange={(newValue) => {
+                                    setDateEnd(newValue);
+                                }}
+                                renderInput={(params) => <TextField fullWidth {...params} helperText={null}/>}
+                            />
+                        </LocalizationProvider>
+                    </Grid>
+                    <Grid item xs={12} md={6} sx={{ml: 'auto'}} display={'flex'} alignItems={'center'}>
+                        <Typography sx={{ml: 'auto'}} variant={'body1'}>Ignore Previous Runs</Typography>
+                        <Checkbox
+                            value={ignorePrevious}
+                            onChange={() => setIgnorePrevious(!ignorePrevious)}
+                            sx={{'& .MuiSvgIcon-root': {fontSize: 28}}}
+                        />
+                    </Grid>
+                </Grid>
+            </Container>
+        </Container>
+        <hr/>
+
+        {/* Run the model */}
         <Container maxWidth={'xl'} sx={{my: 5}}>
             <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
                 <Grid item xs={12} md={6}>
