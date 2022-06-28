@@ -73,7 +73,7 @@ const LoadForecast = () => {
     // Parameter variables
     const [experimentName, setExperimentName] = useState('')
     const [experimentNameError, setExperimentNameError] = useState(false)
-    const [experimentResolution, setExperimentResolution] = useState()
+    const [experimentResolution, setExperimentResolution] = useState('')
     const [experimentResolutionError, setExperimentResolutionError] = useState(false)
 
     const [dateVal, setDateVal] = useState(null)
@@ -101,10 +101,10 @@ const LoadForecast = () => {
     }, [])
 
     useEffect(() => {
-        experimentResolution === 60 && setForecastHorizon(24)
-        experimentResolution === 30 && setForecastHorizon(48)
-        experimentResolution === 15 && setForecastHorizon(96)
-        experimentResolution === 5 && setForecastHorizon(288)
+        experimentResolution === '60' && setForecastHorizon(24)
+        experimentResolution === '30' && setForecastHorizon(48)
+        experimentResolution === '15' && setForecastHorizon(96)
+        experimentResolution === '5' && setForecastHorizon(288)
     }, [experimentResolution])
 
     const handleAddNewFile = file => {
@@ -116,30 +116,34 @@ const LoadForecast = () => {
         const data = new FormData()
 
         data.append('file', newFile)
+        data.append('day_first', dayFirst)
 
         axios.post('/upload/uploadCSVfile/', data, {headers: {"Content-Type": "multipart/form-data"}})
             .then(response => {
                 console.log('Response from uploadCSVfile: ', response.data)
-                const payload = {
-                    fname: response.data.fname, day_first: dayFirst,
-                }
-                axios.post('/upload/validateCSVfile/', payload)
-                    .then(response => {
-                        console.log('Response from validateCSVfile: ', response.data)
-                        setNewFileSuccess(true)
-                        setNewFileFailure(false)
-                        setNewFile(null)
-                        setLoading(false)
-                        document.getElementById('raised-button-file').value = ''
-                    })
-                    .catch(error => {
-                        setLoading(false)
-                        setNewFileSuccess(false)
-                        setNewFileFailure(true)
-                        setNewFile(null)
-                        document.getElementById('raised-button-file').value = ''
-                        console.log(error)
-                    })
+                // const payload = {
+                //     fname: response.data.fname, day_first: dayFirst,
+                // }
+                //
+                // console.log(payload)
+                //
+                // axios.post('/upload/validateCSVfile/', payload)
+                //     .then(response => {
+                //         console.log('Response from validateCSVfile: ', response.data)
+                setNewFileSuccess(true)
+                setNewFileFailure(false)
+                // setNewFile(null)
+                setLoading(false)
+                document.getElementById('raised-button-file').value = ''
+                // })
+                // .catch(error => {
+                //     setLoading(false)
+                //     setNewFileSuccess(false)
+                //     setNewFileFailure(true)
+                //     setNewFile(null)
+                //     document.getElementById('raised-button-file').value = ''
+                //     console.log(error)
+                // })
             })
             .catch(error => {
                 setLoading(false)
@@ -165,6 +169,10 @@ const LoadForecast = () => {
 
     const handleChooseConfiguration = index => {
         setChosenConfiguration(index)
+    }
+
+    const handleDayFirstCheckBox = () => {
+        setDayFirst(!dayFirst)
     }
 
     const handleExecute = () => {
@@ -208,7 +216,7 @@ const LoadForecast = () => {
                             <Typography sx={{ml: 'auto'}} variant={'h6'}>Day First</Typography>
                             <Checkbox
                                 value={dayFirst}
-                                onChange={() => setDayFirst(!dayFirst)}
+                                onChange={handleDayFirstCheckBox}
                                 sx={{'& .MuiSvgIcon-root': {fontSize: 28}}}
                             />
                         </>}
@@ -226,7 +234,7 @@ const LoadForecast = () => {
                     <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
                         <IconButton component={'span'} size={'large'}>
                             <DataThresholdingIcon fontSize="large"
-                                                    sx={{width: '80px', height: '80px', color: '#A1B927'}}/>
+                                                  sx={{width: '80px', height: '80px', color: '#A1B927'}}/>
                         </IconButton>
                         <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>
                             Select Timeseries Resolution
@@ -245,7 +253,7 @@ const LoadForecast = () => {
                             onChange={e => setExperimentResolution(e.target.value)}
                         >
                             {resolutions.map(resolution => (
-                                <MenuItem key={resolution} value={resolution}>{resolution}</MenuItem>))}
+                                <MenuItem key={resolution} value={resolution.toString()}>{resolution}</MenuItem>))}
                         </Select>
                     </FormControl>
                 </Grid>
@@ -444,7 +452,7 @@ const LoadForecast = () => {
 
         {/* Run the model */}
         <Container maxWidth={'xl'} sx={{my: 5}}>
-            <Typography variant={'h4'} fontWeight={'bold'} sx={{mb: 3}}>Expreriment Execution</Typography>
+            <Typography variant={'h4'} fontWeight={'bold'} sx={{mb: 3}}>Experiment Execution</Typography>
             <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
                 <Grid item xs={12} md={6}>
                     <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
@@ -470,7 +478,7 @@ const LoadForecast = () => {
                     <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
                         <IconButton component={'span'} size={'large'}>
                             <DoneAllIcon fontSize="large"
-                                          sx={{width: '80px', height: '80px', color: '#A1B927'}}/>
+                                         sx={{width: '80px', height: '80px', color: '#A1B927'}}/>
                         </IconButton>
                         <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>Results</Typography>
                     </Stack>
