@@ -70,6 +70,9 @@ const LoadForecast = () => {
     const [chosenConfiguration, setChosenConfiguration] = useState()
 
     const [resolutions, setResolutions] = useState([])
+    const [maxDate, setMaxDate] = useState(null)
+    const [minDate, setMinDate] = useState(null)
+
     // Parameter variables
     const [experimentName, setExperimentName] = useState('')
     const [experimentNameError, setExperimentNameError] = useState(false)
@@ -86,13 +89,6 @@ const LoadForecast = () => {
         axios.get('/experimentation_pipeline/etl/get_resolutions/')
             .then(response => setResolutions(response.data.resolution))
     }, [])
-
-    useEffect(() => {
-        if (dateVal) {
-            const offset = dateVal.getTimezoneOffset()
-            console.log(new Date(dateVal.getTime() - (offset * 60 * 1000)).toISOString().split('T')[0])
-        }
-    }, [dateVal])
 
     useEffect(() => {
         axios.get('/models/get_model_names')
@@ -121,29 +117,20 @@ const LoadForecast = () => {
         axios.post('/upload/uploadCSVfile/', data, {headers: {"Content-Type": "multipart/form-data"}})
             .then(response => {
                 console.log('Response from uploadCSVfile: ', response.data)
-                // const payload = {
-                //     fname: response.data.fname, day_first: dayFirst,
-                // }
-                //
-                // console.log(payload)
-                //
-                // axios.post('/upload/validateCSVfile/', payload)
-                //     .then(response => {
-                //         console.log('Response from validateCSVfile: ', response.data)
+
+                // Set MIN/MAX values for date fields
+                setMinDate(new Date(response.data.dataset_start))
+                setMaxDate(new Date(response.data.dataset_end))
+
+                // Re-initialize date fields
+                setDateTest(null)
+                setDateVal(new Date(response.data.dataset_start))
+                setDateEnd(new Date(response.data.dataset_end))
+
                 setNewFileSuccess(true)
                 setNewFileFailure(false)
-                // setNewFile(null)
                 setLoading(false)
                 document.getElementById('raised-button-file').value = ''
-                // })
-                // .catch(error => {
-                //     setLoading(false)
-                //     setNewFileSuccess(false)
-                //     setNewFileFailure(true)
-                //     setNewFile(null)
-                //     document.getElementById('raised-button-file').value = ''
-                //     console.log(error)
-                // })
             })
             .catch(error => {
                 setLoading(false)
@@ -199,7 +186,7 @@ const LoadForecast = () => {
                         <label htmlFor="raised-button-file">
                             <IconButton component={'span'} size={'large'}>
                                 <UploadFileOutlinedIcon fontSize="large"
-                                                        sx={{width: '80px', height: '80px', color: '#A1B927'}}/>
+                                                        sx={{width: '60px', height: '60px', color: '#A1B927'}}/>
                             </IconButton>
                         </label>
                         <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>
@@ -234,7 +221,7 @@ const LoadForecast = () => {
                     <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
                         <IconButton component={'span'} size={'large'}>
                             <DataThresholdingIcon fontSize="large"
-                                                  sx={{width: '80px', height: '80px', color: '#A1B927'}}/>
+                                                  sx={{width: '60px', height: '60px', color: '#A1B927'}}/>
                         </IconButton>
                         <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>
                             Select Timeseries Resolution
@@ -263,7 +250,7 @@ const LoadForecast = () => {
                 <Grid item xs={12} md={6}>
                     <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
                         <IconButton component={'span'} size={'large'}>
-                            <DateRangeIcon fontSize="large" sx={{width: '80px', height: '80px', color: '#A1B927'}}/>
+                            <DateRangeIcon fontSize="large" sx={{width: '60px', height: '60px', color: '#A1B927'}}/>
                         </IconButton>
                         <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>Dataset Split</Typography>
                     </Stack>
@@ -276,6 +263,8 @@ const LoadForecast = () => {
                                     views={['day']}
                                     label="Validation Start Date"
                                     value={dateVal}
+                                    minDate={minDate}
+                                    maxDate={maxDate}
                                     onChange={(newValue) => {
                                         setDateVal(newValue);
                                     }}
@@ -289,6 +278,8 @@ const LoadForecast = () => {
                                     views={['day']}
                                     label="Test Start Date"
                                     value={dateTest}
+                                    minDate={minDate}
+                                    maxDate={maxDate}
                                     onChange={(newValue) => {
                                         setDateTest(newValue);
                                     }}
@@ -302,6 +293,8 @@ const LoadForecast = () => {
                                     views={['day']}
                                     label="Test End Date"
                                     value={dateEnd}
+                                    minDate={minDate}
+                                    maxDate={maxDate}
                                     onChange={(newValue) => {
                                         setDateEnd(newValue);
                                     }}
@@ -322,7 +315,7 @@ const LoadForecast = () => {
                 <Grid item xs={12} md={6}>
                     <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
                         <IconButton component={'span'} size={'large'}>
-                            <LabelOutlinedIcon fontSize="large" sx={{width: '80px', height: '80px', color: '#A1B927'}}/>
+                            <LabelOutlinedIcon fontSize="large" sx={{width: '60px', height: '60px', color: '#A1B927'}}/>
                         </IconButton>
                         <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>MLFlow Experiment
                             Name</Typography>
@@ -332,7 +325,8 @@ const LoadForecast = () => {
                     <Grid container spacing={2} display={'flex'} alignItems={'center'}>
                         <Grid item xs={12} md={8}>
                             <TextField id="outlined-basic" label="Experiment name" variant="outlined" required fullWidth
-                                       value={experimentName} error={experimentNameError && experimentName === ''}/>
+                                       value={experimentName} error={experimentNameError && experimentName === ''}
+                                       onChange={e => setExperimentName(e.target.value)}/>
                         </Grid>
                         <Grid item xs={12} md={4} display={'flex'} alignItems={'center'}>
                             <Typography sx={{ml: 'auto'}} variant={'body1'} fontWeight={'bold'}>Ignore Previous
@@ -350,7 +344,7 @@ const LoadForecast = () => {
                 <Grid item xs={12} md={6}>
                     <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
                         <IconButton component={'span'} size={'large'}>
-                            <ModelTrainingIcon fontSize="large" sx={{width: '80px', height: '80px', color: '#A1B927'}}/>
+                            <ModelTrainingIcon fontSize="large" sx={{width: '60px', height: '60px', color: '#A1B927'}}/>
                         </IconButton>
                         <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>Choose a model</Typography>
                     </Stack>
@@ -376,7 +370,7 @@ const LoadForecast = () => {
                     <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
                         <IconButton component={'span'} size={'large'}>
                             <SettingsApplicationsIcon fontSize="large"
-                                                      sx={{width: '80px', height: '80px', color: '#A1B927'}}/>
+                                                      sx={{width: '60px', height: '60px', color: '#A1B927'}}/>
                         </IconButton>
                         <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>
                             Select Hyperparameters</Typography>
@@ -425,7 +419,7 @@ const LoadForecast = () => {
                     <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
                         <IconButton component={'span'} size={'large'}>
                             <LineAxisOutlinedIcon fontSize="large"
-                                                  sx={{width: '80px', height: '80px', color: '#A1B927'}}/>
+                                                  sx={{width: '60px', height: '60px', color: '#A1B927'}}/>
                         </IconButton>
                         <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>Choose Backtest Forecast
                             Horizon</Typography>
@@ -458,7 +452,7 @@ const LoadForecast = () => {
                     <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
                         <IconButton component={'span'} size={'large'}>
                             <TerminalIcon fontSize="large"
-                                          sx={{width: '80px', height: '80px', color: '#A1B927'}}/>
+                                          sx={{width: '60px', height: '60px', color: '#A1B927'}}/>
                         </IconButton>
                         <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>Run the model</Typography>
                     </Stack>
@@ -478,7 +472,7 @@ const LoadForecast = () => {
                     <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
                         <IconButton component={'span'} size={'large'}>
                             <DoneAllIcon fontSize="large"
-                                         sx={{width: '80px', height: '80px', color: '#A1B927'}}/>
+                                         sx={{width: '60px', height: '60px', color: '#A1B927'}}/>
                         </IconButton>
                         <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>Results</Typography>
                     </Stack>
