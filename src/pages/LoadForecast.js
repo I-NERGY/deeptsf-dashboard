@@ -40,16 +40,17 @@ const AlertCustom = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
-const breadcrumbs = [<Link fontSize={'20px'} underline="hover" key="1" color="inherit" href="/">
-    Dashboard
-</Link>, <Typography
-    underline="hover"
-    key="2"
-    color="secondary"
-    fontSize={'20px'}
-    fontWeight={600}>
-    Load Forecasting
-</Typography>,];
+const breadcrumbs = [
+    <Link fontSize={'20px'} underline="hover" key="1" color="inherit" href="/">
+        Dashboard
+    </Link>, <Typography
+        underline="hover"
+        key="2"
+        color="secondary"
+        fontSize={'20px'}
+        fontWeight={600}>
+        Load Forecasting
+    </Typography>,];
 
 const LoadForecast = () => {
     const [newFile, setNewFile] = useState()
@@ -65,6 +66,7 @@ const LoadForecast = () => {
     const [availableConfigurations, setAvailableConfigurations] = useState([])
     const [chosenConfiguration, setChosenConfiguration] = useState()
 
+    const [resolutions, setResolutions] = useState([])
     // Parameter variables
     const [experimentName, setExperimentName] = useState('')
     const [experimentNameError, setExperimentNameError] = useState(false)
@@ -76,6 +78,11 @@ const LoadForecast = () => {
     const [dateEnd, setDateEnd] = useState(null)
     const [forecastHorizon, setForecastHorizon] = useState(24)
     const [ignorePrevious, setIgnorePrevious] = useState(true)
+
+    useEffect(() => {
+        axios.get('/experimentation_pipeline/etl/get_resolutions/')
+            .then(response => setResolutions(response.data.resolution))
+    }, [])
 
     useEffect(() => {
         if (dateVal) {
@@ -313,9 +320,21 @@ const LoadForecast = () => {
                                    value={experimentName} error={experimentNameError && experimentName === ''}/>
                     </Grid>
                     <Grid item xs={12} md={4}>
-                        <TextField id="outlined-basic" label="Experiment name" variant="outlined" required fullWidth
-                                   value={experimentResolution}
-                                   error={experimentResolutionError && experimentResolution === ''}/>
+                        <FormControl fullWidth>
+                            <InputLabel id="demo-simple-select-label">Experiment Resolution</InputLabel>
+                            <Select
+                                fullWidth
+                                labelId="demo-simple-select-label"
+                                id="demo-simple-select"
+                                value={experimentResolution}
+                                label="Experiment Resolution"
+                                onChange={e => setExperimentResolution(e.target.value)}
+                            >
+                                {resolutions.map(resolution => (
+                                    <MenuItem key={resolution} value={resolution}>{resolution}</MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
                     </Grid>
                     <Grid item xs={12} md={4}>
                         <TextField id="outlined-basic" label="Forecast Horizon" variant="outlined" required fullWidth
