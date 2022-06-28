@@ -73,7 +73,7 @@ const LoadForecast = () => {
     // Parameter variables
     const [experimentName, setExperimentName] = useState('')
     const [experimentNameError, setExperimentNameError] = useState(false)
-    const [experimentResolution, setExperimentResolution] = useState('')
+    const [experimentResolution, setExperimentResolution] = useState()
     const [experimentResolutionError, setExperimentResolutionError] = useState(false)
 
     const [dateVal, setDateVal] = useState(null)
