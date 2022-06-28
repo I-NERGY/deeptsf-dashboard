@@ -2,7 +2,6 @@ import React from 'react';
 import {Link, useNavigate, useLocation} from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 
-import {createTheme} from '@mui/material/styles'
 import {styled, useTheme} from '@mui/material/styles';
 import clsx from 'clsx';
 
