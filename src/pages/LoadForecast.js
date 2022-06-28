@@ -165,7 +165,20 @@ const LoadForecast = () => {
     }
 
     const handleExecute = () => {
+        const payload = {
+            series_url: '',
+            experiment_name: experimentName,
+            resolution: experimentResolution,
+            cut_date_val: dateVal,
+            cut_date_test: dateTest,
+            test_end_date: dateEnd,
+            darts_model: model,
+            forecast_horizon: forecastHorizon,
+            hyperparams_entrypoint: availableConfigurations[chosenConfiguration][1],
+            ignore_previous_runs: ignorePrevious
+        }
 
+        console.log(payload)
     }
 
     return (<div>
