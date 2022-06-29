@@ -46,15 +46,15 @@ const AlertCustom = React.forwardRef(function Alert(props, ref) {
 
 const breadcrumbs = [
     <Link fontSize={'20px'} underline="hover" key="1" color="inherit" href="/">
-    Dashboard
-</Link>, <Typography
-    underline="hover"
-    key="2"
-    color="secondary"
-    fontSize={'20px'}
-    fontWeight={600}>
-    Load Forecasting
-</Typography>,];
+        Dashboard
+    </Link>, <Typography
+        underline="hover"
+        key="2"
+        color="secondary"
+        fontSize={'20px'}
+        fontWeight={600}>
+        Load Forecasting
+    </Typography>,];
 
 const LoadForecast = () => {
     const [newFile, setNewFile] = useState()
@@ -106,6 +106,13 @@ const LoadForecast = () => {
         experimentResolution === '15' && setForecastHorizon(96)
         experimentResolution === '5' && setForecastHorizon(288)
     }, [experimentResolution])
+
+    useEffect(() => {
+        let myArray = Object.entries(modelConfigurations)
+        const myArrayFiltered = myArray.filter(element => (element[0].includes(model.search_term)))
+        setAvailableConfigurations(myArrayFiltered)
+        setChosenConfiguration('')
+    }, [model])
 
     const handleAddNewFile = file => {
         setNewFile(file)
@@ -160,13 +167,6 @@ const LoadForecast = () => {
         setExecutionFailure(false)
     }
 
-    useEffect(() => {
-        let myArray = Object.entries(modelConfigurations)
-        const myArrayFiltered = myArray.filter(element => (element[0].includes(model.search_term)))
-        setAvailableConfigurations(myArrayFiltered)
-        setChosenConfiguration('')
-    }, [model])
-
     const handleChooseConfiguration = index => {
         setChosenConfiguration(index)
     }
@@ -174,9 +174,12 @@ const LoadForecast = () => {
     const handleDayFirstCheckBox = () => {
         setDayFirst(!dayFirst)
     }
+    const handleIgnoreFirstCheckBox = () => {
+        setIgnorePrevious(!ignorePrevious)
+    }
 
     const handleExecute = () => {
-        setLoading(true)
+        // setLoading(true)
         setExecutionSuccess(false)
         setExecutionFailure(false)
 
@@ -193,23 +196,22 @@ const LoadForecast = () => {
             ignore_previous_runs: ignorePrevious
         }
 
-        console.log(payload)
-        setLoading(false)
+        console.log(payload.ignore_previous_runs)
 
         // TODO FIX
-        axios.post('/experimentation_pipeline/run_all', payload)
-            .then(response => {
-                console.log(response.data)
-                setExecutionSuccess(true)
-                setExecutionFailure(false)
-                setLoading(false)
-            })
-            .catch(error => {
-                console.log(error)
-                setExecutionFailure(true)
-                setExecutionSuccess(false)
-                setLoading(false)
-            })
+        // axios.post('/experimentation_pipeline/run_all', payload)
+        //     .then(response => {
+        //         console.log(response.data)
+        //         setExecutionSuccess(true)
+        //         setExecutionFailure(false)
+        //         setLoading(false)
+        //     })
+        //     .catch(error => {
+        //         console.log(error)
+        //         setExecutionFailure(true)
+        //         setExecutionSuccess(false)
+        //         setLoading(false)
+        //     })
     }
 
     return (<div>
@@ -248,7 +250,7 @@ const LoadForecast = () => {
                         {newFile && <>
                             <Typography sx={{ml: 'auto'}} variant={'h6'}>Day First</Typography>
                             <Checkbox
-                                value={dayFirst}
+                                checked={dayFirst}
                                 onChange={handleDayFirstCheckBox}
                                 sx={{'& .MuiSvgIcon-root': {fontSize: 28}}}
                             />
@@ -378,8 +380,8 @@ const LoadForecast = () => {
                             <Typography sx={{ml: 'auto'}} variant={'body1'} fontWeight={'bold'}>Ignore Previous
                                 Runs</Typography>
                             <Checkbox
-                                value={ignorePrevious}
-                                onChange={() => setIgnorePrevious(!ignorePrevious)}
+                                checked={ignorePrevious}
+                                onChange={handleIgnoreFirstCheckBox}
                                 sx={{'& .MuiSvgIcon-root': {fontSize: 28}}}
                             />
                         </Grid>
@@ -406,7 +408,8 @@ const LoadForecast = () => {
                             onChange={e => setModel(e.target.value)}
                         >
                             {models && models.map(modelItem => (
-                                <MenuItem key={modelItem.model_name} value={modelItem}>{modelItem.model_name}</MenuItem>))}
+                                <MenuItem key={modelItem.model_name}
+                                          value={modelItem}>{modelItem.model_name}</MenuItem>))}
                         </Select>
                     </FormControl>
                 </Grid>
