@@ -86,6 +86,7 @@ const LoadForecast = () => {
     const [dateEnd, setDateEnd] = useState(null)
     const [forecastHorizon, setForecastHorizon] = useState(24)
     const [ignorePrevious, setIgnorePrevious] = useState(true)
+    const [seriesUri, setSeriesUri] = useState('')
 
     useEffect(() => {
         axios.get('/experimentation_pipeline/etl/get_resolutions/')
@@ -133,6 +134,8 @@ const LoadForecast = () => {
                 setDateVal(new Date(response.data.dataset_start))
                 setDateEnd(new Date(response.data.dataset_end))
 
+                setSeriesUri(response.data.fname)
+
                 setNewFileSuccess(true)
                 setNewFileFailure(false)
                 setLoading(false)
@@ -177,7 +180,7 @@ const LoadForecast = () => {
         setExecutionFailure(false)
 
         const payload = {
-            series_url: '',
+            series_url: seriesUri,
             experiment_name: experimentName,
             resolution: experimentResolution,
             cut_date_val: dateVal,
