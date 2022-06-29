@@ -168,7 +168,6 @@ const LoadForecast = () => {
 
     const handleChooseConfiguration = index => {
         setChosenConfiguration(index)
-        console.log(availableConfigurations[index])
     }
 
     const handleDayFirstCheckBox = () => {
@@ -192,8 +191,6 @@ const LoadForecast = () => {
             hyperparams_entrypoint: availableConfigurations[chosenConfiguration][1],
             ignore_previous_runs: ignorePrevious
         }
-
-        console.log(payload.hyperparams_entrypoint)
 
         // TODO FIX
         axios.post('/experimentation_pipeline/run_all', payload)
