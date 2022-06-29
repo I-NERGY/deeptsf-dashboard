@@ -44,7 +44,8 @@ const AlertCustom = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
-const breadcrumbs = [<Link fontSize={'20px'} underline="hover" key="1" color="inherit" href="/">
+const breadcrumbs = [
+    <Link fontSize={'20px'} underline="hover" key="1" color="inherit" href="/">
     Dashboard
 </Link>, <Typography
     underline="hover"
@@ -95,7 +96,7 @@ const LoadForecast = () => {
 
     useEffect(() => {
         axios.get('/models/get_model_names')
-            .then(response => setModels(response.data.models))
+            .then(response => setModels(response.data))
             .catch(error => console.log(error))
     }, [])
 
@@ -161,7 +162,7 @@ const LoadForecast = () => {
 
     useEffect(() => {
         let myArray = Object.entries(modelConfigurations)
-        const myArrayFiltered = myArray.filter(element => (element[0].includes(model)))
+        const myArrayFiltered = myArray.filter(element => (element[0].includes(model.search_term)))
         setAvailableConfigurations(myArrayFiltered)
         setChosenConfiguration('')
     }, [model])
@@ -180,17 +181,20 @@ const LoadForecast = () => {
         setExecutionFailure(false)
 
         const payload = {
-            series_url: seriesUri,
+            series_csv: seriesUri,
             experiment_name: experimentName,
             resolution: experimentResolution,
-            cut_date_val: dateVal,
-            cut_date_test: dateTest,
-            test_end_date: dateEnd,
-            darts_model: model,
+            validation_start_date: dateVal.toISOString().split('T')[0].replace(/-/g, ""),
+            test_start_date: dateTest.toISOString().split('T')[0].replace(/-/g, ""),
+            test_end_date: dateEnd.toISOString().split('T')[0].replace(/-/g, ""),
+            model: model.model_name,
             forecast_horizon: forecastHorizon,
-            hyperparams_entrypoint: availableConfigurations[chosenConfiguration][1],
+            hyperparams_entrypoint: availableConfigurations[chosenConfiguration][0],
             ignore_previous_runs: ignorePrevious
         }
+
+        console.log(payload)
+        setLoading(false)
 
         // TODO FIX
         axios.post('/experimentation_pipeline/run_all', payload)
@@ -402,7 +406,7 @@ const LoadForecast = () => {
                             onChange={e => setModel(e.target.value)}
                         >
                             {models && models.map(modelItem => (
-                                <MenuItem key={modelItem} value={modelItem}>{modelItem}</MenuItem>))}
+                                <MenuItem key={modelItem.model_name} value={modelItem}>{modelItem.model_name}</MenuItem>))}
                         </Select>
                     </FormControl>
                 </Grid>
@@ -502,25 +506,26 @@ const LoadForecast = () => {
                     </Button>
                 </Grid>
             </Grid>
-            {executionSuccess && <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
-                <Grid item xs={12} md={6}>
-                    <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
-                        <IconButton component={'span'} size={'large'}>
-                            <DoneAllIcon fontSize="large"
-                                         sx={{width: '60px', height: '60px', color: '#A1B927'}}/>
-                        </IconButton>
-                        <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>Results</Typography>
-                    </Stack>
-                </Grid>
-                <Grid item xs={12} md={6} display={'flex'}>
-                    <Button variant={'contained'} component={'span'} size={'large'} color={'warning'}
-                            sx={{ml: 'auto'}} fullWidth
-                            endIcon={<ChevronRight/>} onClick={handleExecute}
-                    >
-                        <Typography variant={'h6'}>Visit MLFlow Server</Typography>
-                    </Button>
-                </Grid>
-            </Grid>}
+            {executionSuccess &&
+                <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
+                    <Grid item xs={12} md={6}>
+                        <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
+                            <IconButton component={'span'} size={'large'}>
+                                <DoneAllIcon fontSize="large"
+                                             sx={{width: '60px', height: '60px', color: '#A1B927'}}/>
+                            </IconButton>
+                            <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>Results</Typography>
+                        </Stack>
+                    </Grid>
+                    <Grid item xs={12} md={6} display={'flex'}>
+                        <Button variant={'contained'} component={'span'} size={'large'} color={'warning'}
+                                sx={{ml: 'auto'}} fullWidth
+                                endIcon={<ChevronRight/>} onClick={handleExecute}
+                        >
+                            <Typography variant={'h6'}>Visit MLFlow Server</Typography>
+                        </Button>
+                    </Grid>
+                </Grid>}
         </Container>
 
         {loading && <FullPageLoading/>}
