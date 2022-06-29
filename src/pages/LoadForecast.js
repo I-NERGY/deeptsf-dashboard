@@ -196,22 +196,20 @@ const LoadForecast = () => {
             ignore_previous_runs: ignorePrevious
         }
 
-        console.log(payload.ignore_previous_runs)
-
         // TODO FIX
-        // axios.post('/experimentation_pipeline/run_all', payload)
-        //     .then(response => {
-        //         console.log(response.data)
-        //         setExecutionSuccess(true)
-        //         setExecutionFailure(false)
-        //         setLoading(false)
-        //     })
-        //     .catch(error => {
-        //         console.log(error)
-        //         setExecutionFailure(true)
-        //         setExecutionSuccess(false)
-        //         setLoading(false)
-        //     })
+        axios.post('/experimentation_pipeline/run_all', payload)
+            .then(response => {
+                console.log(response.data)
+                setExecutionSuccess(true)
+                setExecutionFailure(false)
+                setLoading(false)
+            })
+            .catch(error => {
+                console.log(error)
+                setExecutionFailure(true)
+                setExecutionSuccess(false)
+                setLoading(false)
+            })
     }
 
     return (<div>
