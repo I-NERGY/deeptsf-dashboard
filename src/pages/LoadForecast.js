@@ -69,7 +69,7 @@ const LoadForecast = () => {
     const [executionFailure, setExecutionFailure] = useState(false)
 
     const [availableConfigurations, setAvailableConfigurations] = useState([])
-    const [chosenConfiguration, setChosenConfiguration] = useState()
+    const [chosenConfiguration, setChosenConfiguration] = useState('')
 
     const [resolutions, setResolutions] = useState([])
     const [maxDate, setMaxDate] = useState(null)
@@ -168,6 +168,7 @@ const LoadForecast = () => {
 
     const handleChooseConfiguration = index => {
         setChosenConfiguration(index)
+        console.log(availableConfigurations[index])
     }
 
     const handleDayFirstCheckBox = () => {
@@ -191,6 +192,8 @@ const LoadForecast = () => {
             hyperparams_entrypoint: availableConfigurations[chosenConfiguration][1],
             ignore_previous_runs: ignorePrevious
         }
+
+        console.log(payload.hyperparams_entrypoint)
 
         // TODO FIX
         axios.post('/experimentation_pipeline/run_all', payload)
@@ -422,6 +425,7 @@ const LoadForecast = () => {
                     {!model && <Alert severity="warning">Choose a model to see the available configurations!</Alert>}
                 </Grid>
             </Grid>
+
             <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
                 {model && availableConfigurations && availableConfigurations.map(config => (
                     <Grid item xs={6} md={2} key={config[0]}>
@@ -495,7 +499,7 @@ const LoadForecast = () => {
                     <Button variant={'contained'} component={'span'} size={'large'} color={'success'}
                             sx={{ml: 'auto'}} fullWidth
                             endIcon={<ChevronRight/>} onClick={handleExecute}
-                            disabled={!uploadSuccess || !experimentResolution || !dateVal || !dateTest || !dateEnd || !experimentName || !model || !chosenConfiguration || !forecastHorizon}
+                            disabled={!uploadSuccess || !experimentResolution || !dateVal || !dateTest || !dateEnd || !experimentName || !model || chosenConfiguration === '' || !forecastHorizon}
                     >
                         <Typography variant={'h6'}>EXECUTE</Typography>
                     </Button>
