@@ -76,6 +76,12 @@ const LoadForecast = () => {
     const [maxDate, setMaxDate] = useState(null)
     const [minDate, setMinDate] = useState(null)
 
+    const [minDateTestStart, setMinDateTestStart] = useState(null)
+    const [maxDateTestStart, setMaxDateTestStart] = useState(null)
+
+    const [minDateEndStart, setMinDateEndStart] = useState(null)
+    const [minValidationDate, setMinValidationDate] = useState(null)
+
     // Parameter variables
     const [experimentName, setExperimentName] = useState('')
     const [experimentNameError, setExperimentNameError] = useState(false)
@@ -114,6 +120,22 @@ const LoadForecast = () => {
         setChosenConfiguration('')
     }, [model])
 
+    useEffect(() => {
+        dateVal && setMinDateTestStart(new Date(dateVal.getFullYear(),dateVal.getMonth(),dateVal.getDate()+10))
+    }, [dateVal])
+
+    useEffect(() => {
+        dateTest && setMinDateEndStart(new Date(dateTest.getFullYear(),dateTest.getMonth(),dateTest.getDate()+10))
+    }, [dateTest])
+
+    useEffect(() => {
+        dateTest < minDateTestStart && setDateTest(null)
+    }, [minDateTestStart])
+
+    useEffect(() => {
+        dateEnd < minDateEndStart && setDateEnd(null)
+    }, [minDateEndStart])
+
     const handleAddNewFile = file => {
         setNewFile(file)
     }
@@ -133,12 +155,13 @@ const LoadForecast = () => {
             .then(response => {
                 setUploadSuccess(true)
                 // Set MIN/MAX values for date fields
-                setMinDate(new Date(response.data.dataset_start))
+                setMinDate(new Date(response.data.allowed_validation_start))
                 setMaxDate(new Date(response.data.dataset_end))
+                setMinValidationDate(new Date(response.data.allowed_validation_start))
 
                 // Re-initialize date fields
+                setDateVal(new Date(response.data.allowed_validation_start))
                 setDateTest(null)
-                setDateVal(new Date(response.data.dataset_start))
                 setDateEnd(new Date(response.data.dataset_end))
 
                 setSeriesUri(response.data.fname)
@@ -262,7 +285,6 @@ const LoadForecast = () => {
                     </Stack>
                 </Grid>
             </Grid>
-
             <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
                 <Grid item xs={12} md={8}>
                     <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
@@ -325,8 +347,8 @@ const LoadForecast = () => {
                                     views={['day']}
                                     label="Test Start Date"
                                     value={dateTest}
-                                    minDate={minDate}
-                                    maxDate={maxDate}
+                                    minDate={minDateTestStart}
+                                    maxDate={maxDateTestStart}
                                     onChange={(newValue) => {
                                         setDateTest(newValue);
                                     }}
@@ -340,7 +362,7 @@ const LoadForecast = () => {
                                     views={['day']}
                                     label="Test End Date"
                                     value={dateEnd}
-                                    minDate={minDate}
+                                    minDate={minDateEndStart}
                                     maxDate={maxDate}
                                     onChange={(newValue) => {
                                         setDateEnd(newValue);
