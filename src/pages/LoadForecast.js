@@ -131,7 +131,6 @@ const LoadForecast = () => {
 
         axios.post('/upload/uploadCSVfile/', data, {headers: {"Content-Type": "multipart/form-data"}})
             .then(response => {
-                console.log('Response from uploadCSVfile: ', response.data)
                 setUploadSuccess(true)
                 // Set MIN/MAX values for date fields
                 setMinDate(new Date(response.data.dataset_start))
@@ -179,7 +178,7 @@ const LoadForecast = () => {
     }
 
     const handleExecute = () => {
-        // setLoading(true)
+        setLoading(true)
         setExecutionSuccess(false)
         setExecutionFailure(false)
 
@@ -188,7 +187,9 @@ const LoadForecast = () => {
             experiment_name: experimentName,
             resolution: experimentResolution,
             validation_start_date: dateVal.toISOString().split('T')[0].replace(/-/g, ""),
+            // validation_start_date: '20180101',
             test_start_date: dateTest.toISOString().split('T')[0].replace(/-/g, ""),
+            // test_start_date: '20190101',
             test_end_date: dateEnd.toISOString().split('T')[0].replace(/-/g, ""),
             model: model.model_name,
             forecast_horizon: forecastHorizon,
