@@ -13,7 +13,6 @@ import LoadForecast from "./pages/LoadForecast";
 
 axios.defaults.baseURL = 'http://131.154.97.48:8000';
 
-
 // Set primary color here
 let primary = '#97A94D'
 
@@ -61,10 +60,6 @@ function App() {
 
                         {/*<Route element={<RequireAuth/>}>*/}
                         <Route path="/load-forecast" element={<LoadForecast/>}/>
-                        {/*</Route>*/}
-
-                        {/*<Route element={<RequireAuth/>}>*/}
-                        {/*    <Route path="/data/:pilot" element={<PilotPage/>}/>*/}
                         {/*</Route>*/}
                     </Routes>
                 </Layout>
