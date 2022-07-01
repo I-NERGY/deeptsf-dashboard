@@ -1,0 +1,16 @@
+version: "3.3"
+
+services:
+  app:
+    container_name: load-forecasting-dashboard
+    image: load-forecasting-dashboard
+    restart: always
+    build:
+      context: ""
+    volumes:
+      - ./src:/app/src
+    ports:
+      - '3000:3000'
+    stdin_open: true
+    env_file:
+      - config/.env-epu
