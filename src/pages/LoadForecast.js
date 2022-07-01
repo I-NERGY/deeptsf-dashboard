@@ -39,6 +39,7 @@ import LineAxisOutlinedIcon from '@mui/icons-material/LineAxisOutlined';
 
 import Breadcrumb from "../components/layout/Breadcrumb";
 import FullPageLoading from "../components/layout/FullPageLoading";
+import {DesktopDatePicker} from '@mui/x-date-pickers/DesktopDatePicker';
 
 const AlertCustom = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -121,11 +122,11 @@ const LoadForecast = () => {
     }, [model])
 
     useEffect(() => {
-        dateVal && setMinDateTestStart(new Date(dateVal.getFullYear(),dateVal.getMonth(),dateVal.getDate()+10))
+        dateVal && setMinDateTestStart(new Date(dateVal.getFullYear(), dateVal.getMonth(), dateVal.getDate() + 10))
     }, [dateVal])
 
     useEffect(() => {
-        dateTest && setMinDateEndStart(new Date(dateTest.getFullYear(),dateTest.getMonth(),dateTest.getDate()+10))
+        dateTest && setMinDateEndStart(new Date(dateTest.getFullYear(), dateTest.getMonth(), dateTest.getDate() + 10))
     }, [dateTest])
 
     useEffect(() => {
@@ -201,7 +202,7 @@ const LoadForecast = () => {
     }
 
     const handleExecute = () => {
-        setLoading(true)
+        // setLoading(true)
         setExecutionSuccess(false)
         setExecutionFailure(false)
 
@@ -209,17 +210,16 @@ const LoadForecast = () => {
             series_csv: seriesUri,
             experiment_name: experimentName,
             resolution: experimentResolution,
-            validation_start_date: new Date(dateVal.getTime() - (dateVal.getTimezoneOffset()*60*1000)).toISOString().split('T')[0].replace(/-/g, ""),
-            // dateVal.toISOString().split('T')[0].replace(/-/g, ""),
-            // validation_start_date: '20180101',
-            test_start_date: new Date(dateVal.getTime() - (dateTest.getTimezoneOffset()*60*1000)).toISOString().split('T')[0].replace(/-/g, ""),
-            // test_start_date: '20190101',
-            test_end_date: new Date(dateEnd.getTime() - (dateVal.getTimezoneOffset()*60*1000)).toISOString().split('T')[0].replace(/-/g, ""),
+            validation_start_date: new Date(dateVal.getTime() - (dateVal.getTimezoneOffset() * 60 * 1000)).toISOString().split('T')[0].replace(/-/g, ""),
+            test_start_date: new Date(dateTest.getTime() - (dateTest.getTimezoneOffset() * 60 * 1000)).toISOString().split('T')[0].replace(/-/g, ""),
+            test_end_date: new Date(dateEnd.getTime() - (dateEnd.getTimezoneOffset() * 60 * 1000)).toISOString().split('T')[0].replace(/-/g, ""),
             model: model.model_name,
             forecast_horizon: forecastHorizon,
             hyperparams_entrypoint: availableConfigurations[chosenConfiguration][0],
             ignore_previous_runs: ignorePrevious
         }
+
+        console.log(payload)
 
         axios.post('/experimentation_pipeline/run_all', payload)
             .then(response => {
@@ -328,29 +328,27 @@ const LoadForecast = () => {
                     <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
                         <Grid item xs={12} md={4}>
                             <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                <DatePicker
-                                    inputFormat="dd MMM yyyy"
-                                    views={['day']}
+                                <DesktopDatePicker
+                                    inputFormat="dd/MM/yyyy"
                                     label="Validation Start Date"
                                     value={dateVal}
-                                    minDate={minDate}
-                                    maxDate={maxDate}
+                                    minDate={minDate ? minDate : void (0)}
+                                    maxDate={maxDate ? maxDate : void (0)}
                                     onChange={(newValue) => {
                                         setDateVal(newValue);
                                     }}
-                                    renderInput={(params) => <TextField fullWidth {...params} helperText={null}/>}
+                                    renderInput={(params) => <TextField fullWidth {...params}/>}
                                 />
                             </LocalizationProvider>
                         </Grid>
                         <Grid item xs={12} md={4}>
                             <LocalizationProvider dateAdapter={AdapterDateFns}>
                                 <DatePicker
-                                    inputFormat="dd MMM yyyy"
-                                    views={['day']}
+                                    inputFormat="dd/MM/yyyy"
                                     label="Test Start Date"
                                     value={dateTest}
-                                    minDate={minDateTestStart}
-                                    maxDate={maxDateTestStart}
+                                    minDate={minDateTestStart ? minDateTestStart : void (0)}
+                                    maxDate={maxDateTestStart ? maxDateTestStart : void (0)}
                                     onChange={(newValue) => {
                                         setDateTest(newValue);
                                     }}
@@ -361,12 +359,11 @@ const LoadForecast = () => {
                         <Grid item xs={12} md={4}>
                             <LocalizationProvider dateAdapter={AdapterDateFns}>
                                 <DatePicker
-                                    inputFormat="dd MMM yyyy"
-                                    views={['day']}
+                                    inputFormat="dd/MM/yyyy"
                                     label="Test End Date"
                                     value={dateEnd}
-                                    minDate={minDateEndStart}
-                                    maxDate={maxDate}
+                                    minDate={minDateEndStart ? minDateEndStart : void (0)}
+                                    maxDate={maxDate ? maxDate : void (0)}
                                     onChange={(newValue) => {
                                         setDateEnd(newValue);
                                     }}
