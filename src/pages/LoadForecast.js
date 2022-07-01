@@ -209,11 +209,12 @@ const LoadForecast = () => {
             series_csv: seriesUri,
             experiment_name: experimentName,
             resolution: experimentResolution,
-            validation_start_date: dateVal.toISOString().split('T')[0].replace(/-/g, ""),
+            validation_start_date: new Date(dateVal.getTime() - (dateVal.getTimezoneOffset()*60*1000)).toISOString().split('T')[0].replace(/-/g, ""),
+            // dateVal.toISOString().split('T')[0].replace(/-/g, ""),
             // validation_start_date: '20180101',
-            test_start_date: dateTest.toISOString().split('T')[0].replace(/-/g, ""),
+            test_start_date: new Date(dateVal.getTime() - (dateTest.getTimezoneOffset()*60*1000)).toISOString().split('T')[0].replace(/-/g, ""),
             // test_start_date: '20190101',
-            test_end_date: dateEnd.toISOString().split('T')[0].replace(/-/g, ""),
+            test_end_date: new Date(dateEnd.getTime() - (dateVal.getTimezoneOffset()*60*1000)).toISOString().split('T')[0].replace(/-/g, ""),
             model: model.model_name,
             forecast_horizon: forecastHorizon,
             hyperparams_entrypoint: availableConfigurations[chosenConfiguration][0],
@@ -329,6 +330,7 @@ const LoadForecast = () => {
                         <Grid item xs={12} md={4}>
                             <LocalizationProvider dateAdapter={AdapterDateFns}>
                                 <DatePicker
+                                    inputFormat="dd MMM yyyy"
                                     views={['day']}
                                     label="Validation Start Date"
                                     value={dateVal}
@@ -344,6 +346,7 @@ const LoadForecast = () => {
                         <Grid item xs={12} md={4}>
                             <LocalizationProvider dateAdapter={AdapterDateFns}>
                                 <DatePicker
+                                    inputFormat="dd MMM yyyy"
                                     views={['day']}
                                     label="Test Start Date"
                                     value={dateTest}
@@ -359,6 +362,7 @@ const LoadForecast = () => {
                         <Grid item xs={12} md={4}>
                             <LocalizationProvider dateAdapter={AdapterDateFns}>
                                 <DatePicker
+                                    inputFormat="dd MMM yyyy"
                                     views={['day']}
                                     label="Test End Date"
                                     value={dateEnd}
@@ -475,7 +479,7 @@ const LoadForecast = () => {
                             </CardContent>
                         </Card>
                     </Grid>))}
-                {availableConfigurations.length === 0 && <Container maxWidth={'lg'} sx={{my: 4}}>
+                {model && availableConfigurations.length === 0 && <Container maxWidth={'lg'} sx={{my: 4}}>
                     <Alert severity="error">No available configurations for this model!</Alert>
                 </Container>}
             </Grid>
