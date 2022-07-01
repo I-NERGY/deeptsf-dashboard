@@ -221,7 +221,6 @@ const LoadForecast = () => {
             ignore_previous_runs: ignorePrevious
         }
 
-        // TODO FIX
         axios.post('/experimentation_pipeline/run_all', payload)
             .then(response => {
                 console.log(response.data)
