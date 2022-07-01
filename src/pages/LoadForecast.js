@@ -202,7 +202,7 @@ const LoadForecast = () => {
     }
 
     const handleExecute = () => {
-        // setLoading(true)
+        setLoading(true)
         setExecutionSuccess(false)
         setExecutionFailure(false)
 
