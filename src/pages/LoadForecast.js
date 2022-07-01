@@ -158,6 +158,7 @@ const LoadForecast = () => {
                 // Set MIN/MAX values for date fields
                 setMinDate(new Date(response.data.allowed_validation_start))
                 setMaxDate(new Date(response.data.dataset_end))
+                setMaxDateTestStart(new Date(response.data.dataset_end))
                 setMinValidationDate(new Date(response.data.allowed_validation_start))
 
                 // Re-initialize date fields
@@ -239,7 +240,7 @@ const LoadForecast = () => {
     return (<div>
         <Breadcrumb breadcrumbs={breadcrumbs} welcome_msg={'Welcome to I-NERGY Load Forecasting'}/>
 
-        {/* Upload your .csv file */}
+        {/* Dataset Configuration */}
         <Container maxWidth={'xl'} sx={{my: 5}}>
             <Typography variant={'h4'} fontWeight={'bold'} sx={{mb: 3}}>Dataset Configuration</Typography>
             <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
@@ -314,7 +315,6 @@ const LoadForecast = () => {
                     </FormControl>
                 </Grid>
             </Grid>
-
             <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
                 <Grid item xs={12} md={6}>
                     <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
@@ -377,7 +377,7 @@ const LoadForecast = () => {
         </Container>
         <hr/>
 
-        {/* Choose a model */}
+        {/* Model Training Setup */}
         <Container maxWidth={'xl'} sx={{my: 5}}>
             <Typography variant={'h4'} fontWeight={'bold'} sx={{mb: 3}}>Model Training Setup</Typography>
             <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
@@ -507,7 +507,7 @@ const LoadForecast = () => {
         </Container>
         <hr/>
 
-        {/* Run the model */}
+        {/* Experiment Execution */}
         <Container maxWidth={'xl'} sx={{my: 5}}>
             <Typography variant={'h4'} fontWeight={'bold'} sx={{mb: 3}}>Experiment Execution</Typography>
             <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
