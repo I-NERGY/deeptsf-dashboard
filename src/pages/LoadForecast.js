@@ -25,6 +25,8 @@ import CircularProgress from '@mui/material/CircularProgress';
 import {AdapterDateFns} from '@mui/x-date-pickers/AdapterDateFns';
 import {LocalizationProvider} from '@mui/x-date-pickers/LocalizationProvider';
 import {DatePicker} from '@mui/x-date-pickers/DatePicker';
+import {DesktopDatePicker} from '@mui/x-date-pickers/DesktopDatePicker';
+
 
 import UploadFileOutlinedIcon from '@mui/icons-material/UploadFileOutlined';
 import ModelTrainingIcon from '@mui/icons-material/ModelTraining';
@@ -37,10 +39,10 @@ import DataThresholdingIcon from '@mui/icons-material/DataThresholding';
 import DateRangeIcon from '@mui/icons-material/DateRange';
 import LabelOutlinedIcon from '@mui/icons-material/LabelOutlined';
 import LineAxisOutlinedIcon from '@mui/icons-material/LineAxisOutlined';
+import BackspaceOutlinedIcon from '@mui/icons-material/BackspaceOutlined';
 
 import Breadcrumb from "../components/layout/Breadcrumb";
 import FullPageLoading from "../components/layout/FullPageLoading";
-import {DesktopDatePicker} from '@mui/x-date-pickers/DesktopDatePicker';
 
 const AlertCustom = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -188,6 +190,26 @@ const LoadForecast = () => {
             })
     }
 
+    const handleClearNewFile = () => {
+        setNewFile('')
+        setUploadSuccess(false)
+        // Set MIN/MAX values for date fields
+        setMinDate(null)
+        setMaxDate(null)
+        setMaxDateTestStart(null)
+        setMinValidationDate(null)
+
+        // Re-initialize date fields
+        setDateVal(null)
+        setDateTest(null)
+        setDateEnd(null)
+
+        setSeriesUri('')
+
+        setNewFileSuccess(false)
+        setNewFileFailure(false)
+    }
+
     const closeSnackbar = () => {
         setNewFileSuccess(false)
         setNewFileFailure(false)
@@ -273,11 +295,17 @@ const LoadForecast = () => {
                     </Stack>
                 </Grid>
                 <Grid item xs={12} md={4}>
-                    {newFile && <Typography variant={'h5'} color={'inherit'} align={'right'} sx={{width: '100%'}}>Chosen
-                        file: <Typography fontWeight={'bold'}
-                                          color={'secondary'}>{newFile.name}</Typography></Typography>}
+                    {newFile &&
+                        <Grid container display={'flex'} flexDirection={'row'} justifyContent={'center'}>
+                            <Typography variant={'h5'} color={'inherit'} align={'right'} sx={{width: '100%'}}>
+                                Chosen file:
+                                <Typography fontWeight={'bold'}
+                                            color={'secondary'}>{newFile.name}
+                                </Typography>
+                            </Typography>
+                        </Grid>}
                     <Stack direction="row" spacing={2} sx={{alignItems: 'center', mb: 2}}>
-                        {newFile && <>
+                        {newFile && !uploadSuccess && <>
                             <Typography sx={{ml: 'auto'}} variant={'h6'}>Day First</Typography>
                             <Checkbox
                                 disabled={executionLoading}
@@ -286,11 +314,18 @@ const LoadForecast = () => {
                                 sx={{'& .MuiSvgIcon-root': {fontSize: 28}}}
                             />
                         </>}
-                        {newFile && <Button variant={'contained'} component={'span'} size={'large'} color={'success'}
-                                            sx={{ml: 'auto'}} disabled={executionLoading}
-                                            endIcon={<UploadFileOutlinedIcon/>} onClick={handleUploadFile}>
-                            Upload file
-                        </Button>}
+                        {newFile && !uploadSuccess &&
+                            <Button variant={'contained'} component={'span'} size={'large'} color={'success'}
+                                    sx={{ml: 'auto'}} disabled={executionLoading}
+                                    endIcon={<UploadFileOutlinedIcon/>} onClick={handleUploadFile}>
+                                Upload file
+                            </Button>}
+                        {uploadSuccess &&
+                            <Button variant={'contained'} component={'span'} size={'medium'} color={'error'}
+                                    endIcon={<BackspaceOutlinedIcon/>} sx={{ml: 'auto'}}
+                                    onClick={handleClearNewFile}>
+                                Clear
+                            </Button>}
                     </Stack>
                 </Grid>
             </Grid>
@@ -335,7 +370,7 @@ const LoadForecast = () => {
                         <Grid item xs={12} md={4}>
                             <LocalizationProvider dateAdapter={AdapterDateFns}>
                                 <DesktopDatePicker
-                                    disabled={executionLoading}
+                                    disabled={executionLoading || !uploadSuccess}
                                     inputFormat="dd/MM/yyyy"
                                     label="Validation Start Date"
                                     value={dateVal}
@@ -350,8 +385,8 @@ const LoadForecast = () => {
                         </Grid>
                         <Grid item xs={12} md={4}>
                             <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                <DatePicker
-                                    disabled={executionLoading}
+                                <DesktopDatePicker
+                                    disabled={executionLoading || !uploadSuccess}
                                     inputFormat="dd/MM/yyyy"
                                     label="Test Start Date"
                                     value={dateTest}
@@ -366,8 +401,8 @@ const LoadForecast = () => {
                         </Grid>
                         <Grid item xs={12} md={4}>
                             <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                <DatePicker
-                                    disabled={executionLoading}
+                                <DesktopDatePicker
+                                    disabled={executionLoading || !uploadSuccess}
                                     inputFormat="dd/MM/yyyy"
                                     label="Test End Date"
                                     value={dateEnd}
@@ -530,7 +565,7 @@ const LoadForecast = () => {
                             disabled={executionLoading || !uploadSuccess || !experimentResolution || !dateVal || !dateTest || !dateEnd || !experimentName || !model || chosenConfiguration === '' || !forecastHorizon}
                     >
                         <Typography variant={'h5'}>
-                            EXECUTE {executionLoading && <CircularProgress size={'26px'} sx={{color: 'white'}} />}
+                            EXECUTE {executionLoading && <CircularProgress size={'26px'} sx={{color: 'white'}}/>}
                         </Typography>
                     </Button>
                 </Grid>
