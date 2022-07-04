@@ -289,10 +289,8 @@ const LoadForecast = () => {
             <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
                 <Grid item xs={12} md={8}>
                     <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
-                        <IconButton component={'span'} size={'large'}>
-                            <DataThresholdingIcon fontSize="large"
-                                                  sx={{width: '60px', height: '60px', color: '#A1B927'}}/>
-                        </IconButton>
+                        <DataThresholdingIcon fontSize="large"
+                                              sx={{width: '60px', height: '60px', color: '#A1B927', ml: 2, my: 1}}/>
                         <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>
                             Select Timeseries Resolution
                         </Typography>
@@ -318,9 +316,8 @@ const LoadForecast = () => {
             <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
                 <Grid item xs={12} md={6}>
                     <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
-                        <IconButton component={'span'} size={'large'}>
-                            <DateRangeIcon fontSize="large" sx={{width: '60px', height: '60px', color: '#A1B927'}}/>
-                        </IconButton>
+                        <DateRangeIcon fontSize="large"
+                                       sx={{width: '60px', height: '60px', color: '#A1B927', ml: 2, my: 1}}/>
                         <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>Dataset Split</Typography>
                     </Stack>
                 </Grid>
@@ -383,9 +380,8 @@ const LoadForecast = () => {
             <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
                 <Grid item xs={12} md={6}>
                     <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
-                        <IconButton component={'span'} size={'large'}>
-                            <LabelOutlinedIcon fontSize="large" sx={{width: '60px', height: '60px', color: '#A1B927'}}/>
-                        </IconButton>
+                        <LabelOutlinedIcon fontSize="large"
+                                           sx={{width: '60px', height: '60px', color: '#A1B927', ml: 2, my: 1}}/>
                         <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>MLFlow Experiment
                             Name</Typography>
                     </Stack>
@@ -412,9 +408,8 @@ const LoadForecast = () => {
             <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
                 <Grid item xs={12} md={6}>
                     <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
-                        <IconButton component={'span'} size={'large'}>
-                            <ModelTrainingIcon fontSize="large" sx={{width: '60px', height: '60px', color: '#A1B927'}}/>
-                        </IconButton>
+                        <ModelTrainingIcon fontSize="large"
+                                           sx={{width: '60px', height: '60px', color: '#A1B927', ml: 2, my: 1}}/>
                         <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>Choose a model</Typography>
                     </Stack>
                 </Grid>
@@ -438,10 +433,8 @@ const LoadForecast = () => {
             <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
                 <Grid item xs={12} md={6}>
                     <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
-                        <IconButton component={'span'} size={'large'}>
-                            <SettingsApplicationsIcon fontSize="large"
-                                                      sx={{width: '60px', height: '60px', color: '#A1B927'}}/>
-                        </IconButton>
+                        <SettingsApplicationsIcon fontSize="large"
+                                                  sx={{width: '60px', height: '60px', color: '#A1B927', ml: 2, my: 1}}/>
                         <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>
                             Select Hyperparameters</Typography>
                     </Stack>
@@ -488,10 +481,8 @@ const LoadForecast = () => {
             <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
                 <Grid item xs={12} md={6}>
                     <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
-                        <IconButton component={'span'} size={'large'}>
-                            <LineAxisOutlinedIcon fontSize="large"
-                                                  sx={{width: '60px', height: '60px', color: '#A1B927'}}/>
-                        </IconButton>
+                        <LineAxisOutlinedIcon fontSize="large"
+                                              sx={{width: '60px', height: '60px', color: '#A1B927', ml: 2, my: 1}}/>
                         <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>Choose Backtest Forecast
                             Horizon</Typography>
                     </Stack>
@@ -513,10 +504,8 @@ const LoadForecast = () => {
             <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
                 <Grid item xs={12} md={6}>
                     <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
-                        <IconButton component={'span'} size={'large'}>
-                            <TerminalIcon fontSize="large"
-                                          sx={{width: '60px', height: '60px', color: '#A1B927'}}/>
-                        </IconButton>
+                        <TerminalIcon fontSize="large"
+                                      sx={{width: '60px', height: '60px', color: '#A1B927', ml: 2, my: 1}}/>
                         <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>Run the model</Typography>
                     </Stack>
                 </Grid>
@@ -534,10 +523,8 @@ const LoadForecast = () => {
                 <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
                     <Grid item xs={12} md={6}>
                         <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
-                            <IconButton component={'span'} size={'large'}>
-                                <DoneAllIcon fontSize="large"
-                                             sx={{width: '60px', height: '60px', color: '#A1B927'}}/>
-                            </IconButton>
+                            <DoneAllIcon fontSize="large"
+                                         sx={{width: '60px', height: '60px', color: '#A1B927', ml: 2, my: 1 }}/>
                             <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>Results</Typography>
                         </Stack>
                     </Grid>
