@@ -20,6 +20,7 @@ import Grid from '@mui/material/Grid';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import TextField from '@mui/material/TextField';
+import CircularProgress from '@mui/material/CircularProgress';
 
 import {AdapterDateFns} from '@mui/x-date-pickers/AdapterDateFns';
 import {LocalizationProvider} from '@mui/x-date-pickers/LocalizationProvider';
@@ -64,6 +65,8 @@ const LoadForecast = () => {
     const [model, setModel] = useState('')
 
     const [loading, setLoading] = useState(false)
+    const [executionLoading, setExecutionLoading] = useState(false)
+    const [executionInitiated, setExecutionInitiated] = useState(false)
     const [uploadSuccess, setUploadSuccess] = useState(false)
     const [newFileSuccess, setNewFileSuccess] = useState(false)
     const [newFileFailure, setNewFileFailure] = useState(false)
@@ -95,6 +98,10 @@ const LoadForecast = () => {
     const [forecastHorizon, setForecastHorizon] = useState(24)
     const [ignorePrevious, setIgnorePrevious] = useState(true)
     const [seriesUri, setSeriesUri] = useState('')
+
+    useEffect(() => {
+        axios.get('get_mlflow_tracking_uri').then(response => console.log(response.data))
+    }, [])
 
     useEffect(() => {
         axios.get('/experimentation_pipeline/etl/get_resolutions/')
@@ -137,9 +144,7 @@ const LoadForecast = () => {
         dateEnd < minDateEndStart && setDateEnd(null)
     }, [minDateEndStart])
 
-    const handleAddNewFile = file => {
-        setNewFile(file)
-    }
+    const handleAddNewFile = file => setNewFile(file)
 
     const handleUploadFile = () => {
         setLoading(true)
@@ -203,7 +208,8 @@ const LoadForecast = () => {
     }
 
     const handleExecute = () => {
-        setLoading(true)
+        setExecutionLoading(true)
+        setExecutionInitiated(true)
         setExecutionSuccess(false)
         setExecutionFailure(false)
 
@@ -227,13 +233,13 @@ const LoadForecast = () => {
                 console.log(response.data)
                 setExecutionSuccess(true)
                 setExecutionFailure(false)
-                setLoading(false)
+                setExecutionLoading(false)
             })
             .catch(error => {
                 console.log(error)
                 setExecutionFailure(true)
                 setExecutionSuccess(false)
-                setLoading(false)
+                setExecutionLoading(false)
             })
     }
 
@@ -250,6 +256,7 @@ const LoadForecast = () => {
                         style={{display: 'none'}}
                         id="raised-button-file"
                         type="file"
+                        disabled={executionLoading}
                         onChange={(event) => handleAddNewFile(event.target.files[0])}
                     />
 
@@ -273,13 +280,14 @@ const LoadForecast = () => {
                         {newFile && <>
                             <Typography sx={{ml: 'auto'}} variant={'h6'}>Day First</Typography>
                             <Checkbox
+                                disabled={executionLoading}
                                 checked={dayFirst}
                                 onChange={handleDayFirstCheckBox}
                                 sx={{'& .MuiSvgIcon-root': {fontSize: 28}}}
                             />
                         </>}
                         {newFile && <Button variant={'contained'} component={'span'} size={'large'} color={'success'}
-                                            sx={{ml: 'auto'}}
+                                            sx={{ml: 'auto'}} disabled={executionLoading}
                                             endIcon={<UploadFileOutlinedIcon/>} onClick={handleUploadFile}>
                             Upload file
                         </Button>}
@@ -300,6 +308,7 @@ const LoadForecast = () => {
                     <FormControl fullWidth>
                         <InputLabel id="demo-simple-select-label">Dataset Resolution (Minutes)</InputLabel>
                         <Select
+                            disabled={executionLoading}
                             fullWidth
                             labelId="demo-simple-select-label"
                             id="demo-simple-select"
@@ -326,6 +335,7 @@ const LoadForecast = () => {
                         <Grid item xs={12} md={4}>
                             <LocalizationProvider dateAdapter={AdapterDateFns}>
                                 <DesktopDatePicker
+                                    disabled={executionLoading}
                                     inputFormat="dd/MM/yyyy"
                                     label="Validation Start Date"
                                     value={dateVal}
@@ -341,6 +351,7 @@ const LoadForecast = () => {
                         <Grid item xs={12} md={4}>
                             <LocalizationProvider dateAdapter={AdapterDateFns}>
                                 <DatePicker
+                                    disabled={executionLoading}
                                     inputFormat="dd/MM/yyyy"
                                     label="Test Start Date"
                                     value={dateTest}
@@ -356,6 +367,7 @@ const LoadForecast = () => {
                         <Grid item xs={12} md={4}>
                             <LocalizationProvider dateAdapter={AdapterDateFns}>
                                 <DatePicker
+                                    disabled={executionLoading}
                                     inputFormat="dd/MM/yyyy"
                                     label="Test End Date"
                                     value={dateEnd}
@@ -391,13 +403,13 @@ const LoadForecast = () => {
                         <Grid item xs={6} md={8}>
                             <TextField id="outlined-basic" label="Experiment name" variant="outlined" required fullWidth
                                        value={experimentName} error={experimentNameError && experimentName === ''}
-                                       onChange={e => setExperimentName(e.target.value)}/>
+                                       onChange={e => setExperimentName(e.target.value)} disabled={executionLoading}/>
                         </Grid>
                         <Grid item xs={6} md={4} display={'flex'} alignItems={'center'}>
                             <Typography sx={{ml: 'auto'}} variant={'body1'} fontWeight={'bold'}>Ignore Previous
                                 Runs</Typography>
                             <Checkbox
-                                checked={ignorePrevious}
+                                checked={ignorePrevious} disabled={executionLoading}
                                 onChange={handleIgnoreFirstCheckBox}
                                 sx={{'& .MuiSvgIcon-root': {fontSize: 28}}}
                             />
@@ -420,6 +432,7 @@ const LoadForecast = () => {
                             labelId="demo-simple-select-label"
                             id="demo-simple-select"
                             value={model}
+                            disabled={executionLoading}
                             label="Choose a model"
                             onChange={e => setModel(e.target.value)}
                         >
@@ -490,6 +503,7 @@ const LoadForecast = () => {
                 <Grid item xs={12} md={6}>
                     <TextField id="outlined-basic" label="Forecast Horizon" variant="outlined" required fullWidth
                                value={forecastHorizon} type="number"
+                               disabled={executionLoading}
                                onChange={e => setForecastHorizon(e.target.value)}
                                InputProps={{inputProps: {min: 0}}}
                     />
@@ -513,25 +527,27 @@ const LoadForecast = () => {
                     <Button variant={'contained'} component={'span'} size={'large'} color={'success'}
                             sx={{ml: 'auto'}} fullWidth
                             endIcon={<ChevronRight/>} onClick={handleExecute}
-                            disabled={!uploadSuccess || !experimentResolution || !dateVal || !dateTest || !dateEnd || !experimentName || !model || chosenConfiguration === '' || !forecastHorizon}
+                            disabled={executionLoading || !uploadSuccess || !experimentResolution || !dateVal || !dateTest || !dateEnd || !experimentName || !model || chosenConfiguration === '' || !forecastHorizon}
                     >
-                        <Typography variant={'h6'}>EXECUTE</Typography>
+                        <Typography variant={'h5'}>
+                            EXECUTE {executionLoading && <CircularProgress size={'26px'} sx={{color: 'white'}} />}
+                        </Typography>
                     </Button>
                 </Grid>
             </Grid>
-            {executionSuccess &&
+            {executionInitiated &&
                 <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
                     <Grid item xs={12} md={6}>
                         <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
                             <DoneAllIcon fontSize="large"
-                                         sx={{width: '60px', height: '60px', color: '#A1B927', ml: 2, my: 1 }}/>
+                                         sx={{width: '60px', height: '60px', color: '#A1B927', ml: 2, my: 1}}/>
                             <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>Results</Typography>
                         </Stack>
                     </Grid>
                     <Grid item xs={12} md={6} display={'flex'}>
                         <Button variant={'contained'} component={'span'} size={'large'} color={'warning'}
                                 sx={{ml: 'auto'}} fullWidth
-                                endIcon={<ChevronRight/>} onClick={handleExecute}
+                                endIcon={<ChevronRight/>} onClick={() => window.open('http://testURL:5000', '_blank')}
                         >
                             <Typography variant={'h6'}>Visit MLFlow Server</Typography>
                         </Button>
