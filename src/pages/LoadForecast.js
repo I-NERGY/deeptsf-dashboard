@@ -582,7 +582,7 @@ const LoadForecast = () => {
                     <Grid item xs={12} md={6} display={'flex'}>
                         <Button variant={'contained'} component={'span'} size={'large'} color={'warning'}
                                 sx={{ml: 'auto'}} fullWidth
-                                endIcon={<ChevronRight/>} onClick={() => window.open('http://testURL:5000', '_blank')}
+                                endIcon={<ChevronRight/>} onClick={() => window.open('http://131.154.97.48:5000/', '_blank')}
                         >
                             <Typography variant={'h6'}>Visit MLFlow Server</Typography>
                         </Button>
