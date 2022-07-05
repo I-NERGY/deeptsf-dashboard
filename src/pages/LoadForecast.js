@@ -161,6 +161,7 @@ const LoadForecast = () => {
 
         axios.post('/upload/uploadCSVfile/', data, {headers: {"Content-Type": "multipart/form-data"}})
             .then(response => {
+                console.log(response.data)
                 setUploadSuccess(true)
                 // Set MIN/MAX values for date fields
                 setMinDate(new Date(response.data.allowed_validation_start))

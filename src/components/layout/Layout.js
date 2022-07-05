@@ -19,7 +19,7 @@ import Typography from '@mui/material/Typography';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
@@ -185,15 +185,14 @@ export default function Layout({children}) {
                 <List>
                     {menuItems.map(item => (
                         <div key={item.text}>
-                            <ListItem
+                            <ListItemButton
                                 onClick={item.handleNested ? item.handleNested : () => navigate(item.path)}
-                                button key={item.text}
-                                className={location.pathname === item.path ? classes.active : null}
+                                key={item.text} className={location.pathname === item.path ? classes.active : null}
                             >
                                 <ListItemIcon>{item.icon}</ListItemIcon>
                                 <ListItemText primary={item.text}></ListItemText>
                                 {item.subItems && (item.collapsed ? <ExpandLessIcon/> : <ExpandMoreIcon/>)}
-                            </ListItem>
+                            </ListItemButton>
                             {item.subItems && item.subItems.map(subItem => (<Link key={subItem.text} to={subItem.path}
                                                                                   style={{
                                                                                       textDecoration: 'none',
@@ -201,13 +200,13 @@ export default function Layout({children}) {
                                                                                   }}>
                                 <Collapse in={item.collapsed} timeout="auto" unmountOnExit>
                                     <List component="div" disablePadding>
-                                        <ListItem button sx={{pl: 4}}
-                                                  className={clsx(classes.nested, location.pathname === subItem.path ? classes.active : null)}>
+                                        <ListItemButton sx={{pl: 4}}
+                                                        className={clsx(classes.nested, location.pathname === subItem.path ? classes.active : null)}>
                                             <ListItemIcon>
                                                 {subItem.icon}
                                             </ListItemIcon>
                                             <ListItemText primary={subItem.text}/>
-                                        </ListItem>
+                                        </ListItemButton>
                                     </List>
                                 </Collapse>
                             </Link>))}
