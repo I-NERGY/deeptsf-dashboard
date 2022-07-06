@@ -24,9 +24,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 
 import {AdapterDateFns} from '@mui/x-date-pickers/AdapterDateFns';
 import {LocalizationProvider} from '@mui/x-date-pickers/LocalizationProvider';
-import {DatePicker} from '@mui/x-date-pickers/DatePicker';
 import {DesktopDatePicker} from '@mui/x-date-pickers/DesktopDatePicker';
-
 
 import UploadFileOutlinedIcon from '@mui/icons-material/UploadFileOutlined';
 import ModelTrainingIcon from '@mui/icons-material/ModelTraining';
@@ -79,20 +77,17 @@ const LoadForecast = () => {
     const [chosenConfiguration, setChosenConfiguration] = useState('')
 
     const [resolutions, setResolutions] = useState([])
+
     const [maxDate, setMaxDate] = useState(null)
     const [minDate, setMinDate] = useState(null)
-
     const [minDateTestStart, setMinDateTestStart] = useState(null)
     const [maxDateTestStart, setMaxDateTestStart] = useState(null)
-
     const [minDateEndStart, setMinDateEndStart] = useState(null)
-    const [minValidationDate, setMinValidationDate] = useState(null)
 
     // Parameter variables
     const [experimentName, setExperimentName] = useState('')
     const [experimentNameError, setExperimentNameError] = useState(false)
     const [experimentResolution, setExperimentResolution] = useState('')
-    const [experimentResolutionError, setExperimentResolutionError] = useState(false)
 
     const [dateVal, setDateVal] = useState(null)
     const [dateTest, setDateTest] = useState(null)
@@ -101,14 +96,14 @@ const LoadForecast = () => {
     const [ignorePrevious, setIgnorePrevious] = useState(true)
     const [seriesUri, setSeriesUri] = useState('')
 
-    useEffect(() => {
-        axios.get('get_mlflow_tracking_uri').then(response => console.log(response.data))
-    }, [])
+    // useEffect(() => {
+    //     axios.get('get_mlflow_tracking_uri').then(response => console.log(response.data))
+    // }, [])
 
-    useEffect(() => {
-        axios.get('/experimentation_pipeline/etl/get_resolutions/')
-            .then(response => setResolutions(response.data.resolution))
-    }, [])
+    // useEffect(() => {
+    //     axios.get('/experimentation_pipeline/etl/get_resolutions/')
+    //         .then(response => setResolutions(response.data.resolution))
+    // }, [])
 
     useEffect(() => {
         axios.get('/models/get_model_names')
@@ -117,10 +112,11 @@ const LoadForecast = () => {
     }, [])
 
     useEffect(() => {
-        experimentResolution === '60' && setForecastHorizon(24)
-        experimentResolution === '30' && setForecastHorizon(48)
-        experimentResolution === '15' && setForecastHorizon(96)
-        experimentResolution === '5' && setForecastHorizon(288)
+        // experimentResolution === '60' && setForecastHorizon(24)
+        // experimentResolution === '30' && setForecastHorizon(48)
+        // experimentResolution === '15' && setForecastHorizon(96)
+        // experimentResolution === '5' && setForecastHorizon(288)
+        setForecastHorizon(Math.floor(288 / (experimentResolution / 5)))
     }, [experimentResolution])
 
     useEffect(() => {
@@ -161,13 +157,13 @@ const LoadForecast = () => {
 
         axios.post('/upload/uploadCSVfile/', data, {headers: {"Content-Type": "multipart/form-data"}})
             .then(response => {
-                console.log(response.data)
+                setResolutions(response.data.allowed_resolutions)
                 setUploadSuccess(true)
+
                 // Set MIN/MAX values for date fields
                 setMinDate(new Date(response.data.allowed_validation_start))
                 setMaxDate(new Date(response.data.dataset_end))
                 setMaxDateTestStart(new Date(response.data.dataset_end))
-                setMinValidationDate(new Date(response.data.allowed_validation_start))
 
                 // Re-initialize date fields
                 setDateVal(new Date(response.data.allowed_validation_start))
@@ -198,7 +194,6 @@ const LoadForecast = () => {
         setMinDate(null)
         setMaxDate(null)
         setMaxDateTestStart(null)
-        setMinValidationDate(null)
 
         // Re-initialize date fields
         setDateVal(null)
@@ -353,7 +348,8 @@ const LoadForecast = () => {
                             onChange={e => setExperimentResolution(e.target.value)}
                         >
                             {resolutions.map(resolution => (
-                                <MenuItem key={resolution} value={resolution.toString()}>{resolution}</MenuItem>))}
+                                <MenuItem key={resolution.value}
+                                          value={resolution.value.toString()}>{resolution.display_value}</MenuItem>))}
                         </Select>
                     </FormControl>
                 </Grid>
@@ -583,7 +579,8 @@ const LoadForecast = () => {
                     <Grid item xs={12} md={6} display={'flex'}>
                         <Button variant={'contained'} component={'span'} size={'large'} color={'warning'}
                                 sx={{ml: 'auto'}} fullWidth
-                                endIcon={<ChevronRight/>} onClick={() => window.open('http://131.154.97.48:5000/', '_blank')}
+                                endIcon={<ChevronRight/>}
+                                onClick={() => window.open('http://131.154.97.48:5000/', '_blank')}
                         >
                             <Typography variant={'h6'}>Visit MLFlow Server</Typography>
                         </Button>
