@@ -100,11 +100,6 @@ const LoadForecast = () => {
     //     axios.get('get_mlflow_tracking_uri').then(response => console.log(response.data))
     // }, [])
 
-    // useEffect(() => {
-    //     axios.get('/experimentation_pipeline/etl/get_resolutions/')
-    //         .then(response => setResolutions(response.data.resolution))
-    // }, [])
-
     useEffect(() => {
         axios.get('/models/get_model_names')
             .then(response => setModels(response.data))
@@ -112,10 +107,6 @@ const LoadForecast = () => {
     }, [])
 
     useEffect(() => {
-        // experimentResolution === '60' && setForecastHorizon(24)
-        // experimentResolution === '30' && setForecastHorizon(48)
-        // experimentResolution === '15' && setForecastHorizon(96)
-        // experimentResolution === '5' && setForecastHorizon(288)
         setForecastHorizon(Math.floor(288 / (experimentResolution / 5)))
     }, [experimentResolution])
 
@@ -151,7 +142,6 @@ const LoadForecast = () => {
         setExecutionFailure(false)
 
         const data = new FormData()
-
         data.append('file', newFile)
         data.append('day_first', dayFirst)
 
