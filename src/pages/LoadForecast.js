@@ -126,7 +126,7 @@ const LoadForecast = () => {
     }, [dateTest])
 
     useEffect(() => {
-        dateTest < minDateTestStart && setDateTest(null)
+        dateTest && (dateTest < minDateTestStart) && setDateTest(null)
     }, [minDateTestStart])
 
     useEffect(() => {
@@ -147,9 +147,11 @@ const LoadForecast = () => {
 
         axios.post('/upload/uploadCSVfile/', data, {headers: {"Content-Type": "multipart/form-data"}})
             .then(response => {
+                console.log(response.data)
                 setResolutions(response.data.allowed_resolutions)
                 setUploadSuccess(true)
 
+                console.log(response.data.allowed_validation_start, new Date(response.data.allowed_validation_start))
                 // Set MIN/MAX values for date fields
                 setMinDate(new Date(response.data.allowed_validation_start))
                 setMaxDate(new Date(response.data.dataset_end))
@@ -157,7 +159,7 @@ const LoadForecast = () => {
 
                 // Re-initialize date fields
                 setDateVal(new Date(response.data.allowed_validation_start))
-                setDateTest(null)
+                setDateTest(new Date(new Date(response.data.allowed_validation_start).getTime() +  (10 * 24 * 60 * 60 * 1000))) // TODO
                 setDateEnd(new Date(response.data.dataset_end))
 
                 setSeriesUri(response.data.fname)
