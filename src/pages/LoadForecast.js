@@ -130,7 +130,7 @@ const LoadForecast = () => {
     }, [minDateTestStart])
 
     useEffect(() => {
-        dateEnd < minDateEndStart && setDateEnd(null)
+        dateEnd && (dateEnd < minDateEndStart) && setDateEnd(null)
     }, [minDateEndStart])
 
     const handleAddNewFile = file => setNewFile(file)
