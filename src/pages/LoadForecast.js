@@ -63,6 +63,7 @@ const LoadForecast = () => {
     const [dayFirst, setDayFirst] = useState(false)
     const [models, setModels] = useState([])
     const [model, setModel] = useState('')
+    const [errorMessage, setErrorMessage] = useState('')
 
     const [loading, setLoading] = useState(false)
     const [executionLoading, setExecutionLoading] = useState(false)
@@ -170,6 +171,8 @@ const LoadForecast = () => {
                 document.getElementById('raised-button-file').value = ''
             })
             .catch(error => {
+                // TODO Fixes error handling
+                error.response?.status === 415 && setErrorMessage(error.response.data.detail)
                 setLoading(false)
                 setNewFileSuccess(false)
                 setNewFileFailure(true)
@@ -339,7 +342,7 @@ const LoadForecast = () => {
                             label="Dataset Resolution (Minutes)"
                             onChange={e => setExperimentResolution(e.target.value)}
                         >
-                            {resolutions.map(resolution => (
+                            {resolutions?.map(resolution => (
                                 <MenuItem key={resolution.value}
                                           value={resolution.value.toString()}>{resolution.display_value}</MenuItem>))}
                         </Select>
@@ -588,7 +591,7 @@ const LoadForecast = () => {
         </Snackbar>
         <Snackbar open={newFileFailure} autoHideDuration={3000} onClose={closeSnackbar}>
             <AlertCustom onClose={closeSnackbar} severity="error" sx={{width: '100%', mb: 5}}>
-                Something went wrong! Please try again!
+                {errorMessage}
             </AlertCustom>
         </Snackbar>
 
