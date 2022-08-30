@@ -100,3 +100,7 @@ code {
 .fancyButton {
     background: linear-gradient(to right, #1A88C9, #2AB683);
 }
+
+.menuItemActive {
+    background: linear-gradient(45deg, #f4f4f4 10%, #f4f4f4 90%);
+}

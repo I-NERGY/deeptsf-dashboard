@@ -13,7 +13,7 @@ const SignedInLinks = ({classes, navigate, location, setAuth, handleSignOut}) =>
             <ListItemButton
                 onClick={() => navigate('/user/profile')}
                 key={'My Profile'}
-                className={location.pathname === '/user/profile' ? classes.active : null}
+                className={location.pathname === '/user/profile' ? 'menuItemActive' : null}
             >
                 <ListItemIcon>{<AccountCircleIcon color="secondary"/>}</ListItemIcon>
                 <ListItemText primary={'My Profile'}></ListItemText>

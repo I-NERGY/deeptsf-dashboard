@@ -11,7 +11,7 @@ const SignedOutLinks = ({classes, navigate, location}) => {
         <React.Fragment>
             <ListItemButton
                 onClick={() => navigate('/signin')} key={'SignIn'}
-                className={location.pathname === '/signin' ? classes.active : null}
+                className={location.pathname === '/signin' ? 'menuItemActive' : null}
             >
                 <ListItemIcon>{<LoginOutlinedIcon color="secondary"/>}</ListItemIcon>
                 <ListItemText primary={'SignIn'}></ListItemText>
@@ -19,7 +19,7 @@ const SignedOutLinks = ({classes, navigate, location}) => {
             {/*<ListItem*/}
             {/*    onClick={() => navigate('/signup')}*/}
             {/*    button key={'Sign Up'}*/}
-            {/*    className={location.pathname === '/signup' ? classes.active : null}*/}
+            {/*    className={location.pathname === '/signup' ? 'menuItemActive' : null}*/}
             {/*>*/}
             {/*    <ListItemIcon>{<AppRegistrationOutlinedIcon color="secondary"/>}</ListItemIcon>*/}
             {/*    <ListItemText primary={'Sign Up'}></ListItemText>*/}

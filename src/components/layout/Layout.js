@@ -39,9 +39,11 @@ const drawerWidth = 260;
 const useStyles = {
     active: {
         background: 'linear-gradient(45deg, #f4f4f4 30%, #f4f4f4 90%)',
-    }, nested: {
+    },
+    nested: {
         paddingLeft: '30px !important',
-    }, avatar: {
+    },
+    avatar: {
         marginLeft: 3, marginTop: 1, color: 'white', '&:hover': {
             color: '#1A88C9',
         }
@@ -187,7 +189,7 @@ export default function Layout({children}) {
                         <div key={item.text}>
                             <ListItemButton
                                 onClick={item.handleNested ? item.handleNested : () => navigate(item.path)}
-                                key={item.text} className={location.pathname === item.path ? classes.active : null}
+                                key={item.text} className={location.pathname === item.path ? 'menuItemActive' : null}
                             >
                                 <ListItemIcon>{item.icon}</ListItemIcon>
                                 <ListItemText primary={item.text}></ListItemText>
@@ -201,7 +203,7 @@ export default function Layout({children}) {
                                 <Collapse in={item.collapsed} timeout="auto" unmountOnExit>
                                     <List component="div" disablePadding>
                                         <ListItemButton sx={{pl: 4}}
-                                                        className={clsx(classes.nested, location.pathname === subItem.path ? classes.active : null)}>
+                                                        className={clsx(classes.nested, location.pathname === subItem.path ? 'menuItemActive' : null)}>
                                             <ListItemIcon>
                                                 {subItem.icon}
                                             </ListItemIcon>
@@ -212,10 +214,10 @@ export default function Layout({children}) {
                             </Link>))}
                         </div>))}
                     {!auth.username && <React.Fragment>
-                        <SignedOutLinks classes={classes} navigate={navigate} location={location}/>
+                        <SignedOutLinks navigate={navigate} location={location}/>
                     </React.Fragment>}
                     {auth.username && <React.Fragment>
-                        <SignedInLinks classes={classes} navigate={navigate} location={location} setAuth={setAuth}
+                        <SignedInLinks navigate={navigate} location={location} setAuth={setAuth}
                                        handleSignOut={handleSignOut}/>
                     </React.Fragment>}
                 </List>
