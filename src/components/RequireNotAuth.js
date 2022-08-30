@@ -2,10 +2,10 @@
 
 import React from 'react';
 import {useLocation, Navigate, Outlet} from "react-router-dom";
-import useAuth from "../hooks/useAuth";
+import useAuthContext from "../hooks/useAuthContext";
 
 const RequireNotAuth = (props) => {
-    const {auth} = useAuth()
+    const {auth} = useAuthContext()
     const location = useLocation()
 
 

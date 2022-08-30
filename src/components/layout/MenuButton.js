@@ -39,26 +39,22 @@ export default function MenuButton({subLinks, signout}) {
                 }}
             >
                 {subLinks.map(subPage => (
-                    <React.Fragment>
-                        <React.Fragment>
-                            {subPage.link && <Link to={subPage.link} key={subPage.link}
-                                                   style={{textDecoration: 'none', color: 'inherit', width: '100%'}}>
-                                <Stack display={'flex'} direction={'row'} justifyContent={'space-between'}
-                                       alignItems={'center'} px={1} className={'iconButtonMenuItemStack'}>
-                                    {subPage.icon} <MenuItem className={'iconButtonMenuItem'}>{subPage.title}</MenuItem>
-                                </Stack>
-                            </Link>}
-                        </React.Fragment>
-                        <React.Fragment>
-                            {subPage.signout && <span onClick={signout} key={subPage.link}
-                                                   style={{textDecoration: 'none', color: 'inherit', width: '100%'}}>
+                    <div key={Math.floor(Math.random() * 10)}>
+                        {subPage.link && <Link to={subPage.link} key={subPage.link}
+                                               style={{textDecoration: 'none', color: 'inherit', width: '100%'}}>
+                            <Stack display={'flex'} direction={'row'} justifyContent={'space-between'}
+                                   alignItems={'center'} px={1} className={'iconButtonMenuItemStack'}>
+                                {subPage.icon} <MenuItem className={'iconButtonMenuItem'}>{subPage.title}</MenuItem>
+                            </Stack>
+                        </Link>}
+                        {subPage.signout && <span onClick={signout} key={subPage.link}
+                                                  style={{textDecoration: 'none', color: 'inherit', width: '100%'}}>
                                 <Stack display={'flex'} direction={'row'} justifyContent={'space-between'}
                                        alignItems={'center'} px={1} className={'iconButtonMenuItemStack'}>
                                     {subPage.icon} <MenuItem className={'iconButtonMenuItem'}>{subPage.title}</MenuItem>
                                 </Stack>
                             </span>}
-                        </React.Fragment>
-                    </React.Fragment>
+                    </div>
                 ))}
             </Menu>
         </React.Fragment>

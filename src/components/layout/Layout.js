@@ -1,6 +1,7 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Link, useNavigate, useLocation} from "react-router-dom";
-import useAuth from "../../hooks/useAuth";
+import useAuthContext from "../../hooks/useAuthContext";
+import {useLogout} from "../../hooks/useLogout";
 
 import {styled, useTheme} from '@mui/material/styles';
 import clsx from 'clsx';
@@ -15,8 +16,8 @@ import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import Collapse from '@mui/material/Collapse';
 import Typography from '@mui/material/Typography';
-
 import MenuIcon from '@mui/icons-material/Menu';
+
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ListItemButton from '@mui/material/ListItemButton';
@@ -101,7 +102,8 @@ const DrawerHeader = styled('div')(({theme}) => ({
 }));
 
 export default function Layout({children}) {
-    const {auth, setAuth} = useAuth()
+    const {user} = useAuthContext()
+    const {logout} = useLogout()
     const classes = useStyles;
     const theme = useTheme();
     const navigate = useNavigate();
@@ -109,8 +111,7 @@ export default function Layout({children}) {
     const location = useLocation()
 
     const handleSignOut = () => {
-        setAuth({})
-        localStorage.clear()
+        logout()
         navigate('/signin')
     }
 
@@ -158,8 +159,8 @@ export default function Layout({children}) {
                     {/*     style={drawerOpen ? {display: 'none', height: '50px'} : {*/}
                     {/*         display: 'block', height: '50px'*/}
                     {/*     }}/>*/}
-                    {auth.username && <React.Fragment>
-                        <Typography style={{marginLeft: 'auto', color: 'white'}}>Welcome, {auth.username}</Typography>
+                    {user && <React.Fragment>
+                        <Typography style={{marginLeft: 'auto', color: 'white'}}>Welcome, {user.username}</Typography>
                         <MenuButton subLinks={appbarMenuButtonItems} signout={handleSignOut}/>
                     </React.Fragment>}
                 </Toolbar>
@@ -213,13 +214,6 @@ export default function Layout({children}) {
                                 </Collapse>
                             </Link>))}
                         </div>))}
-                    {!auth.username && <React.Fragment>
-                        <SignedOutLinks navigate={navigate} location={location}/>
-                    </React.Fragment>}
-                    {auth.username && <React.Fragment>
-                        <SignedInLinks navigate={navigate} location={location} setAuth={setAuth}
-                                       handleSignOut={handleSignOut}/>
-                    </React.Fragment>}
                 </List>
 
                 <Divider/>

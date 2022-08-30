@@ -49,9 +49,9 @@ function App() {
                         <Route path="/" element={<Homepage/>}/>
 
                         {/* Routes not accessible to logged-in users */}
-                        <Route element={<RequireNotAuth/>}>
+                        {/*<Route element={<RequireNotAuth/>}>*/}
                             <Route path="/signin" element={<SignIn/>}/>
-                        </Route>
+                        {/*</Route>*/}
 
                         {/* Routes not accessible to logged-out users */}
                         <Route element={<RequireAuth/>}>

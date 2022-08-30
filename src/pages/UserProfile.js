@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from "react";
 import {styled} from '@mui/material/styles';
 
-import useAuth from "../hooks/useAuth";
+import useAuthContext from "../hooks/useAuthContext";
 import axios from "../api/axios";
 
 import Table from '@mui/material/Table';
@@ -54,7 +54,7 @@ const StyledTableRow = styled(TableRow)(({theme}) => ({
 }));
 
 const UserProfile = () => {
-    const {auth} = useAuth()
+    const {auth} = useAuthContext()
     const [firstName, setFirstName] = useState('')
     const [lastName, setLastName] = useState('')
     const [email, setEmail] = useState('')

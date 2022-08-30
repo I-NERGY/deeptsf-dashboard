@@ -3,11 +3,11 @@
 import React from "react";
 import {useEffect, useState} from "react";
 import {useLocation, Navigate, Outlet} from "react-router-dom";
-import useAuth from "../hooks/useAuth";
+import useAuthContext from "../hooks/useAuthContext";
 import axios from "../api/axios";
 
 const RequireAuth = () => {
-    const {auth, setAuth} = useAuth()
+    const {auth, setAuth} = useAuthContext()
     const [accessTokenValid, setAccessTokenValid] = useState('')
     const location = useLocation()
 

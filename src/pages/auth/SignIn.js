@@ -1,5 +1,6 @@
 import React, {useState, useEffect, useContext} from 'react';
-import useAuth from "../../hooks/useAuth";
+import useAuthContext from "../../hooks/useAuthContext";
+import {useLogin} from "../../hooks/useLogin";
 import {Link, useNavigate, useLocation} from "react-router-dom";
 
 import axios from '../../api/axios'
@@ -38,7 +39,8 @@ const useStyles = {
 };
 
 const SignIn = (props) => {
-    const {setAuth} = useAuth()
+    const {login, error, isLoading} = useLogin()
+    const {setAuth} = useAuthContext()
     const navigate = useNavigate()
     const location = useLocation()
     const from = location.state?.from.pathname || '/';
@@ -79,21 +81,7 @@ const SignIn = (props) => {
     }
 
     const handleSignIn = (username, password) => {
-        let credentials = {
-            username: username,
-            password: password
-        }
-        let LOGIN_URL = '/user/get/token'
-
-        axios.post(LOGIN_URL, credentials)
-            .then(response => {
-
-                const accessToken = response.data?.access_token
-                setAuth({username, password, accessToken})
-                localStorage.setItem('userTemp', JSON.stringify({username, password, accessToken}))
-                navigate(from, {replace: true})
-            })
-            .catch(error => setSignInFailed(true))
+        login(username, password)
     }
 
     const checkForm = (e) => {
@@ -175,7 +163,7 @@ const SignIn = (props) => {
                                     )
                                 }}
                             />
-                            {signInFailed &&
+                            {error &&
                                 <ErrorMessage message="The credentials you provided do not match. Please try again."/>}
                             <Box sx={{mt: 3, mb: 2}}>
                                 <Button
