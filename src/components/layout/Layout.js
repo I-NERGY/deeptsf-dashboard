@@ -154,11 +154,6 @@ export default function Layout({children}) {
                         <MenuIcon/>
                     </IconButton>
                     <h3 style={{color: 'white'}}>I-NERGY Load Forecasting</h3>
-                    {/* Appbar main logo */}
-                    {/*<img src={'/images/i-nergy_logo_trans_back.png'}*/}
-                    {/*     style={drawerOpen ? {display: 'none', height: '50px'} : {*/}
-                    {/*         display: 'block', height: '50px'*/}
-                    {/*     }}/>*/}
                     {user && <React.Fragment>
                         <Typography style={{marginLeft: 'auto', color: 'white'}}>Welcome, {user.username}</Typography>
                         <MenuButton subLinks={appbarMenuButtonItems} signout={handleSignOut}/>

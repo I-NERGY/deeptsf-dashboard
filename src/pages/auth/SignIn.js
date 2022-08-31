@@ -20,6 +20,7 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 
 import ErrorMessage from "../../components/layout/ErrorMessage";
+import Loading from "../../components/layout/Loading";
 
 const useStyles = {
     paper: {
@@ -165,6 +166,8 @@ const SignIn = (props) => {
                             />
                             {error &&
                                 <ErrorMessage message="The credentials you provided do not match. Please try again."/>}
+                            {isLoading &&
+                                <Box mt={3} display="flex" justifyContent="center" alignItems="center"><Loading/></Box>}
                             <Box sx={{mt: 3, mb: 2}}>
                                 <Button
                                     style={{color: 'white'}}
