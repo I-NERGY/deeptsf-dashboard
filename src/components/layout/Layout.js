@@ -209,6 +209,8 @@ export default function Layout({children}) {
                                 </Collapse>
                             </Link>))}
                         </div>))}
+                    {!user && <SignedOutLinks navigate={navigate} location={location}/>}
+                    {user && <SignedInLinks navigate={navigate} location={location} handleSignOut={handleSignOut}/>}
                 </List>
 
                 <Divider/>

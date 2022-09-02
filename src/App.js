@@ -54,9 +54,9 @@ function App() {
                         {/*</Route>*/}
 
                         {/* Routes not accessible to logged-out users */}
-                        <Route element={<RequireAuth/>}>
+                        {/*<Route element={<RequireAuth/>}>*/}
                             <Route path="/user/profile" element={<UserProfile/>}/>
-                        </Route>
+                        {/*</Route>*/}
 
                         {/*<Route element={<RequireAuth/>}>*/}
                         <Route path="/load-forecast" element={<LoadForecast/>}/>

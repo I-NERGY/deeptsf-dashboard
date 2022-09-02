@@ -71,41 +71,41 @@ const UserProfile = () => {
     const [attributesExpanded, setAttributesExpanded] = useState(false)
 
     // Get user info on first load
-    useEffect(() => {
-        setInfoLoading(true)
-        axios.get(`/user/get/username/${auth.username}`)
-            .then(response => {
-                if (response.data.attributes) {
-                    setAttributes(Object.entries(response.data.attributes))
-                }
-                setFirstName(response.data.firstName)
-                setLastName(response.data.lastName)
-                setEmail(response.data.email)
-                setUserID(response.data.id)
-                setInfoLoading(false)
-
-            })
-            .catch(error => {
-                setInfoLoading(false)
-                console.log(error)
-            })
-    }, [])
-
-    // Get user roles on first load
-    useEffect(() => {
-        setRolesLoading(true)
-        axios.get(`user/${auth.username}/client/VesselAI_platform/roles`) // # TODO initiate RDF Pool client
-            .then(response => {
-                setTimeout(() => {
-                    setRolesLoading(false)
-                    setRoles(response.data.roles)
-                }, 500)
-            })
-            .catch(error => {
-                setRolesLoading(false)
-                console.log(error)
-            })
-    }, [])
+    // useEffect(() => {
+    //     setInfoLoading(true)
+    //     axios.get(`/user/get/username/${auth.username}`)
+    //         .then(response => {
+    //             if (response.data.attributes) {
+    //                 setAttributes(Object.entries(response.data.attributes))
+    //             }
+    //             setFirstName(response.data.firstName)
+    //             setLastName(response.data.lastName)
+    //             setEmail(response.data.email)
+    //             setUserID(response.data.id)
+    //             setInfoLoading(false)
+    //
+    //         })
+    //         .catch(error => {
+    //             setInfoLoading(false)
+    //             console.log(error)
+    //         })
+    // }, [])
+    //
+    // // Get user roles on first load
+    // useEffect(() => {
+    //     setRolesLoading(true)
+    //     axios.get(`user/${auth.username}/client/VesselAI_platform/roles`) // # TODO initiate RDF Pool client
+    //         .then(response => {
+    //             setTimeout(() => {
+    //                 setRolesLoading(false)
+    //                 setRoles(response.data.roles)
+    //             }, 500)
+    //         })
+    //         .catch(error => {
+    //             setRolesLoading(false)
+    //             console.log(error)
+    //         })
+    // }, [])
 
     const breadcrumbs = [
         <Typography fontSize={'16px'} underline="hover" key="1" color="inherit">
