@@ -1,8 +1,7 @@
-import React, {useState, useEffect} from "react";
+import React, {useState} from "react";
 import {styled} from '@mui/material/styles';
 
 import useAuthContext from "../hooks/useAuthContext";
-import axios from "../api/axios";
 
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -13,7 +12,6 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Link from '@mui/material/Link';
 import Container from '@mui/material/Container';
-import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
 import Grid from '@mui/material/Grid';
@@ -54,12 +52,13 @@ const StyledTableRow = styled(TableRow)(({theme}) => ({
 }));
 
 const UserProfile = () => {
-    const {auth} = useAuthContext()
+    const {user} = useAuthContext()
+    const roles = localStorage.getItem('roles').split(',')
     const [firstName, setFirstName] = useState('')
     const [lastName, setLastName] = useState('')
     const [email, setEmail] = useState('')
     const [userID, setUserID] = useState('')
-    const [roles, setRoles] = useState([])
+    // const [roles, setRoles] = useState([])
     const [attributes, setAttributes] = useState([])
 
     const [infoLoading, setInfoLoading] = useState(false)
@@ -90,27 +89,8 @@ const UserProfile = () => {
     //             console.log(error)
     //         })
     // }, [])
-    //
-    // // Get user roles on first load
-    // useEffect(() => {
-    //     setRolesLoading(true)
-    //     axios.get(`user/${auth.username}/client/VesselAI_platform/roles`) // # TODO initiate RDF Pool client
-    //         .then(response => {
-    //             setTimeout(() => {
-    //                 setRolesLoading(false)
-    //                 setRoles(response.data.roles)
-    //             }, 500)
-    //         })
-    //         .catch(error => {
-    //             setRolesLoading(false)
-    //             console.log(error)
-    //         })
-    // }, [])
 
     const breadcrumbs = [
-        <Typography fontSize={'16px'} underline="hover" key="1" color="inherit">
-            Dashboard
-        </Typography>,
         <Link fontSize={'16px'} underline="hover" key="1" color="inherit" href="/">
             Homepage
         </Link>,
@@ -121,9 +101,9 @@ const UserProfile = () => {
 
     return (
         <React.Fragment>
-            <Breadcrumb breadcrumbs={breadcrumbs} welcome_msg={'Welcome to your MATRYCS RDF Pool profile page'}/>
+            <Breadcrumb breadcrumbs={breadcrumbs} welcome_msg={'Welcome to your I-NERGY Load Forecasting profile page'}/>
 
-            {!infoLoading && <Box style={{display: 'flex'}} sx={{padding: 3, width: '100%'}}>
+            <Box style={{display: 'flex'}} sx={{padding: 3, width: '100%'}}>
                 <Accordion expanded={userInfoExpanded} sx={{width: '100%'}}>
                     <AccordionSummary
                         onClick={() => setUserInfoExpanded(!userInfoExpanded)}
@@ -142,7 +122,7 @@ const UserProfile = () => {
                                 <FiberManualRecordIcon sx={{marginRight: '5px'}} color={'success'}
                                                        style={{marginTop: '5%'}}/>
                                 <Typography variant={'h6'}
-                                            sx={{color: 'text.secondary', fontWeight: 'bold'}}>{auth.username}
+                                            sx={{color: 'text.secondary', fontWeight: 'bold'}}>{user?.username}
                                 </Typography>
                             </Box>
 
@@ -182,7 +162,7 @@ const UserProfile = () => {
                                             <StyledTableRow
                                                 sx={{'&:last-child td, &:last-child th': {border: 0}}}>
                                                 <TableCell sx={{fontSize: '18px', padding: '10px'}} align="center">
-                                                    <Typography fontSize={'large'}>{auth.username}</Typography>
+                                                    <Typography fontSize={'large'}>{user?.username}</Typography>
                                                 </TableCell>
                                                 <TableCell sx={{fontSize: '18px', padding: '10px'}} align="center">
                                                     <Typography fontSize={'large'}>{userID}</Typography>
@@ -256,13 +236,13 @@ const UserProfile = () => {
                                                     <Typography fontSize={'large'}>No attributes assigned.</Typography>}
                                                 </TableCell>
                                                 <TableCell sx={{fontSize: '18px', padding: '10px'}} align="center">
-                                                    <Typography fontSize={'large'}>{email}</Typography>
+                                                    <Typography fontSize={'large'}>{email ? email : '-'}</Typography>
                                                 </TableCell>
                                                 <TableCell sx={{fontSize: '18px', padding: '10px'}} align="center">
-                                                    <Typography fontSize={'large'}>{firstName}</Typography>
+                                                    <Typography fontSize={'large'}>{firstName ? firstName : '-'}</Typography>
                                                 </TableCell>
                                                 <TableCell sx={{fontSize: '18px', padding: '10px'}} align="center">
-                                                    <Typography fontSize={'large'}>{lastName}</Typography>
+                                                    <Typography fontSize={'large'}>{lastName ? lastName : '-'}</Typography>
                                                 </TableCell>
                                             </StyledTableRow>
                                         </TableBody>
@@ -272,7 +252,7 @@ const UserProfile = () => {
                         </Grid>
                     </AccordionDetails>
                 </Accordion>
-            </Box>}
+            </Box>
         </React.Fragment>
     );
 };
