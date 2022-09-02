@@ -209,11 +209,13 @@ export default function Layout({children}) {
                                 </Collapse>
                             </Link>))}
                         </div>))}
+                </List>
+                <Divider/>
+
+                <List>
                     {!user && <SignedOutLinks navigate={navigate} location={location}/>}
                     {user && <SignedInLinks navigate={navigate} location={location} handleSignOut={handleSignOut}/>}
                 </List>
-
-                <Divider/>
 
             </Drawer>
             <Main open={drawerOpen} style={{overflow: 'hidden', paddingBottom: 0}}>
