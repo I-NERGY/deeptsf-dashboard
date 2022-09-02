@@ -11,7 +11,7 @@ import RequireNotAuth from "./components/RequireNotAuth";
 import {ThemeProvider, createTheme} from '@mui/material/styles';
 import LoadForecast from "./pages/LoadForecast";
 
-axios.defaults.baseURL = 'http://131.154.97.48:8000';
+axios.defaults.baseURL = 'http://131.154.97.48:8080';
 
 // Set primary color here
 let primary = '#97A94D'
