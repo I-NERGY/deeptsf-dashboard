@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Link, useNavigate, useLocation} from "react-router-dom";
 import useAuthContext from "../../hooks/useAuthContext";
 import {useLogout} from "../../hooks/useLogout";
@@ -102,13 +102,20 @@ const DrawerHeader = styled('div')(({theme}) => ({
 }));
 
 export default function Layout({children}) {
-    const {user} = useAuthContext()
+    const {user, roles} = useAuthContext()
     const {logout} = useLogout()
     const classes = useStyles;
     const theme = useTheme();
     const navigate = useNavigate();
-
     const location = useLocation()
+
+    const menuItems = [
+        {
+            text: 'Home', icon: <HomeOutlinedIcon color="secondary"/>, path: "/"
+        },
+    ]
+
+    const [menu, setMenu] = useState(menuItems)
 
     const handleSignOut = () => {
         logout()
@@ -120,26 +127,15 @@ export default function Layout({children}) {
     const handleDrawerOpen = () => setDrawerOpen(true);
     const handleDrawerClose = () => setDrawerOpen(false);
 
-    const menuItems = [
-        {
-            text: 'Home', icon: <HomeOutlinedIcon color="secondary"/>, path: "/"
-        },
-        {
-            text: 'Load Forecast', icon: <UpdateIcon color="secondary"/>, path: "/load-forecast"
-        },
-        // {
-        //     text: 'Οι συσκευές μου',
-        //     icon: <LoginOutlinedIcon color="secondary"/>,
-        //     path: "/appliances",
-        //     subItems: [
-        //         {text: 'Όλες', icon: <LoginOutlinedIcon color="secondary"/>, path: "/appliances"},
-        //         {text: 'Κλιματιστικά', icon: <LoginOutlinedIcon color="secondary"/>, path: "/airconditions"},
-        //         {text: 'Θερμοσίφωνες', icon: <LoginOutlinedIcon color="secondary"/>, path: "/boilers"},
-        //     ],
-        //     collapsed: nestedAppliances,
-        //     handleNested: () => handleNestedAppliances()
-        // },
-    ]
+    useEffect(() => {
+        if (roles?.length > 1 && roles.includes('data_scientist')) {
+            menuItems.push(
+                {text: 'Load Forecast', icon: <UpdateIcon color="secondary"/>, path: "/load-forecast"},
+                {text: 'MLFlow', icon: <img src="/images/mlflow_logo.jpg" alt="" width={'25px'} style={{borderRadius: '50%'}}/>, path: location.pathname + '', link: 'http://131.154.97.48:5000/'})
+            setMenu(menuItems)
+        }
+    }, [roles])
+
 
     return (<React.Fragment>
         <Box sx={{display: 'flex', minHeight: `calc(100vh - 60px)`}}>
@@ -181,17 +177,17 @@ export default function Layout({children}) {
                 <Divider/>
 
                 <List>
-                    {menuItems.map(item => (
+                    {menu.map(item => (
                         <div key={item.text}>
                             <ListItemButton
-                                onClick={item.handleNested ? item.handleNested : () => navigate(item.path)}
+                                onClick={item.handleNested ? item.handleNested : item.link ? () => window.open(item.link, '_blank') : () => navigate(item.path)}
                                 key={item.text} className={location.pathname === item.path ? 'menuItemActive' : null}
                             >
                                 <ListItemIcon>{item.icon}</ListItemIcon>
                                 <ListItemText primary={item.text}></ListItemText>
                                 {item.subItems && (item.collapsed ? <ExpandLessIcon/> : <ExpandMoreIcon/>)}
                             </ListItemButton>
-                            {item.subItems && item.subItems.map(subItem => (<Link key={subItem.text} to={subItem.path}
+                            {item.subItems && item.subItems.map(subItem => (<Link key={subItem.text}
                                                                                   style={{
                                                                                       textDecoration: 'none',
                                                                                       color: '#000'
