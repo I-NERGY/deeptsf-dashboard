@@ -27,6 +27,7 @@ import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import UpdateIcon from '@mui/icons-material/Update';
+import QueryStatsIcon from '@mui/icons-material/QueryStats';
 
 import SignedOutLinks from "./SignedOutLinks";
 import SignedInLinks from "./SignedInLinks";
@@ -131,7 +132,19 @@ export default function Layout({children}) {
         if (roles?.length > 1 && roles.includes('data_scientist')) {
             menuItems.push(
                 {text: 'Load Forecast', icon: <UpdateIcon color="secondary"/>, path: "/load-forecast"},
-                {text: 'MLFlow', icon: <img src="/images/mlflow_logo.jpg" alt="" width={'25px'} style={{borderRadius: '50%'}}/>, path: location.pathname + '', link: 'http://131.154.97.48:5000/'})
+                {
+                    text: 'MLFlow',
+                    icon: <img src="/images/mlflow_logo.jpg" alt="" width={'25px'} style={{borderRadius: '50%'}}/>,
+                    path: location.pathname + ' ',
+                    link: 'http://131.154.97.48:5000/'
+                },
+                {text: 'Metrics', icon: <QueryStatsIcon color="secondary"/>, path: "/metrics"}
+            )
+            setMenu(menuItems)
+        }
+
+        if (roles?.length > 1 && roles.includes('energy_engineer')) {
+            menuItems.push({text: 'Metrics', icon: <QueryStatsIcon color="secondary"/>, path: "/metrics"})
             setMenu(menuItems)
         }
     }, [roles])
