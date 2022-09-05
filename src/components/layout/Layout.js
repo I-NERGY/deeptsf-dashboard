@@ -120,6 +120,7 @@ export default function Layout({children}) {
 
     const handleSignOut = () => {
         logout()
+        setMenu(menuItems)
         navigate('/signin')
     }
 
