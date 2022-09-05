@@ -50,18 +50,18 @@ function App() {
                         <Route path="/" element={<Homepage/>}/>
 
                         {/* Routes not accessible to logged-in users */}
-                        {/*<Route element={<RequireNotAuth/>}>*/}
+                        <Route element={<RequireNotAuth/>}>
                             <Route path="/signin" element={<SignIn/>}/>
-                        {/*</Route>*/}
+                        </Route>
 
                         {/* Routes not accessible to logged-out users */}
-                        {/*<Route element={<RequireAuth/>}>*/}
+                        <Route element={<RequireAuth/>}>
                             <Route path="/user/profile" element={<UserProfile/>}/>
-                        {/*</Route>*/}
+                        </Route>
 
-                        {/*<Route element={<RequireAuth/>}>*/}
-                        <Route path="/load-forecast" element={<LoadForecast/>}/>
-                        {/*</Route>*/}
+                        <Route element={<RequireAuth/>}>
+                            <Route path="/load-forecast" element={<LoadForecast/>}/>
+                        </Route>
 
                         <Route path="/metrics" element={<Metrics/>}/>
                     </Routes>
