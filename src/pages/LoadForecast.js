@@ -1,5 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import axios from "axios";
+import useAuthContext from "../hooks/useAuthContext";
+import {useNavigate} from "react-router-dom";
+
 import {modelConfigurations} from "../modelConfigurations";
 
 import Link from '@mui/material/Link';
@@ -59,6 +62,9 @@ const breadcrumbs = [
     </Typography>,];
 
 const LoadForecast = () => {
+    const {roles} = useAuthContext()
+    const navigate = useNavigate();
+    const [allowed, setAllowed] = useState(null)
     const [newFile, setNewFile] = useState()
     const [dayFirst, setDayFirst] = useState(false)
     const [models, setModels] = useState([])
@@ -100,6 +106,12 @@ const LoadForecast = () => {
     // useEffect(() => {
     //     axios.get('get_mlflow_tracking_uri').then(response => console.log(response.data))
     // }, [])
+
+    useEffect(() => {
+        if (roles) {
+            roles.includes('data_scientist') ? setAllowed(true) : navigate('/')
+        }
+    }, [roles])
 
     useEffect(() => {
         axios.get('/models/get_model_names')
@@ -160,7 +172,7 @@ const LoadForecast = () => {
 
                 // Re-initialize date fields
                 setDateVal(new Date(response.data.allowed_validation_start))
-                setDateTest(new Date(new Date(response.data.allowed_validation_start).getTime() +  (10 * 24 * 60 * 60 * 1000))) // TODO
+                setDateTest(new Date(new Date(response.data.allowed_validation_start).getTime() + (10 * 24 * 60 * 60 * 1000))) // TODO
                 setDateEnd(new Date(response.data.dataset_end))
 
                 setSeriesUri(response.data.fname)
@@ -259,329 +271,341 @@ const LoadForecast = () => {
     return (<div>
         <Breadcrumb breadcrumbs={breadcrumbs} welcome_msg={'Welcome to I-NERGY Load Forecasting'}/>
 
-        {/* Dataset Configuration */}
-        <Container maxWidth={'xl'} sx={{my: 5}}>
-            <Typography variant={'h4'} fontWeight={'bold'} sx={{mb: 3}}>Dataset Configuration</Typography>
-            <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
-                <Grid item xs={12} md={8}>
-                    <input
-                        accept=".csv"
-                        style={{display: 'none'}}
-                        id="raised-button-file"
-                        type="file"
-                        disabled={executionLoading}
-                        onChange={(event) => handleAddNewFile(event.target.files[0])}
-                    />
+        {allowed && <React.Fragment>
+            {/* Dataset Configuration */}
+            <Container maxWidth={'xl'} sx={{my: 5}}>
+                <Typography variant={'h4'} fontWeight={'bold'} sx={{mb: 3}}>Dataset Configuration</Typography>
+                <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
+                    <Grid item xs={12} md={8}>
+                        <input
+                            accept=".csv"
+                            style={{display: 'none'}}
+                            id="raised-button-file"
+                            type="file"
+                            disabled={executionLoading}
+                            onChange={(event) => handleAddNewFile(event.target.files[0])}
+                        />
 
-                    <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
-                        <label htmlFor="raised-button-file">
-                            <IconButton component={'span'} size={'large'}>
-                                <UploadFileOutlinedIcon fontSize="large"
-                                                        sx={{width: '60px', height: '60px', color: '#A1B927'}}/>
-                            </IconButton>
-                        </label>
-                        <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>
-                            Upload your .csv file
-                        </Typography>
-                    </Stack>
-                </Grid>
-                <Grid item xs={12} md={4}>
-                    {newFile &&
-                        <Grid container display={'flex'} flexDirection={'row'} justifyContent={'center'}>
-                            <Typography variant={'h5'} color={'inherit'} align={'right'} sx={{width: '100%'}}>
-                                Chosen file:
-                                <Typography fontWeight={'bold'}
-                                            color={'secondary'}>{newFile.name}
-                                </Typography>
+                        <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
+                            <label htmlFor="raised-button-file">
+                                <IconButton component={'span'} size={'large'}>
+                                    <UploadFileOutlinedIcon fontSize="large"
+                                                            sx={{width: '60px', height: '60px', color: '#A1B927'}}/>
+                                </IconButton>
+                            </label>
+                            <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>
+                                Upload your .csv file
                             </Typography>
-                        </Grid>}
-                    <Stack direction="row" spacing={2} sx={{alignItems: 'center', mb: 2}}>
-                        {newFile && !uploadSuccess && <>
-                            <Typography sx={{ml: 'auto'}} variant={'h6'}>Day First</Typography>
-                            <Checkbox
-                                disabled={executionLoading}
-                                checked={dayFirst}
-                                onChange={handleDayFirstCheckBox}
-                                sx={{'& .MuiSvgIcon-root': {fontSize: 28}}}
-                            />
-                        </>}
-                        {newFile && !uploadSuccess &&
-                            <Button variant={'contained'} component={'span'} size={'large'} color={'success'}
-                                    sx={{ml: 'auto'}} disabled={executionLoading}
-                                    endIcon={<UploadFileOutlinedIcon/>} onClick={handleUploadFile}>
-                                Upload file
-                            </Button>}
-                        {uploadSuccess &&
-                            <Button variant={'contained'} component={'span'} size={'medium'} color={'error'}
-                                    endIcon={<BackspaceOutlinedIcon/>} sx={{ml: 'auto'}}
-                                    onClick={handleClearNewFile}>
-                                Clear
-                            </Button>}
-                    </Stack>
-                </Grid>
-            </Grid>
-            <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
-                <Grid item xs={12} md={8}>
-                    <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
-                        <DataThresholdingIcon fontSize="large"
-                                              sx={{width: '60px', height: '60px', color: '#A1B927', ml: 2, my: 1}}/>
-                        <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>
-                            Select Timeseries Resolution
-                        </Typography>
-                    </Stack>
-                </Grid>
-                <Grid item xs={12} md={4}>
-                    <FormControl fullWidth>
-                        <InputLabel id="demo-simple-select-label">Dataset Resolution (Minutes)</InputLabel>
-                        <Select
-                            disabled={executionLoading}
-                            fullWidth
-                            labelId="demo-simple-select-label"
-                            id="demo-simple-select"
-                            value={experimentResolution}
-                            label="Dataset Resolution (Minutes)"
-                            onChange={e => setExperimentResolution(e.target.value)}
-                        >
-                            {resolutions?.map(resolution => (
-                                <MenuItem key={resolution.value}
-                                          value={resolution.value.toString()}>{resolution.display_value}</MenuItem>))}
-                        </Select>
-                    </FormControl>
-                </Grid>
-            </Grid>
-            <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
-                <Grid item xs={12} md={6}>
-                    <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
-                        <DateRangeIcon fontSize="large"
-                                       sx={{width: '60px', height: '60px', color: '#A1B927', ml: 2, my: 1}}/>
-                        <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>Dataset Split</Typography>
-                    </Stack>
-                </Grid>
-                <Grid item xs={12} md={6}>
-                    <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
-                        <Grid item xs={12} md={4}>
-                            <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                <DesktopDatePicker
-                                    disabled={executionLoading || !uploadSuccess}
-                                    inputFormat="dd/MM/yyyy"
-                                    label="Validation Start Date"
-                                    value={dateVal}
-                                    minDate={minDate ? minDate : void (0)}
-                                    maxDate={maxDate ? maxDate : void (0)}
-                                    onChange={(newValue) => {
-                                        setDateVal(newValue);
-                                    }}
-                                    renderInput={(params) => <TextField fullWidth {...params}/>}
-                                />
-                            </LocalizationProvider>
-                        </Grid>
-                        <Grid item xs={12} md={4}>
-                            <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                <DesktopDatePicker
-                                    disabled={executionLoading || !uploadSuccess}
-                                    inputFormat="dd/MM/yyyy"
-                                    label="Test Start Date"
-                                    value={dateTest}
-                                    minDate={minDateTestStart ? minDateTestStart : void (0)}
-                                    maxDate={maxDateTestStart ? maxDateTestStart : void (0)}
-                                    onChange={(newValue) => {
-                                        setDateTest(newValue);
-                                    }}
-                                    renderInput={(params) => <TextField fullWidth {...params} helperText={null}/>}
-                                />
-                            </LocalizationProvider>
-                        </Grid>
-                        <Grid item xs={12} md={4}>
-                            <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                <DesktopDatePicker
-                                    disabled={executionLoading || !uploadSuccess}
-                                    inputFormat="dd/MM/yyyy"
-                                    label="Test End Date"
-                                    value={dateEnd}
-                                    minDate={minDateEndStart ? minDateEndStart : void (0)}
-                                    maxDate={maxDate ? maxDate : void (0)}
-                                    onChange={(newValue) => {
-                                        setDateEnd(newValue);
-                                    }}
-                                    renderInput={(params) => <TextField fullWidth {...params} helperText={null}/>}
-                                />
-                            </LocalizationProvider>
-                        </Grid>
+                        </Stack>
                     </Grid>
-                </Grid>
-            </Grid>
-        </Container>
-        <hr/>
-
-        {/* Model Training Setup */}
-        <Container maxWidth={'xl'} sx={{my: 5}}>
-            <Typography variant={'h4'} fontWeight={'bold'} sx={{mb: 3}}>Model Training Setup</Typography>
-            <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
-                <Grid item xs={12} md={6}>
-                    <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
-                        <LabelOutlinedIcon fontSize="large"
-                                           sx={{width: '60px', height: '60px', color: '#A1B927', ml: 2, my: 1}}/>
-                        <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>MLFlow Experiment
-                            Name</Typography>
-                    </Stack>
-                </Grid>
-                <Grid item xs={12} md={6}>
-                    <Grid container spacing={2} display={'flex'} alignItems={'center'}>
-                        <Grid item xs={6} md={8}>
-                            <TextField id="outlined-basic" label="Experiment name" variant="outlined" required fullWidth
-                                       value={experimentName} error={experimentNameError && experimentName === ''}
-                                       onChange={e => setExperimentName(e.target.value)} disabled={executionLoading}/>
-                        </Grid>
-                        <Grid item xs={6} md={4} display={'flex'} alignItems={'center'}>
-                            <Typography sx={{ml: 'auto'}} variant={'body1'} fontWeight={'bold'}>Ignore Previous
-                                Runs</Typography>
-                            <Checkbox
-                                checked={ignorePrevious} disabled={executionLoading}
-                                onChange={handleIgnoreFirstCheckBox}
-                                sx={{'& .MuiSvgIcon-root': {fontSize: 28}}}
-                            />
-                        </Grid>
-                    </Grid>
-                </Grid>
-            </Grid>
-            <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
-                <Grid item xs={12} md={6}>
-                    <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
-                        <ModelTrainingIcon fontSize="large"
-                                           sx={{width: '60px', height: '60px', color: '#A1B927', ml: 2, my: 1}}/>
-                        <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>Choose a model</Typography>
-                    </Stack>
-                </Grid>
-                <Grid item xs={12} md={6}>
-                    <FormControl fullWidth>
-                        <InputLabel id="demo-simple-select-label">Choose a model</InputLabel>
-                        <Select
-                            labelId="demo-simple-select-label"
-                            id="demo-simple-select"
-                            value={model}
-                            disabled={executionLoading}
-                            label="Choose a model"
-                            onChange={e => setModel(e.target.value)}
-                        >
-                            {models && models.map(modelItem => (
-                                <MenuItem key={modelItem.model_name}
-                                          value={modelItem}>{modelItem.model_name}</MenuItem>))}
-                        </Select>
-                    </FormControl>
-                </Grid>
-            </Grid>
-            <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
-                <Grid item xs={12} md={6}>
-                    <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
-                        <SettingsApplicationsIcon fontSize="large"
-                                                  sx={{width: '60px', height: '60px', color: '#A1B927', ml: 2, my: 1}}/>
-                        <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>
-                            Select Hyperparameters</Typography>
-                    </Stack>
-                </Grid>
-                <Grid item xs={12} md={6}>
-                    {!model && <Alert severity="warning">Choose a model to see the available configurations!</Alert>}
-                </Grid>
-            </Grid>
-
-            <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
-                {model && availableConfigurations && availableConfigurations.map(config => (
-                    <Grid item xs={6} md={2} key={config[0]}>
-                        <Card elevation={chosenConfiguration === availableConfigurations.indexOf(config) ? 10 : 1}
-                              onClick={() => handleChooseConfiguration(availableConfigurations.indexOf(config))}
-                              sx={{background: chosenConfiguration === availableConfigurations.indexOf(config) ? '#ACBF5D' : ''}}>
-                            <CardContent>
-                                <Stack direction={'row'}>
-                                    <Typography variant={'h6'} gutterBottom>
-                                        {config[0]}
+                    <Grid item xs={12} md={4}>
+                        {newFile &&
+                            <Grid container display={'flex'} flexDirection={'row'} justifyContent={'center'}>
+                                <Typography variant={'h5'} color={'inherit'} align={'right'} sx={{width: '100%'}}>
+                                    Chosen file:
+                                    <Typography fontWeight={'bold'}
+                                                color={'secondary'}>{newFile.name}
                                     </Typography>
-                                    {chosenConfiguration === availableConfigurations.indexOf(config) &&
-                                        <CheckCircleIcon color={'success'} sx={{ml: 'auto'}}/>}
-                                </Stack>
-                                <hr style={{borderBottom: 0}}/>
-
-                                {Object.entries(config[1]).map(([parameterName, parameterValue]) => {
-                                    return (<Typography variant={'subtitle2'}>
-                                        <span style={{fontWeight: 'bold'}}>{parameterName}</span>: {parameterValue}
-                                    </Typography>);
-                                })}
-                            </CardContent>
-                        </Card>
-                    </Grid>))}
-                {model && availableConfigurations.length === 0 && <Container maxWidth={'lg'} sx={{my: 4}}>
-                    <Alert severity="error">No available configurations for this model!</Alert>
-                </Container>}
-            </Grid>
-        </Container>
-        <hr/>
-
-        {/* Model Evaluation Setup */}
-        <Container maxWidth={'xl'} sx={{my: 5}}>
-            <Typography variant={'h4'} fontWeight={'bold'} sx={{mb: 3}}>Model Evaluation Setup</Typography>
-            <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
-                <Grid item xs={12} md={6}>
-                    <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
-                        <LineAxisOutlinedIcon fontSize="large"
-                                              sx={{width: '60px', height: '60px', color: '#A1B927', ml: 2, my: 1}}/>
-                        <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>Choose Backtest Forecast
-                            Horizon</Typography>
-                    </Stack>
+                                </Typography>
+                            </Grid>}
+                        <Stack direction="row" spacing={2} sx={{alignItems: 'center', mb: 2}}>
+                            {newFile && !uploadSuccess && <>
+                                <Typography sx={{ml: 'auto'}} variant={'h6'}>Day First</Typography>
+                                <Checkbox
+                                    disabled={executionLoading}
+                                    checked={dayFirst}
+                                    onChange={handleDayFirstCheckBox}
+                                    sx={{'& .MuiSvgIcon-root': {fontSize: 28}}}
+                                />
+                            </>}
+                            {newFile && !uploadSuccess &&
+                                <Button variant={'contained'} component={'span'} size={'large'} color={'success'}
+                                        sx={{ml: 'auto'}} disabled={executionLoading}
+                                        endIcon={<UploadFileOutlinedIcon/>} onClick={handleUploadFile}>
+                                    Upload file
+                                </Button>}
+                            {uploadSuccess &&
+                                <Button variant={'contained'} component={'span'} size={'medium'} color={'error'}
+                                        endIcon={<BackspaceOutlinedIcon/>} sx={{ml: 'auto'}}
+                                        onClick={handleClearNewFile}>
+                                    Clear
+                                </Button>}
+                        </Stack>
+                    </Grid>
                 </Grid>
-                <Grid item xs={12} md={6}>
-                    <TextField id="outlined-basic" label="Forecast Horizon" variant="outlined" required fullWidth
-                               value={forecastHorizon} type="number"
-                               disabled={executionLoading}
-                               onChange={e => setForecastHorizon(e.target.value)}
-                               InputProps={{inputProps: {min: 0}}}
-                    />
+                <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
+                    <Grid item xs={12} md={8}>
+                        <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
+                            <DataThresholdingIcon fontSize="large"
+                                                  sx={{width: '60px', height: '60px', color: '#A1B927', ml: 2, my: 1}}/>
+                            <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>
+                                Select Timeseries Resolution
+                            </Typography>
+                        </Stack>
+                    </Grid>
+                    <Grid item xs={12} md={4}>
+                        <FormControl fullWidth>
+                            <InputLabel id="demo-simple-select-label">Dataset Resolution (Minutes)</InputLabel>
+                            <Select
+                                disabled={executionLoading}
+                                fullWidth
+                                labelId="demo-simple-select-label"
+                                id="demo-simple-select"
+                                value={experimentResolution}
+                                label="Dataset Resolution (Minutes)"
+                                onChange={e => setExperimentResolution(e.target.value)}
+                            >
+                                {resolutions?.map(resolution => (
+                                    <MenuItem key={resolution.value}
+                                              value={resolution.value.toString()}>{resolution.display_value}</MenuItem>))}
+                            </Select>
+                        </FormControl>
+                    </Grid>
                 </Grid>
-            </Grid>
-        </Container>
-        <hr/>
-
-        {/* Experiment Execution */}
-        <Container maxWidth={'xl'} sx={{my: 5}}>
-            <Typography variant={'h4'} fontWeight={'bold'} sx={{mb: 3}}>Experiment Execution</Typography>
-            <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
-                <Grid item xs={12} md={6}>
-                    <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
-                        <TerminalIcon fontSize="large"
-                                      sx={{width: '60px', height: '60px', color: '#A1B927', ml: 2, my: 1}}/>
-                        <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>Run the model</Typography>
-                    </Stack>
-                </Grid>
-                <Grid item xs={12} md={6} display={'flex'}>
-                    <Button variant={'contained'} component={'span'} size={'large'} color={'success'}
-                            sx={{ml: 'auto'}} fullWidth
-                            endIcon={<ChevronRight/>} onClick={handleExecute}
-                            disabled={executionLoading || !uploadSuccess || !experimentResolution || !dateVal || !dateTest || !dateEnd || !experimentName || !model || chosenConfiguration === '' || !forecastHorizon}
-                    >
-                        <Typography variant={'h5'}>
-                            EXECUTE {executionLoading && <CircularProgress size={'26px'} sx={{color: 'white'}}/>}
-                        </Typography>
-                    </Button>
-                </Grid>
-            </Grid>
-            {executionInitiated &&
                 <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
                     <Grid item xs={12} md={6}>
                         <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
-                            <DoneAllIcon fontSize="large"
-                                         sx={{width: '60px', height: '60px', color: '#A1B927', ml: 2, my: 1}}/>
-                            <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>Results</Typography>
+                            <DateRangeIcon fontSize="large"
+                                           sx={{width: '60px', height: '60px', color: '#A1B927', ml: 2, my: 1}}/>
+                            <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>Dataset Split</Typography>
+                        </Stack>
+                    </Grid>
+                    <Grid item xs={12} md={6}>
+                        <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
+                            <Grid item xs={12} md={4}>
+                                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                    <DesktopDatePicker
+                                        disabled={executionLoading || !uploadSuccess}
+                                        inputFormat="dd/MM/yyyy"
+                                        label="Validation Start Date"
+                                        value={dateVal}
+                                        minDate={minDate ? minDate : void (0)}
+                                        maxDate={maxDate ? maxDate : void (0)}
+                                        onChange={(newValue) => {
+                                            setDateVal(newValue);
+                                        }}
+                                        renderInput={(params) => <TextField fullWidth {...params}/>}
+                                    />
+                                </LocalizationProvider>
+                            </Grid>
+                            <Grid item xs={12} md={4}>
+                                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                    <DesktopDatePicker
+                                        disabled={executionLoading || !uploadSuccess}
+                                        inputFormat="dd/MM/yyyy"
+                                        label="Test Start Date"
+                                        value={dateTest}
+                                        minDate={minDateTestStart ? minDateTestStart : void (0)}
+                                        maxDate={maxDateTestStart ? maxDateTestStart : void (0)}
+                                        onChange={(newValue) => {
+                                            setDateTest(newValue);
+                                        }}
+                                        renderInput={(params) => <TextField fullWidth {...params} helperText={null}/>}
+                                    />
+                                </LocalizationProvider>
+                            </Grid>
+                            <Grid item xs={12} md={4}>
+                                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                    <DesktopDatePicker
+                                        disabled={executionLoading || !uploadSuccess}
+                                        inputFormat="dd/MM/yyyy"
+                                        label="Test End Date"
+                                        value={dateEnd}
+                                        minDate={minDateEndStart ? minDateEndStart : void (0)}
+                                        maxDate={maxDate ? maxDate : void (0)}
+                                        onChange={(newValue) => {
+                                            setDateEnd(newValue);
+                                        }}
+                                        renderInput={(params) => <TextField fullWidth {...params} helperText={null}/>}
+                                    />
+                                </LocalizationProvider>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                </Grid>
+            </Container>
+            <hr/>
+
+            {/* Model Training Setup */}
+            <Container maxWidth={'xl'} sx={{my: 5}}>
+                <Typography variant={'h4'} fontWeight={'bold'} sx={{mb: 3}}>Model Training Setup</Typography>
+                <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
+                    <Grid item xs={12} md={6}>
+                        <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
+                            <LabelOutlinedIcon fontSize="large"
+                                               sx={{width: '60px', height: '60px', color: '#A1B927', ml: 2, my: 1}}/>
+                            <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>MLFlow Experiment
+                                Name</Typography>
+                        </Stack>
+                    </Grid>
+                    <Grid item xs={12} md={6}>
+                        <Grid container spacing={2} display={'flex'} alignItems={'center'}>
+                            <Grid item xs={6} md={8}>
+                                <TextField id="outlined-basic" label="Experiment name" variant="outlined" required
+                                           fullWidth
+                                           value={experimentName} error={experimentNameError && experimentName === ''}
+                                           onChange={e => setExperimentName(e.target.value)}
+                                           disabled={executionLoading}/>
+                            </Grid>
+                            <Grid item xs={6} md={4} display={'flex'} alignItems={'center'}>
+                                <Typography sx={{ml: 'auto'}} variant={'body1'} fontWeight={'bold'}>Ignore Previous
+                                    Runs</Typography>
+                                <Checkbox
+                                    checked={ignorePrevious} disabled={executionLoading}
+                                    onChange={handleIgnoreFirstCheckBox}
+                                    sx={{'& .MuiSvgIcon-root': {fontSize: 28}}}
+                                />
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                </Grid>
+                <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
+                    <Grid item xs={12} md={6}>
+                        <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
+                            <ModelTrainingIcon fontSize="large"
+                                               sx={{width: '60px', height: '60px', color: '#A1B927', ml: 2, my: 1}}/>
+                            <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>Choose a
+                                model</Typography>
+                        </Stack>
+                    </Grid>
+                    <Grid item xs={12} md={6}>
+                        <FormControl fullWidth>
+                            <InputLabel id="demo-simple-select-label">Choose a model</InputLabel>
+                            <Select
+                                labelId="demo-simple-select-label"
+                                id="demo-simple-select"
+                                value={model}
+                                disabled={executionLoading}
+                                label="Choose a model"
+                                onChange={e => setModel(e.target.value)}
+                            >
+                                {models && models.map(modelItem => (
+                                    <MenuItem key={modelItem.model_name}
+                                              value={modelItem}>{modelItem.model_name}</MenuItem>))}
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                </Grid>
+                <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
+                    <Grid item xs={12} md={6}>
+                        <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
+                            <SettingsApplicationsIcon fontSize="large"
+                                                      sx={{
+                                                          width: '60px',
+                                                          height: '60px',
+                                                          color: '#A1B927',
+                                                          ml: 2,
+                                                          my: 1
+                                                      }}/>
+                            <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>
+                                Select Hyperparameters</Typography>
+                        </Stack>
+                    </Grid>
+                    <Grid item xs={12} md={6}>
+                        {!model &&
+                            <Alert severity="warning">Choose a model to see the available configurations!</Alert>}
+                    </Grid>
+                </Grid>
+
+                <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
+                    {model && availableConfigurations && availableConfigurations.map(config => (
+                        <Grid item xs={6} md={2} key={config[0]}>
+                            <Card elevation={chosenConfiguration === availableConfigurations.indexOf(config) ? 10 : 1}
+                                  onClick={() => handleChooseConfiguration(availableConfigurations.indexOf(config))}
+                                  sx={{background: chosenConfiguration === availableConfigurations.indexOf(config) ? '#ACBF5D' : ''}}>
+                                <CardContent>
+                                    <Stack direction={'row'}>
+                                        <Typography variant={'h6'} gutterBottom>
+                                            {config[0]}
+                                        </Typography>
+                                        {chosenConfiguration === availableConfigurations.indexOf(config) &&
+                                            <CheckCircleIcon color={'success'} sx={{ml: 'auto'}}/>}
+                                    </Stack>
+                                    <hr style={{borderBottom: 0}}/>
+
+                                    {Object.entries(config[1]).map(([parameterName, parameterValue]) => {
+                                        return (<Typography variant={'subtitle2'}>
+                                            <span style={{fontWeight: 'bold'}}>{parameterName}</span>: {parameterValue}
+                                        </Typography>);
+                                    })}
+                                </CardContent>
+                            </Card>
+                        </Grid>))}
+                    {model && availableConfigurations.length === 0 && <Container maxWidth={'lg'} sx={{my: 4}}>
+                        <Alert severity="error">No available configurations for this model!</Alert>
+                    </Container>}
+                </Grid>
+            </Container>
+            <hr/>
+
+            {/* Model Evaluation Setup */}
+            <Container maxWidth={'xl'} sx={{my: 5}}>
+                <Typography variant={'h4'} fontWeight={'bold'} sx={{mb: 3}}>Model Evaluation Setup</Typography>
+                <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
+                    <Grid item xs={12} md={6}>
+                        <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
+                            <LineAxisOutlinedIcon fontSize="large"
+                                                  sx={{width: '60px', height: '60px', color: '#A1B927', ml: 2, my: 1}}/>
+                            <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>Choose Backtest Forecast
+                                Horizon</Typography>
+                        </Stack>
+                    </Grid>
+                    <Grid item xs={12} md={6}>
+                        <TextField id="outlined-basic" label="Forecast Horizon" variant="outlined" required fullWidth
+                                   value={forecastHorizon} type="number"
+                                   disabled={executionLoading}
+                                   onChange={e => setForecastHorizon(e.target.value)}
+                                   InputProps={{inputProps: {min: 0}}}
+                        />
+                    </Grid>
+                </Grid>
+            </Container>
+            <hr/>
+
+            {/* Experiment Execution */}
+            <Container maxWidth={'xl'} sx={{my: 5}}>
+                <Typography variant={'h4'} fontWeight={'bold'} sx={{mb: 3}}>Experiment Execution</Typography>
+                <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
+                    <Grid item xs={12} md={6}>
+                        <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
+                            <TerminalIcon fontSize="large"
+                                          sx={{width: '60px', height: '60px', color: '#A1B927', ml: 2, my: 1}}/>
+                            <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>Run the model</Typography>
                         </Stack>
                     </Grid>
                     <Grid item xs={12} md={6} display={'flex'}>
-                        <Button variant={'contained'} component={'span'} size={'large'} color={'warning'}
+                        <Button variant={'contained'} component={'span'} size={'large'} color={'success'}
                                 sx={{ml: 'auto'}} fullWidth
-                                endIcon={<ChevronRight/>}
-                                onClick={() => window.open('http://131.154.97.48:5000/', '_blank')}
+                                endIcon={<ChevronRight/>} onClick={handleExecute}
+                                disabled={executionLoading || !uploadSuccess || !experimentResolution || !dateVal || !dateTest || !dateEnd || !experimentName || !model || chosenConfiguration === '' || !forecastHorizon}
                         >
-                            <Typography variant={'h6'}>Visit MLFlow Server</Typography>
+                            <Typography variant={'h5'}>
+                                EXECUTE {executionLoading && <CircularProgress size={'26px'} sx={{color: 'white'}}/>}
+                            </Typography>
                         </Button>
                     </Grid>
-                </Grid>}
-        </Container>
+                </Grid>
+                {executionInitiated &&
+                    <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
+                        <Grid item xs={12} md={6}>
+                            <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
+                                <DoneAllIcon fontSize="large"
+                                             sx={{width: '60px', height: '60px', color: '#A1B927', ml: 2, my: 1}}/>
+                                <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>Results</Typography>
+                            </Stack>
+                        </Grid>
+                        <Grid item xs={12} md={6} display={'flex'}>
+                            <Button variant={'contained'} component={'span'} size={'large'} color={'warning'}
+                                    sx={{ml: 'auto'}} fullWidth
+                                    endIcon={<ChevronRight/>}
+                                    onClick={() => window.open('http://131.154.97.48:5000/', '_blank')}
+                            >
+                                <Typography variant={'h6'}>Visit MLFlow Server</Typography>
+                            </Button>
+                        </Grid>
+                    </Grid>}
+            </Container>
+        </React.Fragment>}
 
         {loading && <FullPageLoading/>}
         <Snackbar open={newFileSuccess} autoHideDuration={3000} onClose={closeSnackbar}>
