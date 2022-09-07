@@ -10,6 +10,9 @@ import {
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
 
+import Typography from '@mui/material/Typography';
+import Container from '@mui/material/Container';
+
 const state = {
     labels: ['January', 'February', 'March',
         'April', 'May'],
@@ -35,7 +38,7 @@ ChartJS.register(
 
 const Metrics = (props) => {
     return (
-        <div>
+        <Container maxWidth={'xl'} sx={{my: 5}}>
             <h1>METRICS CONTENT</h1>
 
             <Bar
@@ -52,7 +55,7 @@ const Metrics = (props) => {
                     }
                 }}
             />
-        </div>
+        </Container>
 
     );
 }
