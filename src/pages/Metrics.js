@@ -18,8 +18,34 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import Divider from "@mui/material/Divider";
+import Link from "@mui/material/Link";
 
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+
+import Breadcrumb from "../components/layout/Breadcrumb";
+
+ChartJS.register(
+    CategoryScale,
+    LinearScale,
+    BarElement,
+    Title,
+    Tooltip,
+    Legend,
+    PointElement,
+    LineElement,
+);
+
+const breadcrumbs = [
+    <Link fontSize={'20px'} underline="hover" key="1" color="inherit" href="/">
+        Dashboard
+    </Link>, <Typography
+        underline="hover"
+        key="2"
+        color="secondary"
+        fontSize={'20px'}
+        fontWeight={600}>
+        <Metrics></Metrics>
+    </Typography>,];
 
 const state = {
     labels: ['January', 'February', 'March',
@@ -34,17 +60,6 @@ const state = {
         }
     ]
 }
-
-ChartJS.register(
-    CategoryScale,
-    LinearScale,
-    BarElement,
-    Title,
-    Tooltip,
-    Legend,
-    PointElement,
-    LineElement,
-);
 
 const labels = ['January', 'February', 'March',
     'April', 'May']
@@ -72,6 +87,8 @@ const data = {
 const Metrics = () => {
     return (
         <>
+            <Breadcrumb breadcrumbs={breadcrumbs} welcome_msg={'Welcome to I-NERGY Load Forecasting'}/>
+
             <Container maxWidth={'xl'} sx={{mt: 5, mb: 2}}>
                 <Grid container direction="row" alignItems="center" justifyItems={'center'}>
                     <Typography variant={'h4'} display={'flex'} alignItems={'center'}>
