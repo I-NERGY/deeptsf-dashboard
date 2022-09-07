@@ -32,10 +32,9 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ModelTrainingIcon from "@mui/icons-material/ModelTraining";
 import DataUsageIcon from '@mui/icons-material/DataUsage';
 import BackspaceOutlinedIcon from '@mui/icons-material/BackspaceOutlined';
-
-import Breadcrumb from "../components/layout/Breadcrumb";
 import ChevronRight from "@mui/icons-material/ChevronRight";
 
+import Breadcrumb from "../components/layout/Breadcrumb";
 
 ChartJS.register(
     CategoryScale,
@@ -101,17 +100,18 @@ const Metrics = () => {
     const [experiments, setExperiments] = useState([])
     const [experimentChosen, setExperimentChosen] = useState('')
     const [experimentChosenError, setExperimentChosenError] = useState(false)
+    const [bestRun, setBestRun] = useState('')
+
+    const [barChartLabels, setBarChartLabels] = useState([])
+    const [barChartValues, setBarChartValues] = useState([])
 
     const [metrics, setMetrics] = useState('')
     const [metricChosen, setMetricChosen] = useState('')
 
     const fetchData = () => {
-        // setExperimentChosenError(false)
-        // !experimentChosen && setExperimentChosenError(true)
         // Experiments
         axios.get('/results/get_list_of_experiments')
             .then(response => {
-                console.log(response.data)
                 setExperiments(response.data)
             })
             .catch(error => {
@@ -121,7 +121,6 @@ const Metrics = () => {
         // Metrics
         axios.get('/metrics/get_metric_names')
             .then(response => {
-                console.log(response.data)
                 setMetrics(response.data)
             })
             .catch(error => {
@@ -130,7 +129,22 @@ const Metrics = () => {
     }
 
     const fetchMetrics = () => {
+        setExperimentChosenError(false)
+        !experimentChosen && setExperimentChosenError(true)
 
+        axios.get(`/results/get_best_run_id_by_mlflow_experiment/${experimentChosen}/${metricChosen}`)
+            .then(response => {
+                setBestRun(response.data)
+            })
+            .then(() => {
+                axios.get(`/results/get_metric_list/${bestRun}`)
+                    .then(response => {
+                        setBarChartLabels(response.data.labels)
+                        setBarChartValues(response.data.data)
+                    })
+                    .catch(error => console.log(error))
+            })
+            .catch(error => console.log(error))
     }
 
     useEffect(() => {
@@ -173,7 +187,7 @@ const Metrics = () => {
                     <Grid item xs={12} md={6}>
                         <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
                             <DataUsageIcon fontSize="large"
-                                               sx={{width: '60px', height: '60px', color: '#A1B927', ml: 2, my: 1}}/>
+                                           sx={{width: '60px', height: '60px', color: '#A1B927', ml: 2, my: 1}}/>
                             <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>Metric</Typography>
                         </Stack>
                     </Grid>
@@ -197,10 +211,10 @@ const Metrics = () => {
 
                     <Stack sx={{ml: 'auto', my: 2}} direction={'row'} spacing={2}>
                         <Button variant={'contained'} component={'span'} size={'large'} color={'success'}
-                                 fullWidth onClick={() => fetchMetrics(experimentChosen, metricChosen)}
+                                fullWidth onClick={() => fetchMetrics(experimentChosen, metricChosen)}
                                 endIcon={<ChevronRight/>}>GO</Button>
                         <Button variant={'contained'} component={'span'} size={'large'} color={'error'}
-                                 fullWidth
+                                fullWidth
                                 endIcon={<BackspaceOutlinedIcon/>}>CLEAR</Button>
                     </Stack>
 
@@ -216,7 +230,6 @@ const Metrics = () => {
                             fontSize={'large'}/> Model Evaluation Metrics
                     </Typography>
                 </Grid>
-                {/*<Typography variant={'h4'}><ChevronRightIcon fontSize={'large'}/> Model Evaluation Metrics</Typography>*/}
             </Container>
 
             <Container>
