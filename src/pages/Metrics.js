@@ -106,17 +106,36 @@ const Metrics = () => {
     const [metricChosen, setMetricChosen] = useState('')
 
     const fetchData = () => {
-        setExperimentChosenError(false)
-        !experimentChosen && setExperimentChosenError(true)
-
-        experimentChosen && axios.get('')
+        // setExperimentChosenError(false)
+        // !experimentChosen && setExperimentChosenError(true)
+        // Experiments
+        axios.get('/results/get_list_of_experiments')
             .then(response => {
-
+                console.log(response.data)
+                setExperiments(response.data)
             })
             .catch(error => {
+                console.log(error)
+            })
 
+        // Metrics
+        axios.get('/metrics/get_metric_names')
+            .then(response => {
+                console.log(response.data)
+                setMetrics(response.data)
+            })
+            .catch(error => {
+                console.log(error)
             })
     }
+
+    const fetchMetrics = () => {
+
+    }
+
+    useEffect(() => {
+        fetchData()
+    }, [])
 
     return (
         <>
@@ -133,19 +152,20 @@ const Metrics = () => {
                         </Stack>
                     </Grid>
                     <Grid item xs={12} md={6}>
+                        {/* TODO Check defaults */}
                         <FormControl fullWidth required error={experimentChosenError}>
                             <InputLabel id="demo-simple-select-label">Choose an experiment</InputLabel>
                             <Select
                                 labelId="demo-simple-select-label"
                                 id="demo-simple-select"
-                                value={experimentChosen}
+                                value={experimentChosen ? experimentChosen : 0}
                                 error={experimentChosenError}
                                 label="Choose an experiment"
                                 onChange={e => setExperimentChosen(e.target.value)}
                             >
                                 {experiments && experiments.map(experiment => (
                                     <MenuItem key={experiment.experiment_id}
-                                              value={experiment.experiment_id}>{experiment.experiment_name}</MenuItem>))}
+                                              value={experiment.experiment_id}>{experiment?.experiment_name ? experiment.experiment_name : 'Default'}</MenuItem>))}
                             </Select>
                         </FormControl>
                     </Grid>
@@ -165,19 +185,19 @@ const Metrics = () => {
                                 id="demo-simple-select"
                                 value={metricChosen}
                                 disabled={!experimentChosen}
-                                label="Choose an experiment"
+                                label="Choose a metric"
                                 onChange={e => setMetricChosen(e.target.value)}
                             >
                                 {metrics && metrics.map(metric => (
-                                    <MenuItem key={metric.metric_id}
-                                              value={metric.metric_id}>{metric.metric_name}</MenuItem>))}
+                                    <MenuItem key={metric.search_term}
+                                              value={metric.search_term}>{metric.metric_name}</MenuItem>))}
                             </Select>
                         </FormControl>
                     </Grid>
 
                     <Stack sx={{ml: 'auto', my: 2}} direction={'row'} spacing={2}>
                         <Button variant={'contained'} component={'span'} size={'large'} color={'success'}
-                                 fullWidth onClick={() => fetchData(experimentChosen, metricChosen)}
+                                 fullWidth onClick={() => fetchMetrics(experimentChosen, metricChosen)}
                                 endIcon={<ChevronRight/>}>GO</Button>
                         <Button variant={'contained'} component={'span'} size={'large'} color={'error'}
                                  fullWidth
@@ -186,6 +206,8 @@ const Metrics = () => {
 
                 </Grid>
             </Container>
+
+            <Divider sx={{my: 4}}/>
 
             <Container maxWidth={'xl'} sx={{mt: 5, mb: 2}}>
                 <Grid container direction="row" alignItems="center" justifyItems={'center'}>
