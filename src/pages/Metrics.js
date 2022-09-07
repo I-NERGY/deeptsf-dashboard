@@ -8,7 +8,7 @@ import {
     Tooltip,
     Legend,
 } from 'chart.js';
-import { Bar } from 'react-chartjs-2';
+import {Bar} from 'react-chartjs-2';
 
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
@@ -38,24 +38,29 @@ ChartJS.register(
 
 const Metrics = (props) => {
     return (
-        <Container maxWidth={'xl'} sx={{my: 5}}>
-            <h1>METRICS CONTENT</h1>
+        <>
+            <Container maxWidth={'xl'} sx={{my: 5}}>
+                <h1>METRICS CONTENT</h1>
+            </Container>
 
-            <Bar
-                data={state}
-                options={{
-                    title:{
-                        display:true,
-                        text:'Average Rainfall per month',
-                        fontSize:20
-                    },
-                    legend:{
-                        display:true,
-                        position:'right'
-                    }
-                }}
-            />
-        </Container>
+            <Container>
+                <Bar
+                    data={state}
+                    options={{
+                        title: {
+                            display: true,
+                            text: 'Average Rainfall per month',
+                            fontSize: 20
+                        },
+                        legend: {
+                            display: true,
+                            position: 'right'
+                        }
+                    }}
+                />
+            </Container>
+        </>
+
 
     );
 }

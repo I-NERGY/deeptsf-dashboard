@@ -9,7 +9,7 @@ import Paper from "@mui/material/Paper";
 
 const Breadcrumb = ({breadcrumbs, welcome_msg}) => {
     return (
-        <Paper style={{display: 'flex'}} sx={{padding: 2, backgroundColor: green[50], marginTop: '-8px', position: 'sticky'}}>
+        <Paper style={{display: 'flex'}} sx={{px: 2, pb: 2, pt: {xs: 5, md: 2}, backgroundColor: green[50], marginTop: '-8px', position: 'sticky'}}>
             <Stack spacing={2}>
                 <Container maxWidth={'xl'} sx={{paddingTop: '5px'}}>
                     <Breadcrumbs
