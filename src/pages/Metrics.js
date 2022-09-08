@@ -99,7 +99,6 @@ const data = {
 const Metrics = () => {
     const [experiments, setExperiments] = useState([])
     const [experimentChosen, setExperimentChosen] = useState('')
-    const [experimentChosenError, setExperimentChosenError] = useState(false)
     const [bestRun, setBestRun] = useState('')
 
     const [barChartLabels, setBarChartLabels] = useState([])
@@ -129,9 +128,6 @@ const Metrics = () => {
     }
 
     const fetchMetrics = () => {
-        setExperimentChosenError(false)
-        !experimentChosen && setExperimentChosenError(true)
-
         axios.get(`/results/get_best_run_id_by_mlflow_experiment/${experimentChosen}/${metricChosen}`)
             .then(response => {
                 setBestRun(response.data)
@@ -167,13 +163,12 @@ const Metrics = () => {
                     </Grid>
                     <Grid item xs={12} md={6}>
                         {/* TODO Check defaults */}
-                        <FormControl fullWidth required error={experimentChosenError}>
+                        <FormControl fullWidth required>
                             <InputLabel id="demo-simple-select-label">Choose an experiment</InputLabel>
                             <Select
                                 labelId="demo-simple-select-label"
                                 id="demo-simple-select"
                                 value={experimentChosen ? experimentChosen : 0}
-                                error={experimentChosenError}
                                 label="Choose an experiment"
                                 onChange={e => setExperimentChosen(e.target.value)}
                             >
