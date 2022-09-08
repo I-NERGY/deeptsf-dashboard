@@ -31,10 +31,10 @@ import Button from "@mui/material/Button";
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ModelTrainingIcon from "@mui/icons-material/ModelTraining";
 import DataUsageIcon from '@mui/icons-material/DataUsage';
-import BackspaceOutlinedIcon from '@mui/icons-material/BackspaceOutlined';
 import ChevronRight from "@mui/icons-material/ChevronRight";
 
 import Breadcrumb from "../components/layout/Breadcrumb";
+import Loading from "../components/layout/Loading";
 
 ChartJS.register(
     CategoryScale,
@@ -59,50 +59,18 @@ const breadcrumbs = [
         Metrics
     </Typography>,];
 
-const state = {
-    labels: ['January', 'February', 'March',
-        'April', 'May'],
-    datasets: [
-        {
-            label: 'Rainfall',
-            backgroundColor: 'rgba(75,192,192,1)',
-            borderColor: 'rgba(0,0,0,1)',
-            borderWidth: 2,
-            data: [65, 59, 80, 81, 56]
-        }
-    ]
-}
-
-const labels = ['January', 'February', 'March',
-    'April', 'May']
-
-const data = {
-    labels: labels,
-    datasets: [
-        {
-            label: 'Dataset 1',
-            data: labels.map(() => Math.random() * 100),
-            borderColor: 'rgb(255, 99, 132)',
-            backgroundColor: 'rgba(255, 99, 132, 0.5)',
-            yAxisID: 'y',
-        },
-        {
-            label: 'Dataset 2',
-            data: labels.map(() => Math.random() * 100),
-            borderColor: 'rgb(53, 162, 235)',
-            backgroundColor: 'rgba(53, 162, 235, 0.5)',
-            yAxisID: 'y1',
-        },
-    ],
-};
-
 const Metrics = () => {
     const [experiments, setExperiments] = useState([])
-    const [experimentChosen, setExperimentChosen] = useState('')
+    const [experimentChosen, setExperimentChosen] = useState(0)
     const [bestRun, setBestRun] = useState('')
+
+    const [loading, setLoading] = useState(false)
 
     const [barChartLabels, setBarChartLabels] = useState([])
     const [barChartValues, setBarChartValues] = useState([])
+
+    const [lineChartLabels, setLineChartLabels] = useState([])
+    const [lineChartValues, setLineChartValues] = useState([])
 
     const [metrics, setMetrics] = useState('')
     const [metricChosen, setMetricChosen] = useState('')
@@ -125,22 +93,50 @@ const Metrics = () => {
             .catch(error => {
                 console.log(error)
             })
+
+        // Get default best run
+        axios.get(`/results/get_best_run_id_by_mlflow_experiment/${experimentChosen}/mape`)
+            .then(response => {
+                setBestRun(response.data)
+            })
+            .catch(error => console.log('error'))
     }
 
     const fetchMetrics = () => {
-        axios.get(`/results/get_best_run_id_by_mlflow_experiment/${experimentChosen}/${metricChosen}`)
+        setLoading(true)
+        axios.get(`/results/get_best_run_id_by_mlflow_experiment/${experimentChosen}/${metricChosen ? metricChosen : null}`)
             .then(response => {
                 setBestRun(response.data)
             })
             .then(() => {
+                // Get data for Bar Chart
                 axios.get(`/results/get_metric_list/${bestRun}`)
                     .then(response => {
                         setBarChartLabels(response.data.labels)
                         setBarChartValues(response.data.data)
+                        setLoading(false)
                     })
-                    .catch(error => console.log(error))
+                    .catch(error => {
+                        setLoading(false)
+                        console.log(error)
+                    })
+
+                // Get data for Line Chart
+                axios.get(`/results/get_forecast_vs_actual/${bestRun}`)
+                    .then(response => {
+                        setLineChartLabels(response.data.labels)
+                        setLineChartValues(response.data.data)
+                        setLoading(false)
+                    })
+                    .catch(error => {
+                        setLoading(false)
+                        console.log(error)
+                    })
             })
-            .catch(error => console.log(error))
+            .catch(error => {
+                setLoading(false)
+                console.log(error)
+            })
     }
 
     useEffect(() => {
@@ -162,13 +158,12 @@ const Metrics = () => {
                         </Stack>
                     </Grid>
                     <Grid item xs={12} md={6}>
-                        {/* TODO Check defaults */}
                         <FormControl fullWidth required>
                             <InputLabel id="demo-simple-select-label">Choose an experiment</InputLabel>
                             <Select
                                 labelId="demo-simple-select-label"
                                 id="demo-simple-select"
-                                value={experimentChosen ? experimentChosen : 0}
+                                value={experimentChosen}
                                 label="Choose an experiment"
                                 onChange={e => setExperimentChosen(e.target.value)}
                             >
@@ -193,7 +188,6 @@ const Metrics = () => {
                                 labelId="demo-simple-select-label"
                                 id="demo-simple-select"
                                 value={metricChosen}
-                                disabled={!experimentChosen}
                                 label="Choose a metric"
                                 onChange={e => setMetricChosen(e.target.value)}
                             >
@@ -208,80 +202,107 @@ const Metrics = () => {
                         <Button variant={'contained'} component={'span'} size={'large'} color={'success'}
                                 fullWidth onClick={() => fetchMetrics(experimentChosen, metricChosen)}
                                 endIcon={<ChevronRight/>}>GO</Button>
-                        <Button variant={'contained'} component={'span'} size={'large'} color={'error'}
-                                fullWidth
-                                endIcon={<BackspaceOutlinedIcon/>}>CLEAR</Button>
+                        {/*<Button variant={'contained'} component={'span'} size={'large'} color={'error'}*/}
+                        {/*        fullWidth*/}
+                        {/*        endIcon={<BackspaceOutlinedIcon/>}>CLEAR</Button>*/}
                     </Stack>
-
                 </Grid>
             </Container>
 
             <Divider sx={{my: 4}}/>
 
-            <Container maxWidth={'xl'} sx={{mt: 5, mb: 2}}>
-                <Grid container direction="row" alignItems="center" justifyItems={'center'}>
-                    <Typography variant={'h4'} display={'flex'} alignItems={'center'}>
-                        <ChevronRightIcon
-                            fontSize={'large'}/> Model Evaluation Metrics
-                    </Typography>
-                </Grid>
-            </Container>
+            {loading && <Loading/>}
 
-            <Container>
-                <Bar data={state} options={{
-                    title: {
-                        display: true,
-                        text: 'Average Rainfall per month',
-                        fontSize: 20
-                    },
-                    legend: {
-                        display: true,
-                        position: 'right'
-                    }
-                }}
-                />
-            </Container>
+            {!loading && <React.Fragment>
+                <Container maxWidth={'xl'} sx={{mt: 5, mb: 2}}>
+                    <Grid container direction="row" alignItems="center" justifyItems={'center'}>
+                        <Typography variant={'h4'} display={'flex'} alignItems={'center'}>
+                            <ChevronRightIcon
+                                fontSize={'large'}/> Model Evaluation Metrics
+                        </Typography>
+                    </Grid>
+                </Container>
 
-            <Divider sx={{my: 5}}/>
-
-            <Container maxWidth={'xl'} sx={{my: 2}}>
-                <Typography variant={'h4'} display={'flex'} alignItems={'center'}>
-                    <ChevronRightIcon
-                        fontSize={'large'}/>Forecasted vs Actual Load Series
-                </Typography>
-            </Container>
-
-            <Container sx={{mb: 5}}>
-                <Line options={{
-                    responsive: true,
-                    interaction: {
-                        mode: 'index',
-                        intersect: false,
-                    },
-                    stacked: false,
-                    plugins: {
+                {barChartLabels && barChartValues && <Container>
+                    <Bar data={{
+                        labels: barChartLabels,
+                        datasets: [{
+                            label: 'Model Evaluation Metrics',
+                            data: barChartValues,
+                            backgroundColor: [
+                                'rgba(255, 99, 132, 0.2)',
+                                'rgba(54, 162, 235, 0.2)',
+                                'rgba(255, 206, 86, 0.2)',
+                                'rgba(75, 192, 192, 0.2)',
+                                'rgba(153, 102, 255, 0.2)',
+                                'rgba(255, 159, 64, 0.2)',
+                            ],
+                        }]
+                    }} options={{
                         title: {
                             display: true,
-                            text: 'Chart.js Line Chart - Multi Axis',
+                            fontSize: 20
                         },
-                    },
-                    scales: {
-                        y: {
-                            type: 'linear',
+                        legend: {
                             display: true,
-                            position: 'left',
+                            position: 'right'
+                        }
+                    }}
+                    />
+                </Container>}
+
+                <Divider sx={{my: 5}}/>
+
+                <Container maxWidth={'xl'} sx={{my: 2}}>
+                    <Typography variant={'h4'} display={'flex'} alignItems={'center'}>
+                        <ChevronRightIcon
+                            fontSize={'large'}/>Forecasted vs Actual Load Series
+                    </Typography>
+                </Container>
+
+                <Container sx={{mb: 5}}>
+                    <Line options={{
+                        responsive: true,
+                        interaction: {
+                            mode: 'index',
+                            intersect: false,
                         },
-                        y1: {
-                            type: 'linear',
-                            display: true,
-                            position: 'right',
-                            grid: {
-                                drawOnChartArea: false,
+                        stacked: false,
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Chart.js Line Chart - Multi Axis',
                             },
                         },
-                    },
-                }} data={data}/>
-            </Container>
+                        scales: {
+                            y: {
+                                type: 'linear',
+                                display: true,
+                                position: 'left',
+                            },
+                            y1: {
+                                type: 'linear',
+                                display: true,
+                                position: 'right',
+                                grid: {
+                                    drawOnChartArea: false,
+                                },
+                            },
+                        },
+                    }} data={{
+                        labels: lineChartLabels,
+                        datasets: [
+                            {
+                                label: 'Dataset 1',
+                                data: lineChartValues,
+                                borderColor: 'rgb(255, 99, 132)',
+                                backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                                yAxisID: 'y',
+                            },
+                        ],
+                    }}/>
+                </Container>
+            </React.Fragment>}
         </>
     );
 }
