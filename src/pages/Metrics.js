@@ -107,8 +107,6 @@ const Metrics = () => {
         setLoading(true)
         axios.get(`/results/get_best_run_id_by_mlflow_experiment/${experimentChosen}/${metricChosen ? metricChosen : null}`)
             .then(response => {
-                console.log(response.data)
-
                 setBestRun(response.data)
             })
             .then(() => {
@@ -146,6 +144,14 @@ const Metrics = () => {
     useEffect(() => {
         fetchData()
     }, [])
+
+    useEffect(() => {
+        setBestRun('')
+        axios.get(`/results/get_best_run_id_by_mlflow_experiment/${experimentChosen}/${metricChosen ? metricChosen : null}`)
+            .then(response => {
+                setBestRun(response.data)
+            })
+    }, [experimentChosen])
 
     return (
         <>
@@ -203,9 +209,17 @@ const Metrics = () => {
                     </Grid>
 
                     <Stack sx={{ml: 'auto', my: 2}} direction={'row'} spacing={2}>
+                        {bestRun && <Button variant={'contained'} component={'span'} size={'large'} color={'warning'}
+                                 sx={{ml: 'auto'}}
+                                 endIcon={<ChevronRight/>}
+                                 onClick={() => window.open(`http://131.154.97.48:5000/#/experiments/${experimentChosen}/runs/${bestRun}`, '_blank')}
+                        >
+                            <Typography variant={'subtitle1'}>DETAILS ON MLFLOW</Typography>
+                        </Button>}
                         <Button variant={'contained'} component={'span'} size={'large'} color={'success'}
-                                fullWidth onClick={() => fetchMetrics(experimentChosen, metricChosen)}
-                                endIcon={<ChevronRight/>}>GO</Button>
+                                onClick={() => fetchMetrics(experimentChosen, metricChosen)}
+                                endIcon={<ChevronRight/>}><Typography variant={'subtitle1'}>LOAD
+                            METRICS</Typography></Button>
                         {/*<Button variant={'contained'} component={'span'} size={'large'} color={'error'}*/}
                         {/*        fullWidth*/}
                         {/*        endIcon={<BackspaceOutlinedIcon/>}>CLEAR</Button>*/}
