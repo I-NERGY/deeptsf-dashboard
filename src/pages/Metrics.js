@@ -70,7 +70,8 @@ const Metrics = () => {
     const [barChartValues, setBarChartValues] = useState([])
 
     const [lineChartLabels, setLineChartLabels] = useState([])
-    const [lineChartValues, setLineChartValues] = useState([])
+    const [lineChartFirstValues, setLineChartFirstValues] = useState([])
+    const [lineChartSecondValues, setLineChartSecondValues] = useState([])
 
     const [metrics, setMetrics] = useState('')
     const [metricChosen, setMetricChosen] = useState('')
@@ -106,6 +107,8 @@ const Metrics = () => {
         setLoading(true)
         axios.get(`/results/get_best_run_id_by_mlflow_experiment/${experimentChosen}/${metricChosen ? metricChosen : null}`)
             .then(response => {
+                console.log(response.data)
+
                 setBestRun(response.data)
             })
             .then(() => {
@@ -124,8 +127,9 @@ const Metrics = () => {
                 // Get data for Line Chart
                 axios.get(`/results/get_forecast_vs_actual/${bestRun}`)
                     .then(response => {
-                        setLineChartLabels(response.data.labels)
-                        setLineChartValues(response.data.data)
+                        setLineChartLabels(response.data.actual.index)
+                        setLineChartFirstValues(response.data.actual.data)
+                        setLineChartSecondValues(response.data.forecast.data)
                         setLoading(false)
                     })
                     .catch(error => {
@@ -213,7 +217,7 @@ const Metrics = () => {
 
             {loading && <Loading/>}
 
-            {!loading && <React.Fragment>
+            {barChartValues.length > 1 && !loading && <React.Fragment>
                 <Container maxWidth={'xl'} sx={{mt: 5, mb: 2}}>
                     <Grid container direction="row" alignItems="center" justifyItems={'center'}>
                         <Typography variant={'h4'} display={'flex'} alignItems={'center'}>
@@ -223,7 +227,7 @@ const Metrics = () => {
                     </Grid>
                 </Container>
 
-                {barChartLabels && barChartValues && <Container>
+                <Container>
                     <Bar data={{
                         labels: barChartLabels,
                         datasets: [{
@@ -249,8 +253,10 @@ const Metrics = () => {
                         }
                     }}
                     />
-                </Container>}
+                </Container>
+            </React.Fragment>}
 
+            {lineChartFirstValues.length > 1 && lineChartSecondValues.length > 1 && !loading && <React.Fragment>
                 <Divider sx={{my: 5}}/>
 
                 <Container maxWidth={'xl'} sx={{my: 2}}>
@@ -259,6 +265,7 @@ const Metrics = () => {
                             fontSize={'large'}/>Forecasted vs Actual Load Series
                     </Typography>
                 </Container>
+
 
                 <Container sx={{mb: 5}}>
                     <Line options={{
@@ -271,7 +278,7 @@ const Metrics = () => {
                         plugins: {
                             title: {
                                 display: true,
-                                text: 'Chart.js Line Chart - Multi Axis',
+                                // text: 'Chart.js Line Chart - Multi Axis',
                             },
                         },
                         scales: {
@@ -293,10 +300,17 @@ const Metrics = () => {
                         labels: lineChartLabels,
                         datasets: [
                             {
-                                label: 'Dataset 1',
-                                data: lineChartValues,
+                                label: 'Actual',
+                                data: lineChartFirstValues,
                                 borderColor: 'rgb(255, 99, 132)',
                                 backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                                yAxisID: 'y',
+                            },
+                            {
+                                label: 'Forecast',
+                                data: lineChartSecondValues,
+                                borderColor: 'rgb(53, 162, 235)',
+                                backgroundColor: 'rgba(53, 162, 235, 0.5)',
                                 yAxisID: 'y',
                             },
                         ],
