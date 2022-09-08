@@ -6,7 +6,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 const Loading = () => {
     return (
         <Box sx={{display: 'flex'}}>
-            <CircularProgress size={30}/>
+            <CircularProgress size={30} sx={{mx: 'auto'}}/>
         </Box>
     );
 }
