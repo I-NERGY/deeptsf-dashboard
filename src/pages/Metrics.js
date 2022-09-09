@@ -35,6 +35,7 @@ import ChevronRight from "@mui/icons-material/ChevronRight";
 
 import Breadcrumb from "../components/layout/Breadcrumb";
 import Loading from "../components/layout/Loading";
+import Alert from "@mui/material/Alert";
 
 ChartJS.register(
     CategoryScale,
@@ -64,14 +65,18 @@ const Metrics = () => {
     const [experimentChosen, setExperimentChosen] = useState(0)
     const [bestRun, setBestRun] = useState('')
 
-    const [loading, setLoading] = useState(false)
+
 
     const [barChartLabels, setBarChartLabels] = useState([])
     const [barChartValues, setBarChartValues] = useState([])
+    const [loadingBarChart, setLoadingBarChart] = useState(false)
+    const [noBarChart, setNoBarChart] = useState(false)
 
     const [lineChartLabels, setLineChartLabels] = useState([])
     const [lineChartFirstValues, setLineChartFirstValues] = useState([])
     const [lineChartSecondValues, setLineChartSecondValues] = useState([])
+    const [loadingLineChart, setLoadingLineChart] = useState(false)
+    const [noLineChart, setNoLineChart] = useState(false)
 
     const [metrics, setMetrics] = useState('')
     const [metricChosen, setMetricChosen] = useState('')
@@ -112,7 +117,11 @@ const Metrics = () => {
     }
 
     const fetchMetrics = (experiment, metric, run) => {
-        setLoading(true)
+        setNoBarChart(false)
+        setNoLineChart(false)
+
+        setLoadingBarChart(true)
+        setLoadingLineChart(true)
         axios.get(`/results/get_best_run_id_by_mlflow_experiment/${experiment}/${metric ? metric : 'mape'}`)
             .then(response => {
                 setBestRun(response.data)
@@ -121,10 +130,11 @@ const Metrics = () => {
                     .then(response => {
                         setBarChartLabels(response.data.labels)
                         setBarChartValues(response.data.data)
-                        setLoading(false)
+                        setLoadingBarChart(false)
                     })
                     .catch(error => {
-                        setLoading(false)
+                        setLoadingBarChart(false)
+                        setNoBarChart(true)
                         console.log(error)
                     })
 
@@ -134,15 +144,19 @@ const Metrics = () => {
                         setLineChartLabels(response.data.actual.index)
                         setLineChartFirstValues(response.data.actual.data)
                         setLineChartSecondValues(response.data.forecast.data)
-                        setLoading(false)
+                        setLoadingLineChart(false)
                     })
                     .catch(error => {
-                        setLoading(false)
+                        setLoadingLineChart(false)
+                        setNoLineChart(true)
                         console.log(error)
                     })
             })
             .catch(error => {
-                setLoading(false)
+                setLoadingBarChart(false)
+                setLoadingLineChart(false)
+                setNoBarChart(true)
+                setNoLineChart(true)
                 console.log(error)
             })
     }
@@ -222,9 +236,9 @@ const Metrics = () => {
 
                     <Stack sx={{ml: 'auto', my: 2}} direction={'row'} spacing={2}>
                         {bestRun && <Button variant={'contained'} component={'span'} size={'large'} color={'warning'}
-                                 sx={{ml: 'auto'}}
-                                 endIcon={<ChevronRight/>}
-                                 onClick={() => window.open(`http://131.154.97.48:5000/#/experiments/${experimentChosen}/runs/${bestRun}`, '_blank')}
+                                            sx={{ml: 'auto'}}
+                                            endIcon={<ChevronRight/>}
+                                            onClick={() => window.open(`http://131.154.97.48:5000/#/experiments/${experimentChosen}/runs/${bestRun}`, '_blank')}
                         >
                             <Typography variant={'subtitle1'}>DETAILS ON MLFLOW</Typography>
                         </Button>}
@@ -241,18 +255,19 @@ const Metrics = () => {
 
             <Divider sx={{my: 4}}/>
 
-            {loading && <Loading/>}
 
-            {barChartValues.length > 1 && !loading && <React.Fragment>
-                <Container maxWidth={'xl'} sx={{mt: 5, mb: 2}}>
-                    <Grid container direction="row" alignItems="center" justifyItems={'center'}>
-                        <Typography variant={'h4'} display={'flex'} alignItems={'center'}>
-                            <ChevronRightIcon
-                                fontSize={'large'}/> Model Evaluation Metrics
-                        </Typography>
-                    </Grid>
-                </Container>
+            <Container maxWidth={'xl'} sx={{mt: 5, mb: 2}}>
+                <Grid container direction="row" alignItems="center" justifyItems={'center'}>
+                    <Typography variant={'h4'} display={'flex'} alignItems={'center'}>
+                        <ChevronRightIcon
+                            fontSize={'large'}/> Model Evaluation Metrics
+                    </Typography>
+                </Grid>
+                {noBarChart && <Alert severity="warning" sx={{my: 5}}>No data available for this experiment.</Alert>}
+                {loadingBarChart && <Loading/>}
+            </Container>
 
+            {barChartValues.length > 1 && !loadingBarChart && <React.Fragment>
                 <Container>
                     <Bar data={{
                         labels: barChartLabels,
@@ -282,17 +297,21 @@ const Metrics = () => {
                 </Container>
             </React.Fragment>}
 
-            {lineChartFirstValues.length > 1 && lineChartSecondValues.length > 1 && !loading && <React.Fragment>
-                <Divider sx={{my: 5}}/>
+            <Divider sx={{my: 5}}/>
 
-                <Container maxWidth={'xl'} sx={{my: 2}}>
+            <Container maxWidth={'xl'} sx={{my: 2}}>
+                <Grid container direction="row" alignItems="center" justifyItems={'center'}>
                     <Typography variant={'h4'} display={'flex'} alignItems={'center'}>
                         <ChevronRightIcon
-                            fontSize={'large'}/>Forecasted vs Actual Load Series
+                            fontSize={'large'}/> Forecasted vs Actual Load Series
                     </Typography>
-                </Container>
+                </Grid>
+                {noLineChart && <Alert severity="warning" sx={{my: 5}}>No data available for this experiment.</Alert>}
+                {loadingLineChart && <Loading/>}
+            </Container>
 
 
+            {lineChartFirstValues.length > 1 && lineChartSecondValues.length > 1 && !loadingLineChart && <React.Fragment>
                 <Container sx={{mb: 5}}>
                     <Line options={{
                         responsive: true,
