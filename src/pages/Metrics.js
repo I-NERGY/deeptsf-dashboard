@@ -76,6 +76,14 @@ const Metrics = () => {
     const [metrics, setMetrics] = useState('')
     const [metricChosen, setMetricChosen] = useState('')
 
+    const initializeCharts = () => {
+        setBarChartLabels([])
+        setBarChartValues([])
+        setLineChartLabels([])
+        setLineChartFirstValues([])
+        setLineChartSecondValues([])
+    }
+
     const fetchData = () => {
         // Experiments
         axios.get('/results/get_list_of_experiments')
@@ -103,15 +111,13 @@ const Metrics = () => {
             .catch(error => console.log('error'))
     }
 
-    const fetchMetrics = () => {
+    const fetchMetrics = (experiment, metric, run) => {
         setLoading(true)
-        axios.get(`/results/get_best_run_id_by_mlflow_experiment/${experimentChosen}/${metricChosen ? metricChosen : null}`)
+        axios.get(`/results/get_best_run_id_by_mlflow_experiment/${experiment}/${metric ? metric : 'mape'}`)
             .then(response => {
                 setBestRun(response.data)
-            })
-            .then(() => {
                 // Get data for Bar Chart
-                axios.get(`/results/get_metric_list/${bestRun}`)
+                axios.get(`/results/get_metric_list/${run ? run : response.data}`)
                     .then(response => {
                         setBarChartLabels(response.data.labels)
                         setBarChartValues(response.data.data)
@@ -123,7 +129,7 @@ const Metrics = () => {
                     })
 
                 // Get data for Line Chart
-                axios.get(`/results/get_forecast_vs_actual/${bestRun}`)
+                axios.get(`/results/get_forecast_vs_actual/${run ? run : response.data}`)
                     .then(response => {
                         setLineChartLabels(response.data.actual.index)
                         setLineChartFirstValues(response.data.actual.data)
@@ -143,9 +149,15 @@ const Metrics = () => {
 
     useEffect(() => {
         fetchData()
+        axios.get(`/results/get_best_run_id_by_mlflow_experiment/0/mape`)
+            .then(response => {
+                setBestRun(response.data)
+                fetchMetrics(0, 'mape', response.data)
+            })
     }, [])
 
     useEffect(() => {
+        initializeCharts()
         setBestRun('')
         axios.get(`/results/get_best_run_id_by_mlflow_experiment/${experimentChosen}/${metricChosen ? metricChosen : null}`)
             .then(response => {
