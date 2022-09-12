@@ -130,7 +130,7 @@ export default function Layout({children}) {
     const handleDrawerClose = () => setDrawerOpen(false);
 
     useEffect(() => {
-        if (roles?.length > 1 && roles.includes('data_scientist')) {
+        if (roles?.length > 1 && (roles.includes('data_scientist') || roles.includes('inergy_admin'))) {
             menuItems.push(
                 {text: 'Load Forecast', icon: <UpdateIcon color="secondary"/>, path: "/load-forecast"},
                 {
