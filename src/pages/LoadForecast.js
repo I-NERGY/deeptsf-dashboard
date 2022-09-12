@@ -172,7 +172,7 @@ const LoadForecast = () => {
 
                 // Re-initialize date fields
                 setDateVal(new Date(response.data.allowed_validation_start))
-                setDateTest(new Date(new Date(response.data.allowed_validation_start).getTime() + (10 * 24 * 60 * 60 * 1000))) // TODO
+                setDateTest(new Date(new Date(response.data.allowed_validation_start).getTime() + (10 * 24 * 60 * 60 * 1000)))
                 setDateEnd(new Date(response.data.dataset_end))
 
                 setSeriesUri(response.data.fname)
