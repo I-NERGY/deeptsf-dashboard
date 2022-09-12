@@ -27,11 +27,13 @@ import InputLabel from "@mui/material/InputLabel";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
 
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ModelTrainingIcon from "@mui/icons-material/ModelTraining";
 import DataUsageIcon from '@mui/icons-material/DataUsage';
 import ChevronRight from "@mui/icons-material/ChevronRight";
+import NumbersIcon from '@mui/icons-material/Numbers';
 
 import Breadcrumb from "../components/layout/Breadcrumb";
 import Loading from "../components/layout/Loading";
@@ -78,6 +80,8 @@ const Metrics = () => {
 
     const [metrics, setMetrics] = useState('')
     const [metricChosen, setMetricChosen] = useState('')
+
+    const [limit, setLimit] = useState(0)
 
     const initializeCharts = () => {
         setBarChartLabels([])
@@ -137,7 +141,7 @@ const Metrics = () => {
                     })
 
                 // Get data for Line Chart
-                axios.get(`/results/get_forecast_vs_actual/${run ? run : response.data}`)
+                axios.get(`/results/get_forecast_vs_actual/${run ? run : response.data}/n_samples/${limit ? limit : 200}`)
                     .then(response => {
                         setLineChartLabels(response.data.actual.index)
                         setLineChartFirstValues(response.data.actual.data)
@@ -170,6 +174,8 @@ const Metrics = () => {
 
     useEffect(() => {
         initializeCharts()
+        setNoLineChart(false)
+        setNoBarChart(false)
         setBestRun('')
         axios.get(`/results/get_best_run_id_by_mlflow_experiment/${experimentChosen}/${metricChosen ? metricChosen : null}`)
             .then(response => {
@@ -212,7 +218,7 @@ const Metrics = () => {
                         <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
                             <DataUsageIcon fontSize="large"
                                            sx={{width: '60px', height: '60px', color: '#A1B927', ml: 2, my: 1}}/>
-                            <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>Metric</Typography>
+                            <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>Main evaluation metric</Typography>
                         </Stack>
                     </Grid>
                     <Grid item xs={12} md={6}>
@@ -232,6 +238,20 @@ const Metrics = () => {
                         </FormControl>
                     </Grid>
 
+                    <Grid item xs={12} md={6}>
+                        <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
+                            <NumbersIcon fontSize="large"
+                                           sx={{width: '60px', height: '60px', color: '#A1B927', ml: 2, my: 1}}/>
+                            <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>Number of evaluation samples</Typography>
+                        </Stack>
+                    </Grid>
+                    <Grid item xs={12} md={6}>
+                        <FormControl fullWidth>
+                            <TextField type={'number'} InputProps={{inputProps: {min: 0, max: 2000}}} id="outlined-basic"
+                                       label="Evaluation samples" variant="outlined" onChange={e => setLimit(e.target.value)}/>
+                        </FormControl>
+                    </Grid>
+
                     <Stack sx={{ml: 'auto', my: 2}} direction={'row'} spacing={2}>
                         {bestRun && <Button variant={'contained'} component={'span'} size={'large'} color={'warning'}
                                             sx={{ml: 'auto'}}
@@ -244,9 +264,6 @@ const Metrics = () => {
                                 onClick={() => fetchMetrics(experimentChosen, metricChosen)}
                                 endIcon={<ChevronRight/>}><Typography variant={'subtitle1'}>LOAD
                             METRICS</Typography></Button>
-                        {/*<Button variant={'contained'} component={'span'} size={'large'} color={'error'}*/}
-                        {/*        fullWidth*/}
-                        {/*        endIcon={<BackspaceOutlinedIcon/>}>CLEAR</Button>*/}
                     </Stack>
                 </Grid>
             </Container>
@@ -310,57 +327,57 @@ const Metrics = () => {
 
             <Divider sx={{mt: 5}}/>
 
-            {lineChartFirstValues.length > 1 && lineChartSecondValues.length > 1 && !loadingLineChart && <React.Fragment>
-                <Container sx={{mb: 5}}>
-                    <Line options={{
-                        responsive: true,
-                        interaction: {
-                            mode: 'index',
-                            intersect: false,
-                        },
-                        stacked: false,
-                        plugins: {
-                            title: {
-                                display: true,
-                                // text: 'Chart.js Line Chart - Multi Axis',
+            {lineChartFirstValues.length > 1 && lineChartSecondValues.length > 1 && !loadingLineChart &&
+                <React.Fragment>
+                    <Container sx={{mb: 5}}>
+                        <Line options={{
+                            responsive: true,
+                            interaction: {
+                                mode: 'index',
+                                intersect: false,
                             },
-                        },
-                        scales: {
-                            y: {
-                                type: 'linear',
-                                display: true,
-                                position: 'left',
-                            },
-                            y1: {
-                                type: 'linear',
-                                display: true,
-                                position: 'right',
-                                grid: {
-                                    drawOnChartArea: false,
+                            stacked: false,
+                            plugins: {
+                                title: {
+                                    display: true,
                                 },
                             },
-                        },
-                    }} data={{
-                        labels: lineChartLabels,
-                        datasets: [
-                            {
-                                label: 'Actual',
-                                data: lineChartFirstValues,
-                                borderColor: 'rgb(255, 99, 132)',
-                                backgroundColor: 'rgba(255, 99, 132, 0.5)',
-                                yAxisID: 'y',
+                            scales: {
+                                y: {
+                                    type: 'linear',
+                                    display: true,
+                                    position: 'left',
+                                },
+                                y1: {
+                                    type: 'linear',
+                                    display: true,
+                                    position: 'right',
+                                    grid: {
+                                        drawOnChartArea: false,
+                                    },
+                                },
                             },
-                            {
-                                label: 'Forecast',
-                                data: lineChartSecondValues,
-                                borderColor: 'rgb(53, 162, 235)',
-                                backgroundColor: 'rgba(53, 162, 235, 0.5)',
-                                yAxisID: 'y',
-                            },
-                        ],
-                    }}/>
-                </Container>
-            </React.Fragment>}
+                        }} data={{
+                            labels: lineChartLabels,
+                            datasets: [
+                                {
+                                    label: 'Actual',
+                                    data: lineChartFirstValues,
+                                    borderColor: 'rgb(255, 99, 132)',
+                                    backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                                    yAxisID: 'y',
+                                },
+                                {
+                                    label: 'Forecast',
+                                    data: lineChartSecondValues,
+                                    borderColor: 'rgb(53, 162, 235)',
+                                    backgroundColor: 'rgba(53, 162, 235, 0.5)',
+                                    yAxisID: 'y',
+                                },
+                            ],
+                        }}/>
+                    </Container>
+                </React.Fragment>}
         </>
     );
 }
