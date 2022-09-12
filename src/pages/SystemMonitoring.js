@@ -16,10 +16,10 @@ import {
 import {Bar} from 'react-chartjs-2';
 
 import Container from '@mui/material/Container';
-
-import Breadcrumb from "../components/layout/Breadcrumb";
 import Link from "@mui/material/Link";
 import Typography from "@mui/material/Typography";
+
+import Breadcrumb from "../components/layout/Breadcrumb";
 
 const breadcrumbs = [
     <Link fontSize={'20px'} underline="hover" key="1" color="inherit" href="/">
