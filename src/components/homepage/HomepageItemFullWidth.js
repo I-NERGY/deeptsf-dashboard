@@ -15,9 +15,9 @@ const HomepageItemFullWidth = ({title, description, link, icon, image, index}) =
 
     return (<React.Fragment>
             <Grid container sx={{position: 'relative'}}>
-                <Avatar className={'linkAvatar'} onClick={() => navigate(link)}>
+                {link && <Avatar className={'linkAvatar'} onClick={() => navigate(link)}>
                     <InsertLinkIcon className={'serviceCategoryLinkIcon'}/>
-                </Avatar>
+                </Avatar>}
 
                 <Grid item className={(index % 2) ? 'serviceCategoryDescriptionEven' : 'serviceCategoryDescriptionOdd'}
                       xs={12} md={6}
