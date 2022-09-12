@@ -310,6 +310,7 @@ const Metrics = () => {
                 {loadingLineChart && <Loading/>}
             </Container>
 
+            <Divider sx={{mt: 5}}/>
 
             {lineChartFirstValues.length > 1 && lineChartSecondValues.length > 1 && !loadingLineChart && <React.Fragment>
                 <Container sx={{mb: 5}}>
