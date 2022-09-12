@@ -21,8 +21,11 @@ import Link from "@mui/material/Link";
 import Typography from "@mui/material/Typography";
 import Alert from "@mui/material/Alert";
 import Grid from "@mui/material/Grid";
+import Accordion from '@mui/material/Accordion';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import AccordionSummary from '@mui/material/AccordionSummary';
 
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MemoryIcon from '@mui/icons-material/Memory';
 
 import Breadcrumb from "../components/layout/Breadcrumb";
@@ -54,27 +57,52 @@ const breadcrumbs = [
 
 const SystemMonitoring = () => {
     const [loading, setLoading] = useState(false)
+    const [expanded, setExpanded] = React.useState(false);
+
+    const [cpuLabels, setCpuLabels] = useState([])
+    const [cpuData, setCpuData] = useState([])
+
+    const handleChange = (panel) => (event, isExpanded) => {
+        setExpanded(isExpanded ? panel : false);
+    };
+
 
     useEffect(() => {
-
+        setLoading(true)
+        axios.get('')
+            .then(response => {
+                setLoading(false)
+            })
+            .catch(error => {
+                setLoading(false)
+            })
     }, [])
 
     return (
         <>
             <Breadcrumb breadcrumbs={breadcrumbs} welcome_msg={'Welcome to I-NERGY Load Forecasting'}/>
-            <Container maxWidth={'xl'} sx={{my: 5}}></Container>
+            <Container maxWidth={'xl'} sx={{my: 5}}>
 
-            <Container maxWidth={'xl'} sx={{mt: 5, mb: 2}}>
-                <Grid container direction="row" alignItems="center" justifyItems={'center'}>
-                    <Typography variant={'h4'} display={'flex'} alignItems={'center'}>
-                        <MemoryIcon fontSize={'large'} sx={{mr: 2}}/>
-                        CPU Usage (%)
-                    </Typography>
-                </Grid>
-                <Divider sx={{my: 2}}/>
-                {/*{noBarChart && <Alert severity="warning" sx={{my: 5}}>No data available for this experiment.</Alert>}*/}
-                {/*{loadingBarChart && <Loading/>}*/}
+                <Accordion expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>
+                    <AccordionSummary
+                        expandIcon={<ExpandMoreIcon/>}
+                        aria-controls="panel1bh-content"
+                        id="panel1bh-header"
+                    >
+                        <Grid container direction="row" alignItems="center" justifyItems={'center'}>
+                            <Typography variant={'h4'} display={'flex'} alignItems={'center'}>
+                                <MemoryIcon fontSize={'large'} sx={{mr: 2}}/>
+                                CPU Usage (%)
+                            </Typography>
+                        </Grid>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                        {!loading && <div>Bar Chart</div>}
+                        {loading && <Loading/>}
+                    </AccordionDetails>
+                </Accordion>
             </Container>
+
         </>
     );
 }
