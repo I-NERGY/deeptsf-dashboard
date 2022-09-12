@@ -109,7 +109,7 @@ const LoadForecast = () => {
 
     useEffect(() => {
         if (roles) {
-            roles.includes('data_scientist') ? setAllowed(true) : navigate('/')
+            (roles.includes('data_scientist') || roles.includes('inergy_admin')) ? setAllowed(true) : navigate('/')
         }
     }, [roles])
 

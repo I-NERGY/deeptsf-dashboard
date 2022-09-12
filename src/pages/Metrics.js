@@ -65,8 +65,6 @@ const Metrics = () => {
     const [experimentChosen, setExperimentChosen] = useState(0)
     const [bestRun, setBestRun] = useState('')
 
-
-
     const [barChartLabels, setBarChartLabels] = useState([])
     const [barChartValues, setBarChartValues] = useState([])
     const [loadingBarChart, setLoadingBarChart] = useState(false)
