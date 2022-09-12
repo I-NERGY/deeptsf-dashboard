@@ -1,8 +1,8 @@
 import React from 'react';
 
-function (props) {
+function SystemMonitoring(props) {
     return (
-        <div>system monitoring</div>
+        <div>ssssssssss</div>
     );
 }
 

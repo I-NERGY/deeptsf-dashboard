@@ -5,6 +5,7 @@ import ListItemText from "@mui/material/ListItemText";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
+import MonitorHeartIcon from '@mui/icons-material/MonitorHeart';
 
 const SignedInLinks = ({classes, navigate, location, setAuth, handleSignOut}) => {
 
@@ -17,6 +18,15 @@ const SignedInLinks = ({classes, navigate, location, setAuth, handleSignOut}) =>
             >
                 <ListItemIcon>{<AccountCircleIcon color="secondary"/>}</ListItemIcon>
                 <ListItemText primary={'My Profile'}></ListItemText>
+            </ListItemButton>
+
+            <ListItemButton
+                onClick={() => navigate('/monitoring')}
+                key={'System Monitoring'}
+                className={location.pathname === '/monitoring' ? 'menuItemActive' : null}
+            >
+                <ListItemIcon>{<MonitorHeartIcon color="secondary"/>}</ListItemIcon>
+                <ListItemText primary={'System Monitoring'}></ListItemText>
             </ListItemButton>
 
             <ListItemButton
