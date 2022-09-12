@@ -1,4 +1,19 @@
 import React from 'react';
+import axios from "axios";
+
+import {
+    Chart as ChartJS,
+    CategoryScale,
+    LinearScale,
+    BarElement,
+    Title,
+    Tooltip,
+    Legend,
+    PointElement,
+    LineElement,
+} from 'chart.js';
+
+import {Bar} from 'react-chartjs-2';
 
 import Container from '@mui/material/Container';
 
@@ -18,7 +33,7 @@ const breadcrumbs = [
         System Monitoring
     </Typography>,];
 
-function SystemMonitoring(props) {
+const SystemMonitoring = () => {
     return (
         <>
             <Breadcrumb breadcrumbs={breadcrumbs} welcome_msg={'Welcome to I-NERGY Load Forecasting'}/>
