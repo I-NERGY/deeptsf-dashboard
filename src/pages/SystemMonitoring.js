@@ -57,7 +57,7 @@ const breadcrumbs = [
 
 const SystemMonitoring = () => {
     const [loading, setLoading] = useState(false)
-    const [expanded, setExpanded] = React.useState(false);
+    const [expanded, setExpanded] = useState(true);
 
     const [cpuLabels, setCpuLabels] = useState([])
     const [cpuData, setCpuData] = useState([])
@@ -66,24 +66,36 @@ const SystemMonitoring = () => {
         setExpanded(isExpanded ? panel : false);
     };
 
-
-    useEffect(() => {
-        setLoading(true)
-        axios.get('')
+    const getCpuUsage = () => {
+        axios.get('/system_monitoring/get_cpu_usage')
             .then(response => {
+                console.log(response.data)
+                setCpuData(response.data.barchart_1.data)
+                setCpuLabels(response.data.barchart_1.labels)
                 setLoading(false)
             })
             .catch(error => {
                 setLoading(false)
             })
+    }
+
+    useEffect(() => {
+        setLoading(true)
+        getCpuUsage()
     }, [])
+
+    useEffect(() => {
+        setTimeout(() => {
+            getCpuUsage()
+        }, 3000)
+    }, [cpuData])
 
     return (
         <>
             <Breadcrumb breadcrumbs={breadcrumbs} welcome_msg={'Welcome to I-NERGY Load Forecasting'}/>
             <Container maxWidth={'xl'} sx={{my: 5}}>
 
-                <Accordion expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>
+                <Accordion expanded={expanded} onChange={handleChange('panel1')}>
                     <AccordionSummary
                         expandIcon={<ExpandMoreIcon/>}
                         aria-controls="panel1bh-content"
@@ -97,7 +109,34 @@ const SystemMonitoring = () => {
                         </Grid>
                     </AccordionSummary>
                     <AccordionDetails>
-                        {!loading && <div>Bar Chart</div>}
+                        {!loading && cpuData.length > 1 && cpuLabels.length > 1 && <>
+                            <Container>
+                                <Bar data={{
+                                    labels: cpuLabels,
+                                    datasets: [{
+                                        label: 'Model Evaluation Metrics',
+                                        data: cpuData,
+                                        backgroundColor: [
+                                            'rgba(255, 99, 132, 0.2)',
+                                            'rgba(54, 162, 235, 0.2)',
+                                            'rgba(255, 206, 86, 0.2)',
+                                            'rgba(75, 192, 192, 0.2)',
+                                            'rgba(153, 102, 255, 0.2)',
+                                            'rgba(255, 159, 64, 0.2)',
+                                        ],
+                                    }]
+                                }} options={{
+                                    title: {
+                                        display: true,
+                                        fontSize: 20
+                                    },
+                                    legend: {
+                                        display: true,
+                                        position: 'right'
+                                    }
+                                }}
+                                />
+                            </Container></>}
                         {loading && <Loading/>}
                     </AccordionDetails>
                 </Accordion>
