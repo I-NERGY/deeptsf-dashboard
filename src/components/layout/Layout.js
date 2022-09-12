@@ -28,6 +28,7 @@ import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import UpdateIcon from '@mui/icons-material/Update';
 import QueryStatsIcon from '@mui/icons-material/QueryStats';
+import MonitorHeartIcon from '@mui/icons-material/MonitorHeart';
 
 import SignedOutLinks from "./SignedOutLinks";
 import SignedInLinks from "./SignedInLinks";
@@ -111,9 +112,8 @@ export default function Layout({children}) {
     const location = useLocation()
 
     const menuItems = [
-        {
-            text: 'Home', icon: <HomeOutlinedIcon color="secondary"/>, path: "/"
-        },
+        {text: 'Home', icon: <HomeOutlinedIcon color="secondary"/>, path: "/",},
+        {text: 'System Monitoring', icon: <MonitorHeartIcon color="secondary"/>, path: "/monitoring"},
     ]
 
     const [menu, setMenu] = useState(menuItems)
