@@ -142,7 +142,7 @@ const CpuUsageBarChart = () => {
                             <Bar data={{
                                 labels: cpuLabels,
                                 datasets: [{
-                                    label: 'Model Evaluation Metrics',
+                                    label: 'CPU Usage (%)',
                                     data: cpuData,
                                     backgroundColor: [
                                         'rgba(255, 99, 132, 0.2)',
