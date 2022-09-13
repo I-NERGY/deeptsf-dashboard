@@ -6,6 +6,7 @@ import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
+import Alert from "@mui/material/Alert";
 
 import StorageIcon from '@mui/icons-material/Storage';
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -20,25 +21,32 @@ const MemoryUsageBars = () => {
     const [vm, setVm] = useState(null)
     const [swap, setSwap] = useState(null)
 
+    const [memoryUsageError, setMemoryUsageError] = useState(false)
 
     const handleChange = (panel) => (event, isExpanded) => {
         setExpanded(isExpanded ? panel : false);
     };
 
-    useEffect(() => {
-        setLoading(true)
+    const getMemoryUsageData = () => {
         axios.get('/system_monitoring/get_memory_usage')
             .then(response => {
                 setVm(response.data.progressbar_1.low / response.data.progressbar_1.high)
                 setSwap(response.data.progressbar_2.low / response.data.progressbar_2.high)
-
-                setTimeout(() => {
-                    setLoading(false)
-                }, 1000)
-            })
-            .catch(error => {
                 setLoading(false)
             })
+            .catch(error => {
+                setMemoryUsageError(true)
+                setLoading(false)
+            })
+    }
+
+    useEffect(() => {
+        setLoading(true)
+        setMemoryUsageError(false)
+        getMemoryUsageData()
+        setInterval(() => {
+            getMemoryUsageData()
+        }, 60000)
     }, [])
 
     return (
@@ -56,11 +64,11 @@ const MemoryUsageBars = () => {
                         </Typography>
                     </Grid>
                 </AccordionSummary>
-                {!loading  && <AccordionDetails sx={{my: 4}}>
+                {!loading && <AccordionDetails sx={{my: 4}}>
                     <ProgressBar title={'Virtual memory usage (bytes)'} value={vm}/>
                     <ProgressBar title={'Swap memory usage (bytes)'} value={swap}/>
                 </AccordionDetails>}
-
+                {memoryUsageError && !loading && <Alert severity="warning" sx={{my: 1}}>No data available.</Alert>}
                 {loading && <AccordionDetails>
                     <Loading/>
                 </AccordionDetails>}
