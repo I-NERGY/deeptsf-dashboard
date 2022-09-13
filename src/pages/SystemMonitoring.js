@@ -95,14 +95,14 @@ const SystemMonitoring = () => {
             <Breadcrumb breadcrumbs={breadcrumbs} welcome_msg={'Welcome to I-NERGY Load Forecasting'}/>
             <Container maxWidth={'xl'} sx={{my: 5}}>
 
-                <Accordion expanded={expanded} onChange={handleChange('panel1')}>
-                    <AccordionSummary
+                <Accordion expanded={expanded} onChange={handleChange('panel1')} elevation={2}>
+                    <AccordionSummary className={'accordion'} sx={{backgroundColor: '#AABD5B'}}
                         expandIcon={<ExpandMoreIcon/>}
                         aria-controls="panel1bh-content"
                         id="panel1bh-header"
                     >
                         <Grid container direction="row" alignItems="center" justifyItems={'center'}>
-                            <Typography variant={'h4'} display={'flex'} alignItems={'center'}>
+                            <Typography variant={'h4'} display={'flex'} alignItems={'center'} color={'white'}>
                                 <MemoryIcon fontSize={'large'} sx={{mr: 2}}/>
                                 CPU Usage (%)
                             </Typography>

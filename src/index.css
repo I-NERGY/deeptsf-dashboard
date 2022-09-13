@@ -104,3 +104,7 @@ code {
 .menuItemActive {
     background: linear-gradient(45deg, #f4f4f4 10%, #f4f4f4 90%);
 }
+
+.accordion .css-i4bv87-MuiSvgIcon-root {
+    color: white;
+}
