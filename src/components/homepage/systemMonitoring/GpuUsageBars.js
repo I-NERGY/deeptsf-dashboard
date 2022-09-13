@@ -19,7 +19,8 @@ const GpuUsageBars = () => {
     const [expanded, setExpanded] = useState(true)
 
     const [gpu, setGpu] = useState(null)
-    const [gpuMemory, setGpuMemory] = useState(null)
+    const [gpuMemoryHigh, setGpuMemoryHigh] = useState(null)
+    const [gpuMemoryLow, setGpuMemoryLow] = useState(null)
 
     const [gpuUsageError, setGpuUsageError] = useState(false)
 
@@ -31,8 +32,9 @@ const GpuUsageBars = () => {
         axios.get('/system_monitoring/get_gpu_usage')
             .then(response => {
                 console.log(response.data[0])
-                setGpu(response.data[0].percent)
-                setGpuMemory(response.data[0].progressbar_2.low / response.data[0].progressbar_2.high)
+                setGpu(response.data[0].progressbar_1.percent)
+                setGpuMemoryHigh(response.data[0].progressbar_2.high)
+                setGpuMemoryLow(response.data[0].progressbar_2.low)
                 setLoading(false)
             })
             .catch(error => {
@@ -67,8 +69,8 @@ const GpuUsageBars = () => {
                     </Grid>
                 </AccordionSummary>
                 {!loading && <AccordionDetails sx={{my: 4}}>
-                    <ProgressBar title={'GPU utilization'} value={gpu}/>
-                    <ProgressBar title={'GPU memory utilization'} value={gpuMemory}/>
+                    <ProgressBar title={'GPU utilization'} percent={gpu}/>
+                    <ProgressBar title={'GPU memory utilization'} high={gpuMemoryHigh} low={gpuMemoryLow} percent={undefined}/>
                 </AccordionDetails>}
                 {gpuUsageError && !loading && <Alert severity="warning" sx={{my: 1}}>No data available.</Alert>}
                 {loading && <AccordionDetails>
