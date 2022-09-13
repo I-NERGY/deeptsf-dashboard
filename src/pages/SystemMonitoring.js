@@ -61,6 +61,7 @@ const SystemMonitoring = () => {
 
     const [cpuLabels, setCpuLabels] = useState([])
     const [cpuData, setCpuData] = useState([])
+    const [cpuError, setCpuError] = useState(false)
 
     const handleChange = (panel) => (event, isExpanded) => {
         setExpanded(isExpanded ? panel : false);
@@ -76,6 +77,7 @@ const SystemMonitoring = () => {
             })
             .catch(error => {
                 setLoading(false)
+                setCpuError(true)
             })
     }
 
@@ -138,6 +140,7 @@ const SystemMonitoring = () => {
                                 />
                             </Container></>}
                         {loading && <Loading/>}
+                        {cpuError && !loading && <Alert severity="warning" sx={{my: 1}}>No data available.</Alert>}
                     </AccordionDetails>
                 </Accordion>
             </Container>
