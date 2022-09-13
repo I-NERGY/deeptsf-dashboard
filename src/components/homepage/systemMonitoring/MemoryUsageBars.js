@@ -10,6 +10,7 @@ import Typography from "@mui/material/Typography";
 
 import StorageIcon from '@mui/icons-material/Storage';
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import ProgressBar from "../../layout/ProgressBar";
 
 
 const MemoryUsageBars = () => {
@@ -33,10 +34,10 @@ const MemoryUsageBars = () => {
                             <StorageIcon fontSize={'medium'} sx={{mr: 2}}/>
                             Memory Usage (%)
                         </Typography>
-
                     </Grid>
                 </AccordionSummary>
                 <AccordionDetails>
+                    <ProgressBar/>
                 </AccordionDetails>
             </Accordion>
         </>
