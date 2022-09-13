@@ -61,7 +61,6 @@ const CpuUsageBarChart = () => {
     const getCpuUsage = () => {
         axios.get('/system_monitoring/get_cpu_usage')
             .then(response => {
-                console.log(response.data)
                 cpuCount++
                 setCpuData(response.data.barchart_1.data)
                 setCpuLabels(response.data.barchart_1.labels)

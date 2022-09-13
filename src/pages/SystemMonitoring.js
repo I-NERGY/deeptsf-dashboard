@@ -24,12 +24,13 @@ const SystemMonitoring = () => {
     return (
         <>
             <Breadcrumb breadcrumbs={breadcrumbs} welcome_msg={'Welcome to I-NERGY Load Forecasting'}/>
-            <Container maxWidth={'xl'} sx={{mt: 5, mb: 2}}>
-                <CpuUsageBarChart/>
-            </Container>
             <Container maxWidth={'xl'} sx={{my: 2}}>
                 <MemoryUsageBars/>
             </Container>
+            <Container maxWidth={'xl'} sx={{mt: 5, mb: 2}}>
+                <CpuUsageBarChart/>
+            </Container>
+
         </>
     );
 }
