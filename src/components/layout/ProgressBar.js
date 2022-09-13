@@ -30,13 +30,13 @@ export default function ProgressBar({title, high, low, percent}) {
     return (
         <Container maxWidth={'xl'} sx={{display: 'flex', alignItems: 'center', justifyContent: 'space-around'}}>
             <Grid container spacing={2} display={'flex'} alignItems={'center'}>
-                <Grid item md={3} xs={3}>
+                <Grid item md={3} xs={12}>
                     <Typography fontWeight={'bold'}>{title}</Typography>
                 </Grid>
-                <Grid item md={7} xs={3}>
+                <Grid item md={7} xs={6} sx={{mb: {xs: 4, md: 0}}}>
                     <BorderLinearProgress variant="determinate" value={value ? value < 101 ? value : 100 : 0}/>
                 </Grid>
-                {percent === undefined && <Grid item md={2} xs={3} display={'flex'}>
+                {percent === undefined && <Grid item md={2} xs={6} display={'flex'} sx={{mb: {xs: 4, md: 0}}}>
                     <Typography variant="body2" fontWeight={'bold'}>[</Typography>
                     {low !== null && <Typography variant="body2" fontWeight={'bold'} color={value > 90 ? 'error.dark' :
                         value > 60 ? 'warning.dark' :
@@ -46,7 +46,7 @@ export default function ProgressBar({title, high, low, percent}) {
                     </Typography>}
                     {high !== null && <Typography variant="body2" fontWeight={'bold'}>&nbsp;/ {high}]</Typography>}
                 </Grid>}
-                {percent !== undefined && <Grid item md={2} xs={3} display={'flex'}>
+                {percent !== undefined && <Grid item md={2} xs={6} display={'flex'} sx={{mb: {xs: 4, md: 0}}}>
                     <Typography variant="body2" fontWeight={'bold'} color={percent > 90 ? 'error.dark' :
                         percent > 60 ? 'warning.dark' :
                             percent > 40 ? '.warning.light' :
