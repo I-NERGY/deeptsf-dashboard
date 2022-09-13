@@ -7,6 +7,7 @@ import Typography from "@mui/material/Typography";
 import Breadcrumb from "../components/layout/Breadcrumb";
 import CpuUsageBarChart from "../components/homepage/systemMonitoring/CpuUsageBarChart";
 import MemoryUsageBars from "../components/homepage/systemMonitoring/MemoryUsageBars";
+import GpuUsageBars from "../components/homepage/systemMonitoring/GpuUsageBars";
 
 const breadcrumbs = [
     <Link fontSize={'20px'} underline="hover" key="1" color="inherit" href="/">
@@ -24,10 +25,13 @@ const SystemMonitoring = () => {
     return (
         <>
             <Breadcrumb breadcrumbs={breadcrumbs} welcome_msg={'Welcome to I-NERGY Load Forecasting'}/>
-            <Container maxWidth={'xl'} sx={{my: 2}}>
+            <Container maxWidth={'xl'} sx={{mt: 5, mb: 2}}>
                 <MemoryUsageBars/>
             </Container>
-            <Container maxWidth={'xl'} sx={{mt: 5, mb: 2}}>
+            <Container maxWidth={'xl'} sx={{my: 2}}>
+                <GpuUsageBars/>
+            </Container>
+            <Container maxWidth={'xl'} sx={{my: 2}}>
                 <CpuUsageBarChart/>
             </Container>
 
