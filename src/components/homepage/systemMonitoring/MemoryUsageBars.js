@@ -4,14 +4,15 @@ import axios from "axios";
 
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
+import AccordionDetails from "@mui/material/AccordionDetails";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 
-import MemoryIcon from "@mui/icons-material/Memory";
+import StorageIcon from '@mui/icons-material/Storage';
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 
-const GpuUsageBars = () => {
+const MemoryUsageBars = () => {
     const [loading, setLoading] = useState(false)
     const [expanded, setExpanded] = useState(true)
 
@@ -28,9 +29,9 @@ const GpuUsageBars = () => {
                                   id="panel1bh-header"
                 >
                     <Grid container direction="row" alignItems="center" justifyItems={'center'}>
-                        <Typography variant={'h4'} display={'flex'} alignItems={'center'} color={'white'}>
-                            <MemoryIcon fontSize={'large'} sx={{mr: 2}}/>
-                            CPU Usage (%)
+                        <Typography variant={'h5'} display={'flex'} alignItems={'center'} color={'white'}>
+                            <StorageIcon fontSize={'medium'} sx={{mr: 2}}/>
+                            Memory Usage (%)
                         </Typography>
 
                     </Grid>
@@ -42,4 +43,4 @@ const GpuUsageBars = () => {
     );
 }
 
-export default GpuUsageBars;
+export default MemoryUsageBars;

@@ -113,8 +113,8 @@ const CpuUsageBarChart = () => {
                                   id="panel1bh-header"
                 >
                     <Grid container direction="row" alignItems="center" justifyItems={'center'}>
-                        <Typography variant={'h4'} display={'flex'} alignItems={'center'} color={'white'}>
-                            <MemoryIcon fontSize={'large'} sx={{mr: 2}}/>
+                        <Typography variant={'h5'} display={'flex'} alignItems={'center'} color={'white'}>
+                            <MemoryIcon fontSize={'medium'} sx={{mr: 2}}/>
                             CPU Usage (%)
                         </Typography>
 
