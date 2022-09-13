@@ -1,14 +1,17 @@
 import * as React from 'react';
-import { styled } from '@mui/material/styles';
+import {styled} from '@mui/material/styles';
 
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 
-import LinearProgress, { linearProgressClasses } from '@mui/material/LinearProgress';
+import LinearProgress, {linearProgressClasses} from '@mui/material/LinearProgress';
+import Grid from "@mui/material/Grid";
 
-export default function ProgressBar({title, value}) {
-    const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
+export default function ProgressBar({title, high, low}) {
+    const value = high / low
+
+    const BorderLinearProgress = styled(LinearProgress)(({theme}) => ({
         height: 20,
         borderRadius: 5,
         [`&.${linearProgressClasses.colorPrimary}`]: {
@@ -26,21 +29,24 @@ export default function ProgressBar({title, value}) {
 
     return (
         <Container maxWidth={'xl'} sx={{display: 'flex', alignItems: 'center', justifyContent: 'space-around'}}>
-            <Box sx={{width: '100%', mr: 1}}>
-                <Typography fontWeight={'bold'}>{title}</Typography>
-            </Box>
-            <Box sx={{width: '100%', mr: 1}}>
-                <BorderLinearProgress variant="determinate" value={value ? value < 101 ? value : 100 : 0}/>
-            </Box>
-            <Box sx={{minWidth: 35}}>
-                <Typography variant="body2" fontWeight={'bold'} color={value > 90 ? 'error.dark' :
-                    value > 60 ? 'warning.dark' :
+            <Grid container spacing={2} display={'flex'} alignItems={'center'}>
+                <Grid item md={3} xs={3}>
+                    <Typography fontWeight={'bold'}>{title}</Typography>
+                </Grid>
+                <Grid item md={7} xs={3}>
+                    <BorderLinearProgress variant="determinate" value={value ? value < 101 ? value : 100 : 0}/>
+                </Grid>
+                <Grid item md={2} xs={3} display={'flex'}>
+                    <Typography variant="body2" fontWeight={'bold'}>[</Typography>
+                    {low !== null && <Typography variant="body2" fontWeight={'bold'} color={value > 90 ? 'error.dark' :
+                        value > 60 ? 'warning.dark' :
                         value > 40 ? '.warning.light' :
-                            'success.main'}>
-                    {value ? `${value.toFixed(2)}%` : '0%'}
-                </Typography>
-            </Box>
+                        'success.main'}>
+                        {low}
+                    </Typography>}
+                    {high !== null && <Typography variant="body2" fontWeight={'bold'}>&nbsp;/ {high}]</Typography>}
+                </Grid>
+            </Grid>
         </Container>
-
     );
 }
