@@ -13,8 +13,15 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 import ProgressBar from "../layout/ProgressBar";
 import Loading from "../layout/Loading";
+import Container from "@mui/material/Container";
+import Button from "@mui/material/Button";
+import RefreshIcon from "@mui/icons-material/Refresh";
 
 const GpuUsageBars = () => {
+    let gpuCount = 0
+    const liveRefreshMax = 20
+    const [timeExceeded, setTimeExceeded] = useState(false)
+
     const [loading, setLoading] = useState(false)
     const [expanded, setExpanded] = useState(true)
 
@@ -33,7 +40,7 @@ const GpuUsageBars = () => {
     const getGpuUsageData = () => {
         axios.get('/system_monitoring/get_gpu_usage')
             .then(response => {
-                console.log(response.data[0])
+                gpuCount++
                 setGpu(response.data[0].progressbar_1.percent)
                 setGpuTitle(response.data[0].progressbar_1.title)
                 setGpuMemoryHigh(response.data[0].progressbar_2.high)
@@ -42,10 +49,27 @@ const GpuUsageBars = () => {
                 setLoading(false)
             })
             .catch(error => {
-                console.log(error)
+                gpuCount++
                 setGpuUsageError(true)
                 setLoading(false)
             })
+    }
+
+    const restoreLiveFeed = () => {
+        // Get a reference to the last interval + 1
+        const interval_id = window.setInterval(function () {
+        }, Number.MAX_SAFE_INTEGER);
+
+        // Clear any timeout/interval up to that id
+        for (let i = 1; i < interval_id; i++) {
+            window.clearInterval(i);
+        }
+        setTimeExceeded(false)
+        gpuCount = 0
+        setInterval(() => {
+            gpuCount < liveRefreshMax && getGpuUsageData()
+            gpuCount >= liveRefreshMax && setTimeExceeded(true)
+        }, 3000)
     }
 
     useEffect(() => {
@@ -53,8 +77,9 @@ const GpuUsageBars = () => {
         setGpuUsageError(false)
         getGpuUsageData()
         setInterval(() => {
-            getGpuUsageData()
-        }, 60000)
+            gpuCount < liveRefreshMax && getGpuUsageData()
+            gpuCount >= liveRefreshMax && setTimeExceeded(true)
+        }, 2000)
     }, [])
 
     return (
@@ -72,6 +97,24 @@ const GpuUsageBars = () => {
                         </Typography>
                     </Grid>
                 </AccordionSummary>
+                {timeExceeded && !loading &&
+                    <AccordionDetails>
+                        <Container>
+                            <Alert severity="info" sx={{alignItems: 'center'}}>
+                                <Typography sx={{width: '100%'}}>
+                                    Live refresh time limit exceeded.
+                                    <Button variant={'contained'} component={'span'} size={'medium'}
+                                            color={'info'}
+                                            sx={{ml: 5}}
+                                            endIcon={<RefreshIcon/>}
+                                            onClick={restoreLiveFeed}>
+                                        Restore live feed
+                                    </Button>
+                                </Typography>
+                            </Alert>
+                        </Container>
+                    </AccordionDetails>
+                }
                 {!loading && !gpuUsageError && <AccordionDetails sx={{my: 4}}>
                     <ProgressBar title={'GPU utilization'} percent={gpu}/>
                     <ProgressBar title={'GPU memory utilization'} high={gpuMemoryHigh} low={gpuMemoryLow} percent={undefined}/>

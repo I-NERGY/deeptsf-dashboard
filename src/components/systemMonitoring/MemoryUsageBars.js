@@ -41,7 +41,6 @@ const MemoryUsageBars = () => {
     const getMemoryUsageData = () => {
         axios.get('/system_monitoring/get_memory_usage')
             .then(response => {
-                console.log(response.data)
                 memoryCount++
                 setVmHigh(response.data.progressbar_1.high)
                 setVmLow(response.data.progressbar_1.low)
