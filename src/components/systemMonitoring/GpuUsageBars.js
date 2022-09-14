@@ -11,51 +11,49 @@ import Alert from "@mui/material/Alert";
 import StorageIcon from '@mui/icons-material/Storage';
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
-import ProgressBar from "../../layout/ProgressBar";
-import Loading from "../../layout/Loading";
+import ProgressBar from "../layout/ProgressBar";
+import Loading from "../layout/Loading";
 
-const MemoryUsageBars = () => {
+const GpuUsageBars = () => {
     const [loading, setLoading] = useState(false)
     const [expanded, setExpanded] = useState(true)
 
-    const [vmHigh, setVmHigh] = useState(null)
-    const [vmLow, setVmLow] = useState(null)
-    const [vmTitle, setVmTitle] = useState('')
-    const [swapHigh, setSwapHigh] = useState(null)
-    const [swapLow, setSwapLow] = useState(null)
-    const [swapTitle, setSwapTitle] = useState('')
+    const [gpu, setGpu] = useState(null)
+    const [gpuMemoryHigh, setGpuMemoryHigh] = useState(null)
+    const [gpuMemoryLow, setGpuMemoryLow] = useState(null)
+    const [gpuTitle, setGpuTitle] = useState('')
+    const [gpuMemoryTitle, setGpuMemoryTitle] = useState('')
 
-    const [memoryUsageError, setMemoryUsageError] = useState(false)
+    const [gpuUsageError, setGpuUsageError] = useState(false)
 
     const handleChange = (panel) => (event, isExpanded) => {
         setExpanded(isExpanded ? panel : false);
     };
 
-    const getMemoryUsageData = () => {
-
-        axios.get('/system_monitoring/get_memory_usage')
+    const getGpuUsageData = () => {
+        axios.get('/system_monitoring/get_gpu_usage')
             .then(response => {
-                setVmHigh(response.data.progressbar_1.high)
-                setVmLow(response.data.progressbar_1.low)
-                setVmTitle(response.data.progressbar_1.title) // TODO
-                setSwapHigh(response.data.progressbar_2.high)
-                setSwapLow(response.data.progressbar_2.low)
-                setSwapTitle(response.data.progressbar_2.title) // TODO
+                console.log(response.data[0])
+                setGpu(response.data[0].progressbar_1.percent)
+                setGpuTitle(response.data[0].progressbar_1.title)
+                setGpuMemoryHigh(response.data[0].progressbar_2.high)
+                setGpuMemoryLow(response.data[0].progressbar_2.low)
+                setGpuMemoryTitle(response.data[0].progressbar_2.title)
                 setLoading(false)
-                setMemoryUsageError(false)
             })
             .catch(error => {
-                setMemoryUsageError(true)
+                console.log(error)
+                setGpuUsageError(true)
                 setLoading(false)
             })
     }
 
     useEffect(() => {
         setLoading(true)
-        setMemoryUsageError(false)
-        getMemoryUsageData()
+        setGpuUsageError(false)
+        getGpuUsageData()
         setInterval(() => {
-            getMemoryUsageData()
+            getGpuUsageData()
         }, 60000)
     }, [])
 
@@ -70,15 +68,15 @@ const MemoryUsageBars = () => {
                     <Grid container direction="row" alignItems="center" justifyItems={'center'}>
                         <Typography variant={'h5'} display={'flex'} alignItems={'center'} color={'white'}>
                             <StorageIcon fontSize={'medium'} sx={{mr: 2}}/>
-                            Memory Usage
+                            GPU Usage
                         </Typography>
                     </Grid>
                 </AccordionSummary>
-                {!loading && !memoryUsageError && <AccordionDetails sx={{my: 4}}>
-                    <ProgressBar title={vmTitle} high={vmHigh} low={vmLow}/>
-                    <ProgressBar title={swapTitle} high={swapHigh} low={swapLow}/>
+                {!loading && !gpuUsageError && <AccordionDetails sx={{my: 4}}>
+                    <ProgressBar title={'GPU utilization'} percent={gpu}/>
+                    <ProgressBar title={'GPU memory utilization'} high={gpuMemoryHigh} low={gpuMemoryLow} percent={undefined}/>
                 </AccordionDetails>}
-                {memoryUsageError && !loading && <AccordionDetails><Alert severity="warning" sx={{my: 1}}>No data available.</Alert></AccordionDetails>}
+                {gpuUsageError && !loading && <AccordionDetails><Alert severity="warning" sx={{my: 1}}>No data available.</Alert></AccordionDetails>}
                 {loading && <AccordionDetails>
                     <Loading/>
                 </AccordionDetails>}
@@ -87,4 +85,4 @@ const MemoryUsageBars = () => {
     );
 }
 
-export default MemoryUsageBars;
+export default GpuUsageBars;

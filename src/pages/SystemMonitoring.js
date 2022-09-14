@@ -5,9 +5,9 @@ import Link from "@mui/material/Link";
 import Typography from "@mui/material/Typography";
 
 import Breadcrumb from "../components/layout/Breadcrumb";
-import CpuUsageBarChart from "../components/homepage/systemMonitoring/CpuUsageBarChart";
-import MemoryUsageBars from "../components/homepage/systemMonitoring/MemoryUsageBars";
-import GpuUsageBars from "../components/homepage/systemMonitoring/GpuUsageBars";
+import CpuUsageBarChart from "../components/systemMonitoring/CpuUsageBarChart";
+import MemoryUsageBars from "../components/systemMonitoring/MemoryUsageBars";
+import GpuUsageBars from "../components/systemMonitoring/GpuUsageBars";
 
 const breadcrumbs = [
     <Link fontSize={'20px'} underline="hover" key="1" color="inherit" href="/">

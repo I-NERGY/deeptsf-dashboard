@@ -27,7 +27,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import MemoryIcon from "@mui/icons-material/Memory";
 import RefreshIcon from "@mui/icons-material/Refresh";
 
-import Loading from "../../layout/Loading";
+import Loading from "../layout/Loading";
 
 
 ChartJS.register(

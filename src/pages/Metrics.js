@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import axios from "axios";
+import PropTypes from 'prop-types';
 
 import {
     Chart as ChartJS,
@@ -29,6 +30,9 @@ import MenuItem from "@mui/material/MenuItem";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Alert from "@mui/material/Alert";
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
+import Box from '@mui/material/Box';
 
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ModelTrainingIcon from "@mui/icons-material/ModelTraining";
@@ -39,6 +43,38 @@ import NumbersIcon from '@mui/icons-material/Numbers';
 import Breadcrumb from "../components/layout/Breadcrumb";
 import Loading from "../components/layout/Loading";
 
+function TabPanel(props) {
+    const {children, value, index, ...other} = props;
+
+    return (
+        <div
+            role="tabpanel"
+            hidden={value !== index}
+            id={`simple-tabpanel-${index}`}
+            aria-labelledby={`simple-tab-${index}`}
+            {...other}
+        >
+            {value === index && (
+                <Box sx={{p: 3}}>
+                    <Typography>{children}</Typography>
+                </Box>
+            )}
+        </div>
+    );
+}
+
+TabPanel.propTypes = {
+    children: PropTypes.node,
+    index: PropTypes.number.isRequired,
+    value: PropTypes.number.isRequired,
+};
+
+function a11yProps(index) {
+    return {
+        id: `simple-tab-${index}`,
+        'aria-controls': `simple-tabpanel-${index}`,
+    };
+}
 
 ChartJS.register(
     CategoryScale,
@@ -184,18 +220,40 @@ const Metrics = () => {
             })
     }, [experimentChosen])
 
+    const [value, setValue] = React.useState(0);
+
+    const handleChangeTab = (event, newValue) => {
+        setValue(newValue);
+    };
+
     return (
         <>
             <Breadcrumb breadcrumbs={breadcrumbs} welcome_msg={''}/>
 
             <Container maxWidth={'xl'} sx={{my: 5}}>
                 <Typography variant={'h4'} fontWeight={'bold'} sx={{mb: 3}}>Experiment Tracking</Typography>
+                <Box sx={{width: '100%'}}>
+                    <Box sx={{borderBottom: 1, borderColor: 'divider'}}>
+                        <Tabs value={value} onChange={handleChangeTab} aria-label="basic tabs example">
+                            <Tab label="By evaluation metric" {...a11yProps(0)} />
+                            <Tab label="By Run ID" {...a11yProps(1)} />
+                        </Tabs>
+                    </Box>
+                    <TabPanel value={value} index={0}>
+                        By evaluation metric
+                    </TabPanel>
+                    <TabPanel value={value} index={1}>
+                        By Run ID
+                    </TabPanel>
+                </Box>
+
                 <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
                     <Grid item xs={12} md={6}>
                         <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
                             <ModelTrainingIcon fontSize="large"
                                                sx={{width: '60px', height: '60px', color: '#A1B927', ml: 2, my: 1}}/>
-                            <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>Track your experiment</Typography>
+                            <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>Track your
+                                experiment</Typography>
                         </Stack>
                     </Grid>
                     <Grid item xs={12} md={6}>
@@ -219,7 +277,8 @@ const Metrics = () => {
                         <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
                             <DataUsageIcon fontSize="large"
                                            sx={{width: '60px', height: '60px', color: '#A1B927', ml: 2, my: 1}}/>
-                            <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>Main evaluation metric</Typography>
+                            <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>Main evaluation
+                                metric</Typography>
                         </Stack>
                     </Grid>
                     <Grid item xs={12} md={6}>
@@ -242,14 +301,17 @@ const Metrics = () => {
                     <Grid item xs={12} md={6}>
                         <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
                             <NumbersIcon fontSize="large"
-                                           sx={{width: '60px', height: '60px', color: '#A1B927', ml: 2, my: 1}}/>
-                            <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>Number of evaluation samples</Typography>
+                                         sx={{width: '60px', height: '60px', color: '#A1B927', ml: 2, my: 1}}/>
+                            <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>Number of evaluation
+                                samples</Typography>
                         </Stack>
                     </Grid>
                     <Grid item xs={12} md={6}>
                         <FormControl fullWidth>
-                            <TextField type={'number'} InputProps={{inputProps: {min: 0, max: 2000}}} id="outlined-basic"
-                                       label="Evaluation samples" variant="outlined" onChange={e => setLimit(e.target.value)}/>
+                            <TextField type={'number'} InputProps={{inputProps: {min: 0, max: 2000}}}
+                                       id="outlined-basic"
+                                       label="Evaluation samples" variant="outlined"
+                                       onChange={e => setLimit(e.target.value)}/>
                         </FormControl>
                     </Grid>
 
@@ -270,7 +332,6 @@ const Metrics = () => {
             </Container>
 
             <Divider sx={{my: 4}}/>
-
 
             <Container maxWidth={'xl'} sx={{mt: 5, mb: 2}}>
                 <Grid container direction="row" alignItems="center" justifyItems={'center'}>
