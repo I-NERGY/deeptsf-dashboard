@@ -72,7 +72,7 @@ const GpuUsageBars = () => {
                     <ProgressBar title={'GPU utilization'} percent={gpu}/>
                     <ProgressBar title={'GPU memory utilization'} high={gpuMemoryHigh} low={gpuMemoryLow} percent={undefined}/>
                 </AccordionDetails>}
-                {gpuUsageError && !loading && <Alert severity="warning" sx={{my: 1}}>No data available.</Alert>}
+                {gpuUsageError && !loading && <AccordionDetails><Alert severity="warning" sx={{my: 1}}>No data available.</Alert></AccordionDetails>}
                 {loading && <AccordionDetails>
                     <Loading/>
                 </AccordionDetails>}

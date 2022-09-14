@@ -37,10 +37,10 @@ const MemoryUsageBars = () => {
             .then(response => {
                 setVmHigh(response.data.progressbar_1.high)
                 setVmLow(response.data.progressbar_1.low)
-                setVmTitle(response.data) // TODO
+                setVmTitle(response.data.progressbar_1.title) // TODO
                 setSwapHigh(response.data.progressbar_2.high)
                 setSwapLow(response.data.progressbar_2.low)
-                setSwapTitle(response.data) // TODO
+                setSwapTitle(response.data.progressbar_2.title) // TODO
                 setLoading(false)
                 setMemoryUsageError(false)
             })
@@ -78,7 +78,7 @@ const MemoryUsageBars = () => {
                     <ProgressBar title={vmTitle} high={vmHigh} low={vmLow}/>
                     <ProgressBar title={swapTitle} high={swapHigh} low={swapLow}/>
                 </AccordionDetails>}
-                {memoryUsageError && !loading && <Alert severity="warning" sx={{my: 1}}>No data available.</Alert>}
+                {memoryUsageError && !loading && <AccordionDetails><Alert severity="warning" sx={{my: 1}}>No data available.</Alert></AccordionDetails>}
                 {loading && <AccordionDetails>
                     <Loading/>
                 </AccordionDetails>}
