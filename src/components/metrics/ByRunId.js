@@ -48,7 +48,6 @@ const ByRunId = () => {
             .catch(error => {
                 setLoadingBarChart(false)
                 setNoBarChart(true)
-                console.log(error)
             })
 
         // Get data for Line Chart
@@ -62,7 +61,6 @@ const ByRunId = () => {
             .catch(error => {
                 setLoadingLineChart(false)
                 setNoLineChart(true)
-                console.log(error)
             })
     }
 

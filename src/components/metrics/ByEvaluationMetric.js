@@ -88,7 +88,6 @@ const ByEvaluationMetric = () => {
         setLoadingLineChart(true)
         axios.get(`/results/get_best_run_id_by_mlflow_experiment/${experiment}/${metric ? metric : 'mape'}`)
             .then(response => {
-                console.log(response.data)
                 setBestRun(response.data)
                 // Get data for Bar Chart
                 axios.get(`/results/get_metric_list/${run ? run : response.data}`)
@@ -100,7 +99,6 @@ const ByEvaluationMetric = () => {
                     .catch(error => {
                         setLoadingBarChart(false)
                         setNoBarChart(true)
-                        console.log(error)
                     })
 
                 // Get data for Line Chart
@@ -114,7 +112,6 @@ const ByEvaluationMetric = () => {
                     .catch(error => {
                         setLoadingLineChart(false)
                         setNoLineChart(true)
-                        console.log(error)
                     })
             })
             .catch(error => {
@@ -122,7 +119,6 @@ const ByEvaluationMetric = () => {
                 setLoadingLineChart(false)
                 setNoBarChart(true)
                 setNoLineChart(true)
-                console.log(error)
             })
     }
 
