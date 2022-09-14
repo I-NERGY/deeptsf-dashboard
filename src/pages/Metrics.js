@@ -186,7 +186,7 @@ const Metrics = () => {
 
     return (
         <>
-            <Breadcrumb breadcrumbs={breadcrumbs} welcome_msg={'Welcome to I-NERGY Load Forecasting'}/>
+            <Breadcrumb breadcrumbs={breadcrumbs} welcome_msg={''}/>
 
             <Container maxWidth={'xl'} sx={{my: 5}}>
                 <Typography variant={'h4'} fontWeight={'bold'} sx={{mb: 3}}>Experiment Setup</Typography>

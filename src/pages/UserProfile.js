@@ -91,17 +91,17 @@ const UserProfile = () => {
     // }, [])
 
     const breadcrumbs = [
-        <Link fontSize={'16px'} underline="hover" key="1" color="inherit" href="/">
+        <Link fontSize={'20px'} underline="hover" key="1" color="inherit" href="/">
             Homepage
         </Link>,
-        <Typography key="2" color="secondary" fontWeight={'bold'} fontSize={'16px'}>
+        <Typography key="2" color="secondary" fontWeight={'bold'} fontSize={'20px'}>
             {'User Profile'}
         </Typography>,
     ];
 
     return (
         <React.Fragment>
-            <Breadcrumb breadcrumbs={breadcrumbs} welcome_msg={'Welcome to your I-NERGY Load Forecasting profile page'}/>
+            <Breadcrumb breadcrumbs={breadcrumbs} welcome_msg={''}/>
 
             <Box style={{display: 'flex'}} sx={{padding: 3, width: '100%'}}>
                 <Accordion expanded={userInfoExpanded} sx={{width: '100%'}}>

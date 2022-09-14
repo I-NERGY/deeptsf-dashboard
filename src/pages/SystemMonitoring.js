@@ -24,7 +24,7 @@ const breadcrumbs = [
 const SystemMonitoring = () => {
     return (
         <>
-            <Breadcrumb breadcrumbs={breadcrumbs} welcome_msg={'Welcome to I-NERGY Load Forecasting'}/>
+            <Breadcrumb breadcrumbs={breadcrumbs} welcome_msg={''}/>
             <Container maxWidth={'xl'} sx={{mt: 5, mb: 2}}>
                 <MemoryUsageBars/>
             </Container>

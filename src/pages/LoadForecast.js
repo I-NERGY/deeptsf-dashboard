@@ -269,7 +269,7 @@ const LoadForecast = () => {
     }
 
     return (<div>
-        <Breadcrumb breadcrumbs={breadcrumbs} welcome_msg={'Welcome to I-NERGY Load Forecasting'}/>
+        <Breadcrumb breadcrumbs={breadcrumbs} welcome_msg={''}/>
 
         {allowed && <React.Fragment>
             {/* Dataset Configuration */}
