@@ -3,7 +3,7 @@ import axios from "axios";
 import useAuthContext from "../hooks/useAuthContext";
 import {useNavigate} from "react-router-dom";
 
-import {modelConfigurations} from "../modelConfigurations";
+// import {modelConfigurations} from "../modelConfigurations";
 
 import Link from '@mui/material/Link';
 import Typography from '@mui/material/Typography';
@@ -103,10 +103,6 @@ const LoadForecast = () => {
     const [ignorePrevious, setIgnorePrevious] = useState(true)
     const [seriesUri, setSeriesUri] = useState('')
 
-    // useEffect(() => {
-    //     axios.get('get_mlflow_tracking_uri').then(response => console.log(response.data))
-    // }, [])
-
     useEffect(() => {
         if (roles) {
             (roles.includes('data_scientist') || roles.includes('inergy_admin')) ? setAllowed(true) : navigate('/')
@@ -124,10 +120,15 @@ const LoadForecast = () => {
     }, [experimentResolution])
 
     useEffect(() => {
-        let myArray = Object.entries(modelConfigurations)
-        const myArrayFiltered = myArray.filter(element => (element[0].includes(model.search_term)))
-        setAvailableConfigurations(myArrayFiltered)
-        setChosenConfiguration('')
+        axios.get('/experimentation_pipeline/training/hyperparameter_entrypoints')
+            .then(response => {
+                let myArray = Object.entries(response.data)
+                const myArrayFiltered = myArray.filter(element => (element[0].includes(model.search_term)))
+                setAvailableConfigurations(myArrayFiltered)
+                setChosenConfiguration('')
+            })
+            .catch(error => console.log(error))
+
     }, [model])
 
     useEffect(() => {
