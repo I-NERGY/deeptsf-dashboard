@@ -68,7 +68,7 @@ const GpuUsageBars = () => {
                         </Typography>
                     </Grid>
                 </AccordionSummary>
-                {!loading && <AccordionDetails sx={{my: 4}}>
+                {!loading && !gpuUsageError && <AccordionDetails sx={{my: 4}}>
                     <ProgressBar title={'GPU utilization'} percent={gpu}/>
                     <ProgressBar title={'GPU memory utilization'} high={gpuMemoryHigh} low={gpuMemoryLow} percent={undefined}/>
                 </AccordionDetails>}

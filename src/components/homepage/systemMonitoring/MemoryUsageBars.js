@@ -68,7 +68,7 @@ const MemoryUsageBars = () => {
                         </Typography>
                     </Grid>
                 </AccordionSummary>
-                {!loading && <AccordionDetails sx={{my: 4}}>
+                {!loading && !memoryUsageError && <AccordionDetails sx={{my: 4}}>
                     <ProgressBar title={'Virtual memory usage (bytes)'} high={vmHigh} low={vmLow}/>
                     <ProgressBar title={'Swap memory usage (bytes)'} high={swapHigh} low={swapLow}/>
                 </AccordionDetails>}
