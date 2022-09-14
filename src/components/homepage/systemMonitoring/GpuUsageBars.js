@@ -21,6 +21,8 @@ const GpuUsageBars = () => {
     const [gpu, setGpu] = useState(null)
     const [gpuMemoryHigh, setGpuMemoryHigh] = useState(null)
     const [gpuMemoryLow, setGpuMemoryLow] = useState(null)
+    const [gpuTitle, setGpuTitle] = useState('')
+    const [gpuMemoryTitle, setGpuMemoryTitle] = useState('')
 
     const [gpuUsageError, setGpuUsageError] = useState(false)
 
@@ -33,8 +35,10 @@ const GpuUsageBars = () => {
             .then(response => {
                 console.log(response.data[0])
                 setGpu(response.data[0].progressbar_1.percent)
+                setGpuTitle(response.data[0].progressbar_1.title)
                 setGpuMemoryHigh(response.data[0].progressbar_2.high)
                 setGpuMemoryLow(response.data[0].progressbar_2.low)
+                setGpuMemoryTitle(response.data[0].progressbar_2.title)
                 setLoading(false)
             })
             .catch(error => {
