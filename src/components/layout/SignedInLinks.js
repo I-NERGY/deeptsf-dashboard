@@ -21,15 +21,6 @@ const SignedInLinks = ({classes, navigate, location, setAuth, handleSignOut}) =>
             </ListItemButton>
 
             <ListItemButton
-                onClick={() => navigate('/monitoring')}
-                key={'System Monitoring'}
-                className={location.pathname === '/monitoring' ? 'menuItemActive' : null}
-            >
-                <ListItemIcon>{<MonitorHeartIcon color="secondary"/>}</ListItemIcon>
-                <ListItemText primary={'System Monitoring'}></ListItemText>
-            </ListItemButton>
-
-            <ListItemButton
                 onClick={handleSignOut}
                 key={'Sign Out'}
             >

@@ -28,6 +28,7 @@ import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import UpdateIcon from '@mui/icons-material/Update';
 import QueryStatsIcon from '@mui/icons-material/QueryStats';
+import MonitorHeartIcon from '@mui/icons-material/MonitorHeart';
 
 import SignedOutLinks from "./SignedOutLinks";
 import SignedInLinks from "./SignedInLinks";
@@ -126,7 +127,7 @@ export default function Layout({children}) {
     const handleDrawerClose = () => setDrawerOpen(false);
 
     useEffect(() => {
-        if (roles?.length > 1 && (roles.includes('data_scientist') || roles.includes('inergy_admin'))) {
+        if (roles?.length > 0 && (roles.includes('data_scientist') || roles.includes('inergy_admin'))) {
             menuItems.push(
                 {text: 'Load Forecast', icon: <UpdateIcon color="secondary"/>, path: "/load-forecast"},
                 {
@@ -140,9 +141,13 @@ export default function Layout({children}) {
             setMenu(menuItems)
         }
 
-        if (roles?.length > 1 && roles.includes('energy_engineer')) {
+        if (roles?.length > 0 && roles.includes('energy_engineer')) {
             menuItems.push({text: 'Metrics', icon: <QueryStatsIcon color="secondary"/>, path: "/metrics"})
             setMenu(menuItems)
+        }
+
+        if (roles?.length > 1) {
+            menuItems.push({text: 'System Monitoring', icon: <MonitorHeartIcon color="secondary"/>, path: "/monitoring"})
         }
     }, [roles])
 
