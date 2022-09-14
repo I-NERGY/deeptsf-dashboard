@@ -64,7 +64,7 @@ const MemoryUsageBars = () => {
                     <Grid container direction="row" alignItems="center" justifyItems={'center'}>
                         <Typography variant={'h5'} display={'flex'} alignItems={'center'} color={'white'}>
                             <StorageIcon fontSize={'medium'} sx={{mr: 2}}/>
-                            Memory Usage (%)
+                            Memory Usage
                         </Typography>
                     </Grid>
                 </AccordionSummary>
