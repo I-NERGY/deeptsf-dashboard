@@ -71,7 +71,7 @@ const ByRunId = () => {
                     <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
                         <SettingsIcon fontSize="large"
                                      sx={{width: '60px', height: '60px', color: '#A1B927', ml: 2, my: 1}}/>
-                        <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>Insert desired Run
+                        <Typography component={'span'} variant={'h5'} color={'inherit'} sx={{width: '100%'}}>Insert desired Run
                             ID</Typography>
                     </Stack>
                 </Grid>
@@ -87,7 +87,7 @@ const ByRunId = () => {
                     <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
                         <NumbersIcon fontSize="large"
                                      sx={{width: '60px', height: '60px', color: '#A1B927', ml: 2, my: 1}}/>
-                        <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>Number of evaluation
+                        <Typography component={'span'} variant={'h5'} color={'inherit'} sx={{width: '100%'}}>Number of evaluation
                             samples</Typography>
                     </Stack>
                 </Grid>
@@ -104,7 +104,7 @@ const ByRunId = () => {
                     <Button variant={'contained'} component={'span'} size={'large'} color={'success'}
                             disabled={!runID}
                             endIcon={<ChevronRight/>} onClick={() => fetchMetrics(runID, limit)}>
-                        <Typography variant={'subtitle1'}>LOAD METRICS</Typography>
+                        <Typography component={'span'} variant={'subtitle1'}>LOAD METRICS</Typography>
                     </Button>
                 </Stack>
             </Grid>

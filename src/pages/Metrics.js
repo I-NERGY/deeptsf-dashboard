@@ -1,5 +1,4 @@
-import React, {useState, useEffect} from 'react';
-import axios from "axios";
+import React from 'react';
 import PropTypes from 'prop-types';
 
 import {
@@ -14,34 +13,16 @@ import {
     LineElement,
 } from 'chart.js';
 
-import {Bar} from 'react-chartjs-2';
-import {Line} from 'react-chartjs-2';
-
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import Grid from '@mui/material/Grid';
-import Divider from "@mui/material/Divider";
+
 import Link from "@mui/material/Link";
-import Stack from "@mui/material/Stack";
-import FormControl from "@mui/material/FormControl";
-import InputLabel from "@mui/material/InputLabel";
-import Select from "@mui/material/Select";
-import MenuItem from "@mui/material/MenuItem";
-import Button from "@mui/material/Button";
-import TextField from "@mui/material/TextField";
-import Alert from "@mui/material/Alert";
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
 
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import ModelTrainingIcon from "@mui/icons-material/ModelTraining";
-import DataUsageIcon from '@mui/icons-material/DataUsage';
-import ChevronRight from "@mui/icons-material/ChevronRight";
-import NumbersIcon from '@mui/icons-material/Numbers';
 
 import Breadcrumb from "../components/layout/Breadcrumb";
-import Loading from "../components/layout/Loading";
 import ByEvaluationMetric from "../components/metrics/ByEvaluationMetric";
 import ByRunID from "../components/metrics/ByRunId";
 
@@ -102,8 +83,6 @@ const breadcrumbs = [
     </Typography>,];
 
 const Metrics = () => {
-
-
     const [value, setValue] = React.useState(0);
 
     const handleChangeTab = (event, newValue) => {
@@ -114,7 +93,7 @@ const Metrics = () => {
         <>
             <Breadcrumb breadcrumbs={breadcrumbs} welcome_msg={''}/>
             <Container maxWidth={'xl'} sx={{my: 5}}>
-                <Typography variant={'h4'} fontWeight={'bold'} sx={{mb: 3}}>Experiment Tracking</Typography>
+                <Typography component={'span'} variant={'h4'} fontWeight={'bold'} sx={{mb: 3}}>Experiment Tracking</Typography>
                 <Box sx={{width: '100%'}}>
                     <Box sx={{borderBottom: 1, borderColor: 'divider'}}>
                         <Tabs value={value} onChange={handleChangeTab} aria-label="basic tabs example">
@@ -123,10 +102,10 @@ const Metrics = () => {
                         </Tabs>
                     </Box>
                     <TabPanel value={value} index={0}>
-                        <ByEvaluationMetric/>
+                        {/*<ByEvaluationMetric/>*/}
                     </TabPanel>
                     <TabPanel value={value} index={1}>
-                        <ByRunID/>
+                        <React.Fragment><ByRunID/></React.Fragment>
                     </TabPanel>
                 </Box>
             </Container>

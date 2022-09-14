@@ -149,7 +149,7 @@ const ByEvaluationMetric = () => {
                     <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
                         <ModelTrainingIcon fontSize="large"
                                            sx={{width: '60px', height: '60px', color: '#A1B927', ml: 2, my: 1}}/>
-                        <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>Track your
+                        <Typography component={'span'} variant={'h5'} color={'inherit'} sx={{width: '100%'}}>Track your
                             experiment</Typography>
                     </Stack>
                 </Grid>
@@ -174,7 +174,7 @@ const ByEvaluationMetric = () => {
                     <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
                         <DataUsageIcon fontSize="large"
                                        sx={{width: '60px', height: '60px', color: '#A1B927', ml: 2, my: 1}}/>
-                        <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>Main evaluation
+                        <Typography component={'span'} variant={'h5'} color={'inherit'} sx={{width: '100%'}}>Main evaluation
                             metric</Typography>
                     </Stack>
                 </Grid>
@@ -199,7 +199,7 @@ const ByEvaluationMetric = () => {
                     <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
                         <NumbersIcon fontSize="large"
                                      sx={{width: '60px', height: '60px', color: '#A1B927', ml: 2, my: 1}}/>
-                        <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>Number of evaluation
+                        <Typography component={'span'} variant={'h5'} color={'inherit'} sx={{width: '100%'}}>Number of evaluation
                             samples</Typography>
                     </Stack>
                 </Grid>
