@@ -142,7 +142,7 @@ export default function Layout({children}) {
         }
 
         if (roles?.length > 0 && roles.includes('energy_engineer')) {
-            menuItems.push({text: 'Metrics', icon: <QueryStatsIcon color="secondary"/>, path: "/metrics"})
+            menuItems.push({text: 'Experiment Tracking', icon: <QueryStatsIcon color="secondary"/>, path: "/metrics"})
             setMenu(menuItems)
         }
 
