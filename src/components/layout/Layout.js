@@ -136,7 +136,7 @@ export default function Layout({children}) {
                     path: location.pathname + ' ',
                     link: 'http://131.154.97.48:5000/'
                 },
-                {text: 'Metrics', icon: <QueryStatsIcon color="secondary"/>, path: "/metrics"}
+                {text: 'Experiment Tracking', icon: <QueryStatsIcon color="secondary"/>, path: "/metrics"}
             )
             setMenu(menuItems)
         }

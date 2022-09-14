@@ -149,8 +149,7 @@ const ByEvaluationMetric = () => {
                     <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
                         <ModelTrainingIcon fontSize="large"
                                            sx={{width: '60px', height: '60px', color: '#A1B927', ml: 2, my: 1}}/>
-                        <Typography component={'span'} variant={'h5'} color={'inherit'} sx={{width: '100%'}}>Track your
-                            experiment</Typography>
+                        <Typography component={'span'} variant={'h5'} color={'inherit'} sx={{width: '100%'}}>Experiment name</Typography>
                     </Stack>
                 </Grid>
                 <Grid item xs={12} md={6}>

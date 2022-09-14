@@ -93,8 +93,8 @@ const Metrics = () => {
         <>
             <Breadcrumb breadcrumbs={breadcrumbs} welcome_msg={''}/>
             <Container maxWidth={'xl'} sx={{my: 5}}>
-                <Typography component={'span'} variant={'h4'} fontWeight={'bold'} sx={{mb: 3}}>Experiment Tracking</Typography>
-                <Box sx={{width: '100%'}}>
+                <Typography component={'span'} variant={'h4'} fontWeight={'bold'} sx={{mb: 3}}>Track your experiment</Typography>
+                <Box sx={{width: '100%', mt: 2}}>
                     <Box sx={{borderBottom: 1, borderColor: 'divider'}}>
                         <Tabs value={value} onChange={handleChangeTab} aria-label="basic tabs example">
                             <Tab label="By evaluation metric" {...a11yProps(0)} />
@@ -102,10 +102,10 @@ const Metrics = () => {
                         </Tabs>
                     </Box>
                     <TabPanel value={value} index={0}>
-                        {/*<ByEvaluationMetric/>*/}
+                        <ByEvaluationMetric/>
                     </TabPanel>
                     <TabPanel value={value} index={1}>
-                        <React.Fragment><ByRunID/></React.Fragment>
+                        <ByRunID/>
                     </TabPanel>
                 </Box>
             </Container>
