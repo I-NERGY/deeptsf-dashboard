@@ -20,8 +20,10 @@ const MemoryUsageBars = () => {
 
     const [vmHigh, setVmHigh] = useState(null)
     const [vmLow, setVmLow] = useState(null)
+    const [vmTitle, setVmTitle] = useState('')
     const [swapHigh, setSwapHigh] = useState(null)
     const [swapLow, setSwapLow] = useState(null)
+    const [swapTitle, setSwapTitle] = useState('')
 
     const [memoryUsageError, setMemoryUsageError] = useState(false)
 
@@ -30,13 +32,17 @@ const MemoryUsageBars = () => {
     };
 
     const getMemoryUsageData = () => {
+
         axios.get('/system_monitoring/get_memory_usage')
             .then(response => {
                 setVmHigh(response.data.progressbar_1.high)
                 setVmLow(response.data.progressbar_1.low)
+                setVmTitle(response.data) // TODO
                 setSwapHigh(response.data.progressbar_2.high)
                 setSwapLow(response.data.progressbar_2.low)
+                setSwapTitle(response.data) // TODO
                 setLoading(false)
+                setMemoryUsageError(false)
             })
             .catch(error => {
                 setMemoryUsageError(true)
@@ -69,8 +75,8 @@ const MemoryUsageBars = () => {
                     </Grid>
                 </AccordionSummary>
                 {!loading && !memoryUsageError && <AccordionDetails sx={{my: 4}}>
-                    <ProgressBar title={'Virtual memory usage (bytes)'} high={vmHigh} low={vmLow}/>
-                    <ProgressBar title={'Swap memory usage (bytes)'} high={swapHigh} low={swapLow}/>
+                    <ProgressBar title={vmTitle} high={vmHigh} low={vmLow}/>
+                    <ProgressBar title={swapTitle} high={swapHigh} low={swapLow}/>
                 </AccordionDetails>}
                 {memoryUsageError && !loading && <Alert severity="warning" sx={{my: 1}}>No data available.</Alert>}
                 {loading && <AccordionDetails>

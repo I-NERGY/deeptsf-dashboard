@@ -9,7 +9,6 @@ import LinearProgress, {linearProgressClasses} from '@mui/material/LinearProgres
 import Grid from "@mui/material/Grid";
 
 export default function ProgressBar({title, high, low, percent}) {
-    console.log(percent)
     const value = (low / high) * 100
 
     const BorderLinearProgress = styled(LinearProgress)(({theme}) => ({
