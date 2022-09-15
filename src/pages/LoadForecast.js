@@ -622,7 +622,7 @@ const LoadForecast = () => {
 
         <Snackbar open={executionSuccess} autoHideDuration={3000} onClose={closeSnackbar}>
             <AlertCustom onClose={closeSnackbar} severity="success" sx={{width: '100%', mb: 5}}>
-                Execution successful!
+                Execution initiated!
             </AlertCustom>
         </Snackbar>
         <Snackbar open={executionFailure} autoHideDuration={3000} onClose={closeSnackbar}>
