@@ -129,7 +129,7 @@ export default function Layout({children}) {
     useEffect(() => {
         if (roles?.length > 0 && (roles.includes('data_scientist') || roles.includes('inergy_admin'))) {
             menuItems.push(
-                {text: 'Load Forecast', icon: <UpdateIcon color="secondary"/>, path: "/load-forecast"},
+                {text: 'Load Forecasting Pipeline', icon: <UpdateIcon color="secondary"/>, path: "/load-forecast"},
                 {
                     text: 'MLFlow',
                     icon: <img src="/images/mlflow_logo.jpg" alt="" width={'25px'} style={{borderRadius: '50%'}}/>,

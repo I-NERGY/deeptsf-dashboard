@@ -465,19 +465,20 @@ const LoadForecast = () => {
                         <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
                             <ModelTrainingIcon fontSize="large"
                                                sx={{width: '60px', height: '60px', color: '#A1B927', ml: 2, my: 1}}/>
-                            <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>Choose a
-                                model</Typography>
+                            <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>
+                                Choose an algorithm
+                            </Typography>
                         </Stack>
                     </Grid>
                     <Grid item xs={12} md={6}>
                         <FormControl fullWidth>
-                            <InputLabel id="demo-simple-select-label">Choose a model</InputLabel>
+                            <InputLabel id="demo-simple-select-label">Choose an algorithm</InputLabel>
                             <Select
                                 labelId="demo-simple-select-label"
                                 id="demo-simple-select"
                                 value={model}
                                 disabled={executionLoading}
-                                label="Choose a model"
+                                label="Choose an algorithm"
                                 onChange={e => setModel(e.target.value)}
                             >
                                 {models && models.map(modelItem => (
