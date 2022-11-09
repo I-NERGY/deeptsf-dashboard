@@ -291,10 +291,10 @@ const LoadForecast = () => {
                             <label htmlFor="raised-button-file">
                                 <IconButton component={'span'} size={'large'}>
                                     <UploadFileOutlinedIcon fontSize="large"
-                                                            sx={{width: '60px', height: '60px', color: '#A1B927'}}/>
+                                                            sx={{width: '60px', height: '60px', color: '#A1B927', mr: '-8px', my: 1}}/>
                                 </IconButton>
                             </label>
-                            <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>
+                            <Typography variant={'h5'} color={'inherit'} sx={{width: '100%' }}>
                                 Upload your .csv file
                             </Typography>
                         </Stack>
