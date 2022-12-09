@@ -44,6 +44,7 @@ import BackspaceOutlinedIcon from '@mui/icons-material/BackspaceOutlined';
 
 import Breadcrumb from "../components/layout/Breadcrumb";
 import FullPageLoading from "../components/layout/FullPageLoading";
+import DatasetConfiguration from "../components/loadForecastingPipeline/DatasetConfiguration";
 
 const AlertCustom = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -161,7 +162,6 @@ const LoadForecast = () => {
 
         axios.post('/upload/uploadCSVfile/', data, {headers: {"Content-Type": "multipart/form-data"}})
             .then(response => {
-                console.log(response.data)
                 setResolutions(response.data.allowed_resolutions)
                 setUploadSuccess(true)
 
@@ -274,157 +274,30 @@ const LoadForecast = () => {
 
         {allowed && <React.Fragment>
             {/* Dataset Configuration */}
-            <Container maxWidth={'xl'} sx={{my: 5}}>
-                <Typography variant={'h4'} fontWeight={'bold'} sx={{mb: 3}}>Dataset Configuration</Typography>
-                <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
-                    <Grid item xs={12} md={8}>
-                        <input
-                            accept=".csv"
-                            style={{display: 'none'}}
-                            id="raised-button-file"
-                            type="file"
-                            disabled={executionLoading}
-                            onChange={(event) => handleAddNewFile(event.target.files[0])}
-                        />
-
-                        <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
-                            <label htmlFor="raised-button-file">
-                                <IconButton component={'span'} size={'large'}>
-                                    <UploadFileOutlinedIcon fontSize="large"
-                                                            sx={{width: '60px', height: '60px', color: '#A1B927', mr: '-8px', my: 1}}/>
-                                </IconButton>
-                            </label>
-                            <Typography variant={'h5'} color={'inherit'} sx={{width: '100%' }}>
-                                Upload your .csv file
-                            </Typography>
-                        </Stack>
-                    </Grid>
-                    <Grid item xs={12} md={4}>
-                        {newFile &&
-                            <Grid container display={'flex'} flexDirection={'row'} justifyContent={'center'}>
-                                <Typography variant={'h5'} color={'inherit'} align={'right'} sx={{width: '100%'}}>
-                                    Chosen file:
-                                    <Typography fontWeight={'bold'}
-                                                color={'secondary'}>{newFile.name}
-                                    </Typography>
-                                </Typography>
-                            </Grid>}
-                        <Stack direction="row" spacing={2} sx={{alignItems: 'center', mb: 2}}>
-                            {newFile && !uploadSuccess && <>
-                                <Typography sx={{ml: 'auto'}} variant={'h6'}>Day First</Typography>
-                                <Checkbox
-                                    disabled={executionLoading}
-                                    checked={dayFirst}
-                                    onChange={handleDayFirstCheckBox}
-                                    sx={{'& .MuiSvgIcon-root': {fontSize: 28}}}
-                                />
-                            </>}
-                            {newFile && !uploadSuccess &&
-                                <Button variant={'contained'} component={'span'} size={'large'} color={'success'}
-                                        sx={{ml: 'auto'}} disabled={executionLoading}
-                                        endIcon={<UploadFileOutlinedIcon/>} onClick={handleUploadFile}>
-                                    Upload file
-                                </Button>}
-                            {uploadSuccess &&
-                                <Button variant={'contained'} component={'span'} size={'medium'} color={'error'}
-                                        endIcon={<BackspaceOutlinedIcon/>} sx={{ml: 'auto'}}
-                                        onClick={handleClearNewFile}>
-                                    Clear
-                                </Button>}
-                        </Stack>
-                    </Grid>
-                </Grid>
-                <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
-                    <Grid item xs={12} md={8}>
-                        <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
-                            <DataThresholdingIcon fontSize="large"
-                                                  sx={{width: '60px', height: '60px', color: '#A1B927', ml: 2, my: 1}}/>
-                            <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>
-                                Select Timeseries Resolution
-                            </Typography>
-                        </Stack>
-                    </Grid>
-                    <Grid item xs={12} md={4}>
-                        <FormControl fullWidth>
-                            <InputLabel id="demo-simple-select-label">Dataset Resolution (Minutes)</InputLabel>
-                            <Select
-                                disabled={executionLoading}
-                                fullWidth
-                                labelId="demo-simple-select-label"
-                                id="demo-simple-select"
-                                value={experimentResolution}
-                                label="Dataset Resolution (Minutes)"
-                                onChange={e => setExperimentResolution(e.target.value)}
-                            >
-                                {resolutions?.map(resolution => (
-                                    <MenuItem key={resolution.value}
-                                              value={resolution.value.toString()}>{resolution.display_value}</MenuItem>))}
-                            </Select>
-                        </FormControl>
-                    </Grid>
-                </Grid>
-                <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
-                    <Grid item xs={12} md={6}>
-                        <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
-                            <DateRangeIcon fontSize="large"
-                                           sx={{width: '60px', height: '60px', color: '#A1B927', ml: 2, my: 1}}/>
-                            <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>Dataset Split</Typography>
-                        </Stack>
-                    </Grid>
-                    <Grid item xs={12} md={6}>
-                        <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
-                            <Grid item xs={12} md={4}>
-                                <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                    <DesktopDatePicker
-                                        disabled={executionLoading || !uploadSuccess}
-                                        inputFormat="dd/MM/yyyy"
-                                        label="Validation Start Date"
-                                        value={dateVal}
-                                        minDate={minDate ? minDate : void (0)}
-                                        maxDate={maxDate ? maxDate : void (0)}
-                                        onChange={(newValue) => {
-                                            setDateVal(newValue);
-                                        }}
-                                        renderInput={(params) => <TextField fullWidth {...params}/>}
-                                    />
-                                </LocalizationProvider>
-                            </Grid>
-                            <Grid item xs={12} md={4}>
-                                <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                    <DesktopDatePicker
-                                        disabled={executionLoading || !uploadSuccess}
-                                        inputFormat="dd/MM/yyyy"
-                                        label="Test Start Date"
-                                        value={dateTest}
-                                        minDate={minDateTestStart ? minDateTestStart : void (0)}
-                                        maxDate={maxDateTestStart ? maxDateTestStart : void (0)}
-                                        onChange={(newValue) => {
-                                            setDateTest(newValue);
-                                        }}
-                                        renderInput={(params) => <TextField fullWidth {...params} helperText={null}/>}
-                                    />
-                                </LocalizationProvider>
-                            </Grid>
-                            <Grid item xs={12} md={4}>
-                                <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                    <DesktopDatePicker
-                                        disabled={executionLoading || !uploadSuccess}
-                                        inputFormat="dd/MM/yyyy"
-                                        label="Test End Date"
-                                        value={dateEnd}
-                                        minDate={minDateEndStart ? minDateEndStart : void (0)}
-                                        maxDate={maxDate ? maxDate : void (0)}
-                                        onChange={(newValue) => {
-                                            setDateEnd(newValue);
-                                        }}
-                                        renderInput={(params) => <TextField fullWidth {...params} helperText={null}/>}
-                                    />
-                                </LocalizationProvider>
-                            </Grid>
-                        </Grid>
-                    </Grid>
-                </Grid>
-            </Container>
+            <DatasetConfiguration
+                executionLoading={executionLoading}
+                handleAddNewFile={handleAddNewFile}
+                newFile={newFile}
+                uploadSuccess={uploadSuccess}
+                dayFirst={dayFirst}
+                handleDayFirstCheckBox={handleDayFirstCheckBox}
+                handleUploadFile={handleUploadFile}
+                handleClearNewFile={handleClearNewFile}
+                experimentResolution={experimentResolution}
+                setExperimentResolution={setExperimentResolution}
+                resolutions={resolutions}
+                dateVal={dateVal}
+                minDate={minDate}
+                maxDate={maxDate}
+                dateTest={dateTest}
+                minDateTestStart={minDateTestStart}
+                maxDateTestStart={maxDateTestStart}
+                dateEnd={dateEnd}
+                minDateEndStart={minDateEndStart}
+                setDateVal={setDateVal}
+                setDateTest={setDateTest}
+                setDateEnd={setDateEnd}
+            />
             <hr/>
 
             {/* Model Training Setup */}
