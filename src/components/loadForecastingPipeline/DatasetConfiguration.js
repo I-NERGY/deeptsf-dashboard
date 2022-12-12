@@ -13,6 +13,7 @@ import InputLabel from "@mui/material/InputLabel";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import DateRangeIcon from "@mui/icons-material/DateRange";
+import DocumentScannerIcon from '@mui/icons-material/DocumentScanner';
 import {LocalizationProvider} from "@mui/x-date-pickers/LocalizationProvider";
 import {AdapterDateFns} from "@mui/x-date-pickers/AdapterDateFns";
 import {DesktopDatePicker} from "@mui/x-date-pickers/DesktopDatePicker";
@@ -171,7 +172,7 @@ const DatasetConfiguration = ({
                         <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
                             <Grid item xs={12} md={8}>
                                 <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
-                                    <DataThresholdingIcon fontSize="large"
+                                    <DocumentScannerIcon fontSize="large"
                                                           sx={{
                                                               width: '60px',
                                                               height: '60px',
