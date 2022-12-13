@@ -46,6 +46,7 @@ import Breadcrumb from "../components/layout/Breadcrumb";
 import FullPageLoading from "../components/layout/FullPageLoading";
 import DatasetConfiguration from "../components/loadForecastingPipeline/DatasetConfiguration";
 import ModelTrainingSetup from "../components/loadForecastingPipeline/ModelTrainingSetup";
+import ModelEvaluationSetup from "../components/loadForecastingPipeline/ModelEvaluationSetup";
 
 const AlertCustom = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -319,27 +320,11 @@ const LoadForecast = () => {
             <hr/>
 
             {/* Model Evaluation Setup */}
-            <Container maxWidth={'xl'} sx={{my: 5}}>
-                <Typography variant={'h4'} fontWeight={'bold'} sx={{mb: 3}}>Model Evaluation Setup</Typography>
-                <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
-                    <Grid item xs={12} md={6}>
-                        <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
-                            <LineAxisOutlinedIcon fontSize="large"
-                                                  sx={{width: '60px', height: '60px', color: '#A1B927', ml: 2, my: 1}}/>
-                            <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>Choose Backtest Forecast
-                                Horizon</Typography>
-                        </Stack>
-                    </Grid>
-                    <Grid item xs={12} md={6}>
-                        <TextField id="outlined-basic" label="Forecast Horizon" variant="outlined" required fullWidth
-                                   value={forecastHorizon} type="number"
-                                   disabled={executionLoading}
-                                   onChange={e => setForecastHorizon(e.target.value)}
-                                   InputProps={{inputProps: {min: 0}}}
-                        />
-                    </Grid>
-                </Grid>
-            </Container>
+            <ModelEvaluationSetup
+                forecastHorizon={forecastHorizon}
+                executionLoading={executionLoading}
+                setForecastHorizon={setForecastHorizon}
+            />
             <hr/>
 
             {/* Experiment Execution */}
