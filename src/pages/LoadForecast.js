@@ -47,6 +47,7 @@ import FullPageLoading from "../components/layout/FullPageLoading";
 import DatasetConfiguration from "../components/loadForecastingPipeline/DatasetConfiguration";
 import ModelTrainingSetup from "../components/loadForecastingPipeline/ModelTrainingSetup";
 import ModelEvaluationSetup from "../components/loadForecastingPipeline/ModelEvaluationSetup";
+import ExperimentExecution from "../components/loadForecastingPipeline/ExperimentExecution";
 
 const AlertCustom = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -328,48 +329,20 @@ const LoadForecast = () => {
             <hr/>
 
             {/* Experiment Execution */}
-            <Container maxWidth={'xl'} sx={{my: 5}}>
-                <Typography variant={'h4'} fontWeight={'bold'} sx={{mb: 3}}>Experiment Execution</Typography>
-                <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
-                    <Grid item xs={12} md={6}>
-                        <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
-                            <TerminalIcon fontSize="large"
-                                          sx={{width: '60px', height: '60px', color: '#A1B927', ml: 2, my: 1}}/>
-                            <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>Run the model</Typography>
-                        </Stack>
-                    </Grid>
-                    <Grid item xs={12} md={6} display={'flex'}>
-                        <Button variant={'contained'} component={'span'} size={'large'} color={'success'}
-                                sx={{ml: 'auto'}} fullWidth
-                                endIcon={<ChevronRight/>} onClick={handleExecute}
-                                disabled={executionLoading || !uploadSuccess || !experimentResolution || !dateVal || !dateTest || !dateEnd || !experimentName || !model || chosenConfiguration === '' || !forecastHorizon}
-                        >
-                            <Typography variant={'h5'}>
-                                EXECUTE {executionLoading && <CircularProgress size={'26px'} sx={{color: 'white'}}/>}
-                            </Typography>
-                        </Button>
-                    </Grid>
-                </Grid>
-                {executionInitiated &&
-                    <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
-                        <Grid item xs={12} md={6}>
-                            <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
-                                <DoneAllIcon fontSize="large"
-                                             sx={{width: '60px', height: '60px', color: '#A1B927', ml: 2, my: 1}}/>
-                                <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>Results</Typography>
-                            </Stack>
-                        </Grid>
-                        <Grid item xs={12} md={6} display={'flex'}>
-                            <Button variant={'contained'} component={'span'} size={'large'} color={'warning'}
-                                    sx={{ml: 'auto'}} fullWidth
-                                    endIcon={<ChevronRight/>}
-                                    onClick={() => window.open('http://131.154.97.48:5000/', '_blank')}
-                            >
-                                <Typography variant={'h6'}>Visit MLFlow Server</Typography>
-                            </Button>
-                        </Grid>
-                    </Grid>}
-            </Container>
+            <ExperimentExecution
+                handleExecute={handleExecute}
+                executionLoading={executionLoading}
+                uploadSuccess={uploadSuccess}
+                experimentResolution={experimentResolution}
+                dateVal={dateVal}
+                dateTest={dateTest}
+                dateEnd={dateEnd}
+                experimentName={experimentName}
+                model={model}
+                chosenConfiguration={chosenConfiguration}
+                forecastHorizon={forecastHorizon}
+                executionInitiated={executionInitiated}
+            />
         </React.Fragment>}
 
         {loading && <FullPageLoading/>}
