@@ -8,9 +8,9 @@ import ChevronRight from "@mui/icons-material/ChevronRight";
 import CircularProgress from "@mui/material/CircularProgress";
 import DoneAllIcon from "@mui/icons-material/DoneAll";
 import Container from "@mui/material/Container";
+import axios from "axios";
 
 const ExperimentExecution = ({
-                                 handleExecute,
                                  executionLoading,
                                  uploadSuccess,
                                  experimentResolution,
@@ -21,8 +21,52 @@ const ExperimentExecution = ({
                                  model,
                                  chosenConfiguration,
                                  forecastHorizon,
-                                 executionInitiated
+                                 executionInitiated,
+                                 setExecutionLoading,
+                                 setExecutionInitiated,
+                                 setExecutionSuccess,
+                                 setExecutionFailure,
+                                 availableConfigurations,
+                                 ignorePrevious,
+                                 seriesUri
                              }) => {
+
+    const handleExecute = () => {
+        setExecutionLoading(true)
+        setExecutionInitiated(true)
+        setExecutionSuccess(false)
+        setExecutionFailure(false)
+
+        const payload = {
+            series_csv: seriesUri,
+            experiment_name: experimentName,
+            resolution: experimentResolution,
+            validation_start_date: new Date(dateVal.getTime() - (dateVal.getTimezoneOffset() * 60 * 1000)).toISOString().split('T')[0].replace(/-/g, ""),
+            test_start_date: new Date(dateTest.getTime() - (dateTest.getTimezoneOffset() * 60 * 1000)).toISOString().split('T')[0].replace(/-/g, ""),
+            test_end_date: new Date(dateEnd.getTime() - (dateEnd.getTimezoneOffset() * 60 * 1000)).toISOString().split('T')[0].replace(/-/g, ""),
+            model: model.model_name,
+            forecast_horizon: forecastHorizon,
+            hyperparams_entrypoint: availableConfigurations[chosenConfiguration][0],
+            ignore_previous_runs: ignorePrevious
+        }
+
+        console.log(payload)
+
+        axios.post('/experimentation_pipeline/run_all', payload)
+            .then(response => {
+                console.log(response.data)
+                setExecutionSuccess(true)
+                setExecutionFailure(false)
+                setExecutionLoading(false)
+            })
+            .catch(error => {
+                console.log(error)
+                setExecutionFailure(true)
+                setExecutionSuccess(false)
+                setExecutionLoading(false)
+            })
+    }
+
     return (
         <>
             <Container maxWidth={'xl'} sx={{my: 5}}>

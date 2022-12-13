@@ -151,125 +151,12 @@ const LoadForecast = () => {
         dateEnd && (dateEnd < minDateEndStart) && setDateEnd(null)
     }, [minDateEndStart])
 
-    const handleAddNewFile = file => setNewFile(file)
-
-    const handleUploadFile = () => {
-        setLoading(true)
-        setUploadSuccess(false)
-        setExecutionSuccess(false)
-        setExecutionFailure(false)
-
-        const data = new FormData()
-        data.append('file', newFile)
-        data.append('day_first', dayFirst)
-
-        axios.post('/upload/uploadCSVfile/', data, {headers: {"Content-Type": "multipart/form-data"}})
-            .then(response => {
-                setResolutions(response.data.allowed_resolutions)
-                setUploadSuccess(true)
-
-                console.log(response.data.allowed_validation_start, new Date(response.data.allowed_validation_start))
-                // Set MIN/MAX values for date fields
-                setMinDate(new Date(response.data.allowed_validation_start))
-                setMaxDate(new Date(response.data.dataset_end))
-                setMaxDateTestStart(new Date(response.data.dataset_end))
-
-                // Re-initialize date fields
-                setDateVal(new Date(response.data.allowed_validation_start))
-                setDateTest(new Date(new Date(response.data.allowed_validation_start).getTime() + (10 * 24 * 60 * 60 * 1000)))
-                setDateEnd(new Date(response.data.dataset_end))
-
-                setSeriesUri(response.data.fname)
-
-                setNewFileSuccess(true)
-                setNewFileFailure(false)
-                setLoading(false)
-                document.getElementById('raised-button-file').value = ''
-            })
-            .catch(error => {
-                // TODO Fixes error handling
-                error.response?.status === 415 && setErrorMessage(error.response.data.detail)
-                setLoading(false)
-                setNewFileSuccess(false)
-                setNewFileFailure(true)
-                setNewFile(null)
-                document.getElementById('raised-button-file').value = ''
-                console.log(error)
-            })
-    }
-
-    const handleClearNewFile = () => {
-        setNewFile('')
-        setUploadSuccess(false)
-        // Set MIN/MAX values for date fields
-        setMinDate(null)
-        setMaxDate(null)
-        setMaxDateTestStart(null)
-
-        // Re-initialize date fields
-        setDateVal(null)
-        setDateTest(null)
-        setDateEnd(null)
-
-        setSeriesUri('')
-
-        setNewFileSuccess(false)
-        setNewFileFailure(false)
-    }
-
     const closeSnackbar = () => {
         setNewFileSuccess(false)
         setNewFileFailure(false)
 
         setExecutionSuccess(false)
         setExecutionFailure(false)
-    }
-
-    const handleChooseConfiguration = index => {
-        setChosenConfiguration(index)
-    }
-
-    const handleDayFirstCheckBox = () => {
-        setDayFirst(!dayFirst)
-    }
-    const handleIgnoreFirstCheckBox = () => {
-        setIgnorePrevious(!ignorePrevious)
-    }
-
-    const handleExecute = () => {
-        setExecutionLoading(true)
-        setExecutionInitiated(true)
-        setExecutionSuccess(false)
-        setExecutionFailure(false)
-
-        const payload = {
-            series_csv: seriesUri,
-            experiment_name: experimentName,
-            resolution: experimentResolution,
-            validation_start_date: new Date(dateVal.getTime() - (dateVal.getTimezoneOffset() * 60 * 1000)).toISOString().split('T')[0].replace(/-/g, ""),
-            test_start_date: new Date(dateTest.getTime() - (dateTest.getTimezoneOffset() * 60 * 1000)).toISOString().split('T')[0].replace(/-/g, ""),
-            test_end_date: new Date(dateEnd.getTime() - (dateEnd.getTimezoneOffset() * 60 * 1000)).toISOString().split('T')[0].replace(/-/g, ""),
-            model: model.model_name,
-            forecast_horizon: forecastHorizon,
-            hyperparams_entrypoint: availableConfigurations[chosenConfiguration][0],
-            ignore_previous_runs: ignorePrevious
-        }
-
-        console.log(payload)
-
-        axios.post('/experimentation_pipeline/run_all', payload)
-            .then(response => {
-                console.log(response.data)
-                setExecutionSuccess(true)
-                setExecutionFailure(false)
-                setExecutionLoading(false)
-            })
-            .catch(error => {
-                console.log(error)
-                setExecutionFailure(true)
-                setExecutionSuccess(false)
-                setExecutionLoading(false)
-            })
     }
 
     return (<div>
@@ -279,13 +166,11 @@ const LoadForecast = () => {
             {/* Dataset Configuration */}
             <DatasetConfiguration
                 executionLoading={executionLoading}
-                handleAddNewFile={handleAddNewFile}
+                setNewFile={setNewFile}
                 newFile={newFile}
                 uploadSuccess={uploadSuccess}
                 dayFirst={dayFirst}
-                handleDayFirstCheckBox={handleDayFirstCheckBox}
-                handleUploadFile={handleUploadFile}
-                handleClearNewFile={handleClearNewFile}
+                setDayFirst={setDayFirst}
                 experimentResolution={experimentResolution}
                 setExperimentResolution={setExperimentResolution}
                 resolutions={resolutions}
@@ -300,6 +185,18 @@ const LoadForecast = () => {
                 setDateVal={setDateVal}
                 setDateTest={setDateTest}
                 setDateEnd={setDateEnd}
+                setLoading={setLoading}
+                setUploadSuccess={setUploadSuccess}
+                setExecutionSuccess={setExecutionSuccess}
+                setExecutionFailure={setExecutionFailure}
+                setMinDate={setMinDate}
+                setMaxDate={setMaxDate}
+                setMaxDateTestStart={setMaxDateTestStart}
+                setSeriesUri={setSeriesUri}
+                setNewFileSuccess={setNewFileSuccess}
+                setNewFileFailure={setNewFileFailure}
+                setResolutions={setResolutions}
+                setErrorMessage={setErrorMessage}
             />
             <hr/>
 
@@ -310,13 +207,13 @@ const LoadForecast = () => {
                 setExperimentName={setExperimentName}
                 executionLoading={executionLoading}
                 ignorePrevious={ignorePrevious}
-                handleIgnoreFirstCheckBox={handleIgnoreFirstCheckBox}
                 model={model}
                 setModel={setModel}
                 models={models}
                 availableConfigurations={availableConfigurations}
                 chosenConfiguration={chosenConfiguration}
-                handleChooseConfiguration={handleChooseConfiguration}
+                setChosenConfiguration={setChosenConfiguration}
+                setIgnorePrevious={setIgnorePrevious}
             />
             <hr/>
 
@@ -330,7 +227,6 @@ const LoadForecast = () => {
 
             {/* Experiment Execution */}
             <ExperimentExecution
-                handleExecute={handleExecute}
                 executionLoading={executionLoading}
                 uploadSuccess={uploadSuccess}
                 experimentResolution={experimentResolution}
@@ -342,6 +238,13 @@ const LoadForecast = () => {
                 chosenConfiguration={chosenConfiguration}
                 forecastHorizon={forecastHorizon}
                 executionInitiated={executionInitiated}
+                setExecutionLoading={setExecutionLoading}
+                setExecutionInitiated={setExecutionInitiated}
+                setExecutionSuccess={setExecutionSuccess}
+                setExecutionFailure={setExecutionFailure}
+                availableConfigurations={availableConfigurations}
+                ignorePrevious={ignorePrevious}
+                seriesUri={seriesUri}
             />
         </React.Fragment>}
 

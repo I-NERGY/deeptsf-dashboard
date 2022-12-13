@@ -23,6 +23,7 @@ import PropTypes from 'prop-types';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
+import axios from "axios";
 
 function TabPanel(props) {
     const {children, value, index, ...other} = props;
@@ -59,13 +60,11 @@ function a11yProps(index) {
 
 const DatasetConfiguration = ({
                                   executionLoading,
-                                  handleAddNewFile,
+                                  setNewFile,
                                   newFile,
                                   uploadSuccess,
                                   dayFirst,
-                                  handleDayFirstCheckBox,
-                                  handleUploadFile,
-                                  handleClearNewFile,
+                                  setDayFirst,
                                   experimentResolution,
                                   setExperimentResolution,
                                   resolutions,
@@ -79,10 +78,90 @@ const DatasetConfiguration = ({
                                   minDateEndStart,
                                   setDateVal,
                                   setDateTest,
-                                  setDateEnd
+                                  setDateEnd,
+                                  setLoading,
+                                  setUploadSuccess,
+                                  setExecutionSuccess,
+                                  setExecutionFailure,
+                                  setMinDate,
+                                  setMaxDate,
+                                  setMaxDateTestStart,
+                                  setSeriesUri,
+                                  setNewFileSuccess,
+                                  setNewFileFailure,
+                                  setResolutions,
+                                  setErrorMessage
                               }) => {
 
     const [value, setValue] = useState(0);
+
+    const handleAddNewFile = file => setNewFile(file)
+    const handleDayFirstCheckBox = () => {
+        setDayFirst(!dayFirst)
+    }
+    const handleUploadFile = () => {
+        setLoading(true)
+        setUploadSuccess(false)
+        setExecutionSuccess(false)
+        setExecutionFailure(false)
+
+        const data = new FormData()
+        data.append('file', newFile)
+        data.append('day_first', dayFirst)
+
+        axios.post('/upload/uploadCSVfile/', data, {headers: {"Content-Type": "multipart/form-data"}})
+            .then(response => {
+                setResolutions(response.data.allowed_resolutions)
+                setUploadSuccess(true)
+
+                console.log(response.data.allowed_validation_start, new Date(response.data.allowed_validation_start))
+                // Set MIN/MAX values for date fields
+                setMinDate(new Date(response.data.allowed_validation_start))
+                setMaxDate(new Date(response.data.dataset_end))
+                setMaxDateTestStart(new Date(response.data.dataset_end))
+
+                // Re-initialize date fields
+                setDateVal(new Date(response.data.allowed_validation_start))
+                setDateTest(new Date(new Date(response.data.allowed_validation_start).getTime() + (10 * 24 * 60 * 60 * 1000)))
+                setDateEnd(new Date(response.data.dataset_end))
+
+                setSeriesUri(response.data.fname)
+
+                setNewFileSuccess(true)
+                setNewFileFailure(false)
+                setLoading(false)
+                document.getElementById('raised-button-file').value = ''
+            })
+            .catch(error => {
+                // TODO Fixes error handling
+                error.response?.status === 415 && setErrorMessage(error.response.data.detail)
+                setLoading(false)
+                setNewFileSuccess(false)
+                setNewFileFailure(true)
+                setNewFile(null)
+                document.getElementById('raised-button-file').value = ''
+                console.log(error)
+            })
+    }
+
+    const handleClearNewFile = () => {
+        setNewFile('')
+        setUploadSuccess(false)
+        // Set MIN/MAX values for date fields
+        setMinDate(null)
+        setMaxDate(null)
+        setMaxDateTestStart(null)
+
+        // Re-initialize date fields
+        setDateVal(null)
+        setDateTest(null)
+        setDateEnd(null)
+
+        setSeriesUri('')
+
+        setNewFileSuccess(false)
+        setNewFileFailure(false)
+    }
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
@@ -173,13 +252,13 @@ const DatasetConfiguration = ({
                             <Grid item xs={12} md={8}>
                                 <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
                                     <DocumentScannerIcon fontSize="large"
-                                                          sx={{
-                                                              width: '60px',
-                                                              height: '60px',
-                                                              color: '#A1B927',
-                                                              ml: 2,
-                                                              my: 1
-                                                          }}/>
+                                                         sx={{
+                                                             width: '60px',
+                                                             height: '60px',
+                                                             color: '#A1B927',
+                                                             ml: 2,
+                                                             my: 1
+                                                         }}/>
                                     <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>
                                         Choose a file from the dropdown
                                     </Typography>

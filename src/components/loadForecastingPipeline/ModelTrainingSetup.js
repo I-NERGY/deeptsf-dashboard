@@ -23,14 +23,23 @@ const ModelTrainingSetup = ({
                                 setExperimentName,
                                 executionLoading,
                                 ignorePrevious,
-                                handleIgnoreFirstCheckBox,
                                 model,
                                 setModel,
                                 models,
                                 availableConfigurations,
                                 chosenConfiguration,
-                                handleChooseConfiguration
+                                setChosenConfiguration,
+                                setIgnorePrevious
                             }) => {
+
+    const handleChooseConfiguration = index => {
+        setChosenConfiguration(index)
+    }
+
+    const handleIgnoreFirstCheckBox = () => {
+        setIgnorePrevious(!ignorePrevious)
+    }
+
     return (
         <>
             <Container maxWidth={'xl'} sx={{my: 5}}>
