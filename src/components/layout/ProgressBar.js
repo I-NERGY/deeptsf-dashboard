@@ -33,7 +33,7 @@ export default function ProgressBar({title, high, low, percent}) {
                     <Typography fontWeight={'bold'}>{title}</Typography>
                 </Grid>
                 <Grid item md={7} xs={6} sx={{mb: {xs: 4, md: 0}}}>
-                    <BorderLinearProgress variant="determinate" value={value ? value < 101 ? value : 100 : 0}/>
+                    <BorderLinearProgress variant="determinate" value={value ? value < 101 ? value : 100 : percent}/>
                 </Grid>
                 {percent === undefined && <Grid item md={2} xs={6} display={'flex'} sx={{mb: {xs: 4, md: 0}}}>
                     <Typography variant="body2" fontWeight={'bold'}>[</Typography>
