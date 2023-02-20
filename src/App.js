@@ -10,7 +10,7 @@ import RequireNotAuth from "./components/RequireNotAuth";
 
 import {ThemeProvider, createTheme} from '@mui/material/styles';
 import LoadForecast from "./pages/LoadForecast";
-import Metrics from "./pages/Metrics";
+import ExperimentTracking from "./pages/ExperimentTracking";
 import SystemMonitoring from "./pages/SystemMonitoring";
 
 axios.defaults.baseURL = 'http://131.154.97.48:8080';
@@ -68,7 +68,7 @@ function App() {
                             <Route path="/monitoring" element={<SystemMonitoring/>}/>
                         </Route>
 
-                        <Route path="/metrics" element={<Metrics/>}/>
+                        <Route path="/experiment-tracking" element={<ExperimentTracking/>}/>
                     </Routes>
                 </Layout>
             </div>

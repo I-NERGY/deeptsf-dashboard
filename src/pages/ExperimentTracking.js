@@ -79,10 +79,10 @@ const breadcrumbs = [
         color="secondary"
         fontSize={'20px'}
         fontWeight={600}>
-        Metrics
+        Experiment Tracking
     </Typography>,];
 
-const Metrics = () => {
+const ExperimentTracking = () => {
     const [value, setValue] = React.useState(0);
 
     const handleChangeTab = (event, newValue) => {
@@ -113,4 +113,4 @@ const Metrics = () => {
     );
 }
 
-export default Metrics;
+export default ExperimentTracking;

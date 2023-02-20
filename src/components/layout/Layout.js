@@ -136,13 +136,13 @@ export default function Layout({children}) {
                     path: location.pathname + ' ',
                     link: 'http://131.154.97.48:5000/'
                 },
-                {text: 'Experiment Tracking', icon: <QueryStatsIcon color="secondary"/>, path: "/metrics"}
+                {text: 'Experiment Tracking', icon: <QueryStatsIcon color="secondary"/>, path: "/experiment-tracking"}
             )
             setMenu(menuItems)
         }
 
         if (roles?.length > 0 && roles.includes('energy_engineer')) {
-            menuItems.push({text: 'Experiment Tracking', icon: <QueryStatsIcon color="secondary"/>, path: "/metrics"})
+            menuItems.push({text: 'Experiment Tracking', icon: <QueryStatsIcon color="secondary"/>, path: "/experiment-tracking"})
             setMenu(menuItems)
         }
 
