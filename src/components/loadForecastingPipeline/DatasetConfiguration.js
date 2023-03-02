@@ -203,7 +203,7 @@ const DatasetConfiguration = ({
                                                                     }}/>
                                         </IconButton>
                                     </label>
-                                    <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>
+                                    <Typography component={'span'} variant={'h5'} color={'inherit'} sx={{width: '100%'}}>
                                         Upload your .csv file
                                     </Typography>
                                 </Stack>
@@ -212,17 +212,17 @@ const DatasetConfiguration = ({
                             <Grid item xs={12} md={4}>
                                 {newFile &&
                                     <Grid container display={'flex'} flexDirection={'row'} justifyContent={'center'}>
-                                        <Typography variant={'h5'} color={'inherit'} align={'right'}
+                                        <Typography variant={'h5'} color={'inherit'} align={'right'} component={'span'}
                                                     sx={{width: '100%'}}>
                                             Chosen file:
-                                            <Typography fontWeight={'bold'}
+                                            <Typography fontWeight={'bold'} component={'span'}
                                                         color={'secondary'}>{newFile.name}
                                             </Typography>
                                         </Typography>
                                     </Grid>}
                                 <Stack direction="row" spacing={2} sx={{alignItems: 'center', mb: 2}}>
                                     {newFile && !uploadSuccess && <>
-                                        <Typography sx={{ml: 'auto'}} variant={'h6'}>Day First</Typography>
+                                        <Typography sx={{ml: 'auto'}} component={'span'} variant={'h6'}>Day First</Typography>
                                         <Checkbox
                                             disabled={executionLoading}
                                             checked={dayFirst}
