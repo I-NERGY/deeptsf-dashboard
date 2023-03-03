@@ -7,40 +7,8 @@ import {useNavigate} from "react-router-dom";
 
 import Link from '@mui/material/Link';
 import Typography from '@mui/material/Typography';
-import Container from '@mui/material/Container';
-import Button from '@mui/material/Button';
-import Stack from "@mui/material/Stack";
-import IconButton from '@mui/material/IconButton';
 import MuiAlert from '@mui/material/Alert';
-import Alert from '@mui/material/Alert';
 import Snackbar from '@mui/material/Snackbar';
-import Checkbox from '@mui/material/Checkbox';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
-import Grid from '@mui/material/Grid';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import TextField from '@mui/material/TextField';
-import CircularProgress from '@mui/material/CircularProgress';
-
-import {AdapterDateFns} from '@mui/x-date-pickers/AdapterDateFns';
-import {LocalizationProvider} from '@mui/x-date-pickers/LocalizationProvider';
-import {DesktopDatePicker} from '@mui/x-date-pickers/DesktopDatePicker';
-
-import UploadFileOutlinedIcon from '@mui/icons-material/UploadFileOutlined';
-import ModelTrainingIcon from '@mui/icons-material/ModelTraining';
-import SettingsApplicationsIcon from '@mui/icons-material/SettingsApplications';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import TerminalIcon from '@mui/icons-material/Terminal';
-import DoneAllIcon from '@mui/icons-material/DoneAll';
-import ChevronRight from '@mui/icons-material/ChevronRight';
-import DataThresholdingIcon from '@mui/icons-material/DataThresholding';
-import DateRangeIcon from '@mui/icons-material/DateRange';
-import LabelOutlinedIcon from '@mui/icons-material/LabelOutlined';
-import LineAxisOutlinedIcon from '@mui/icons-material/LineAxisOutlined';
-import BackspaceOutlinedIcon from '@mui/icons-material/BackspaceOutlined';
 
 import Breadcrumb from "../components/layout/Breadcrumb";
 import FullPageLoading from "../components/layout/FullPageLoading";
@@ -111,16 +79,19 @@ const LoadForecast = () => {
         if (roles) {
             (roles.includes('data_scientist') || roles.includes('inergy_admin')) ? setAllowed(true) : navigate('/')
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [roles])
 
     useEffect(() => {
         axios.get('/models/get_model_names')
             .then(response => setModels(response.data))
             .catch(error => console.log(error))
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     useEffect(() => {
         setForecastHorizon(Math.floor(288 / (experimentResolution / 5)))
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [experimentResolution])
 
     useEffect(() => {
@@ -132,23 +103,27 @@ const LoadForecast = () => {
                 setChosenConfiguration('')
             })
             .catch(error => console.log(error))
-
+// eslint-disable-next-line react-hooks/exhaustive-deps
     }, [model])
 
     useEffect(() => {
         dateVal && setMinDateTestStart(new Date(dateVal.getFullYear(), dateVal.getMonth(), dateVal.getDate() + 10))
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [dateVal])
 
     useEffect(() => {
         dateTest && setMinDateEndStart(new Date(dateTest.getFullYear(), dateTest.getMonth(), dateTest.getDate() + 10))
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [dateTest])
 
     useEffect(() => {
         dateTest && (dateTest < minDateTestStart) && setDateTest(null)
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [minDateTestStart])
 
     useEffect(() => {
         dateEnd && (dateEnd < minDateEndStart) && setDateEnd(null)
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [minDateEndStart])
 
     const closeSnackbar = () => {

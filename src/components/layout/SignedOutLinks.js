@@ -4,9 +4,8 @@ import ListItemText from "@mui/material/ListItemText";
 import ListItemIcon from "@mui/material/ListItemIcon";
 
 import LoginOutlinedIcon from "@mui/icons-material/LoginOutlined";
-import AppRegistrationOutlinedIcon from "@mui/icons-material/AppRegistrationOutlined";
 
-const SignedOutLinks = ({classes, navigate, location}) => {
+const SignedOutLinks = ({navigate, location}) => {
     return (
         <React.Fragment>
             <ListItemButton
@@ -16,14 +15,6 @@ const SignedOutLinks = ({classes, navigate, location}) => {
                 <ListItemIcon>{<LoginOutlinedIcon color="secondary"/>}</ListItemIcon>
                 <ListItemText primary={'SignIn'}></ListItemText>
             </ListItemButton>
-            {/*<ListItem*/}
-            {/*    onClick={() => navigate('/signup')}*/}
-            {/*    button key={'Sign Up'}*/}
-            {/*    className={location.pathname === '/signup' ? 'menuItemActive' : null}*/}
-            {/*>*/}
-            {/*    <ListItemIcon>{<AppRegistrationOutlinedIcon color="secondary"/>}</ListItemIcon>*/}
-            {/*    <ListItemText primary={'Sign Up'}></ListItemText>*/}
-            {/*</ListItem>*/}
         </React.Fragment>
     );
 }

@@ -1,9 +1,5 @@
-import React, {useState, useEffect, useContext} from 'react';
-import useAuthContext from "../../hooks/useAuthContext";
+import React, {useState, useEffect} from 'react';
 import {useLogin} from "../../hooks/useLogin";
-import {Link, useNavigate, useLocation} from "react-router-dom";
-
-import axios from '../../api/axios'
 
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
@@ -39,13 +35,8 @@ const useStyles = {
     },
 };
 
-const SignIn = (props) => {
+const SignIn = () => {
     const {login, error, isLoading} = useLogin()
-    const {setAuth} = useAuthContext()
-    const navigate = useNavigate()
-    const location = useLocation()
-    const from = location.state?.from.pathname || '/';
-
     const classes = useStyles;
 
     // Value and handlers for toggle visibility effect in password fields
@@ -59,7 +50,6 @@ const SignIn = (props) => {
     const [password, setPassword] = useState('')
     const [passwordEmpty, setPasswordEmpty] = useState(false)
     const [signInAttempted, setSignInAttempted] = useState(false)
-    const [signInFailed, setSignInFailed] = useState(false)
 
     // Function for username field validity
     const checkUsername = () => {
