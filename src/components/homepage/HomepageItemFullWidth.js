@@ -10,12 +10,12 @@ import Divider from "@mui/material/Divider";
 
 import Typography from "@mui/material/Typography";
 
-const HomepageItemFullWidth = ({title, description, link, icon, image, index}) => {
+const HomepageItemFullWidth = ({title, description, link, icon, image, index, showLink}) => {
     let navigate = useNavigate();
 
     return (<React.Fragment>
             <Grid container sx={{position: 'relative'}}>
-                {link && <Avatar className={'linkAvatar'} onClick={() => navigate(link)}>
+                {showLink && link && <Avatar className={'linkAvatar'} onClick={() => navigate(link)}>
                     <InsertLinkIcon className={'serviceCategoryLinkIcon'}/>
                 </Avatar>}
 

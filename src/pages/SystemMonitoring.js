@@ -31,7 +31,7 @@ const SystemMonitoring = () => {
     useEffect(() => {
         if (initialized) {
             let roles = keycloak.realmAccess.roles
-            if (roles.includes('energy_engineer') || roles.includes('inergy_admin')) {
+            if (roles.includes('inergy_admin')) {
                 setAllowed(true)
             } else navigate('/')
         }
