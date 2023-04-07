@@ -16,7 +16,6 @@ import {
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 
-import Link from "@mui/material/Link";
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
@@ -26,7 +25,7 @@ import Breadcrumb from "../components/layout/Breadcrumb";
 import ByEvaluationMetric from "../components/metrics/ByEvaluationMetric";
 import ByRunID from "../components/metrics/ByRunId";
 import {useKeycloak} from "@react-keycloak/web";
-import {useNavigate} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 
 function TabPanel(props) {
     const {children, value, index, ...other} = props;
@@ -73,16 +72,18 @@ ChartJS.register(
 );
 
 const breadcrumbs = [
-    <Link fontSize={'20px'} underline="hover" key="1" color="inherit" href="/">
-        Dashboard
-    </Link>, <Typography
+    <Link className={'breadcrumbLink'} key="1" to="/">
+        Homepage
+    </Link>,
+    <Typography
         underline="hover"
         key="2"
         color="secondary"
         fontSize={'20px'}
         fontWeight={600}>
         Experiment Tracking
-    </Typography>,];
+    </Typography>
+];
 
 const ExperimentTracking = () => {
     const {keycloak, initialized} = useKeycloak()
@@ -94,8 +95,7 @@ const ExperimentTracking = () => {
             let roles = keycloak.realmAccess.roles
             if (roles.includes('energy_engineer') || roles.includes('inergy_admin')) {
                 setAllowed(true)
-            }
-            else navigate('/')
+            } else navigate('/')
         }
     }, [initialized])
 

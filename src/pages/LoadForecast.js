@@ -1,10 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import axios from "axios";
-import {useNavigate} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 
 // import {modelConfigurations} from "../modelConfigurations";
 
-import Link from '@mui/material/Link';
 import Typography from '@mui/material/Typography';
 import MuiAlert from '@mui/material/Alert';
 import Snackbar from '@mui/material/Snackbar';
@@ -22,16 +21,18 @@ const AlertCustom = React.forwardRef(function Alert(props, ref) {
 });
 
 const breadcrumbs = [
-    <Link fontSize={'20px'} underline="hover" key="1" color="inherit" href="/">
-        Dashboard
-    </Link>, <Typography
+    <Link className={'breadcrumbLink'} key="1" to="/">
+        Homepage
+    </Link>,
+    <Typography
         underline="hover"
         key="2"
         color="secondary"
         fontSize={'20px'}
         fontWeight={600}>
         Load Forecasting
-    </Typography>,];
+    </Typography>,
+];
 
 const LoadForecast = () => {
     const {keycloak} = useKeycloak()

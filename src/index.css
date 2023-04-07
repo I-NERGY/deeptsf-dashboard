@@ -112,3 +112,13 @@ code {
 .css-19kzrtu {
     padding: 0 !important;
 }
+
+.breadcrumbLink {
+    text-decoration: none;
+    font-size: 20px;
+    color: inherit;
+}
+
+.breadcrumbLink:hover {
+    text-decoration: underline !important;
+}
