@@ -114,7 +114,8 @@ const DatasetConfiguration = ({
                 setResolutions(response.data.allowed_resolutions)
                 setUploadSuccess(true)
 
-                console.log(response.data.allowed_validation_start, new Date(response.data.allowed_validation_start))
+                // console.log(response.data.allowed_validation_start, new Date(response.data.allowed_validation_start))
+
                 // Set MIN/MAX values for date fields
                 setMinDate(new Date(response.data.allowed_validation_start))
                 setMaxDate(new Date(response.data.dataset_end))
@@ -203,7 +204,8 @@ const DatasetConfiguration = ({
                                                                     }}/>
                                         </IconButton>
                                     </label>
-                                    <Typography component={'span'} variant={'h5'} color={'inherit'} sx={{width: '100%'}}>
+                                    <Typography component={'span'} variant={'h5'} color={'inherit'}
+                                                sx={{width: '100%'}}>
                                         Upload your .csv file
                                     </Typography>
                                 </Stack>
@@ -222,7 +224,8 @@ const DatasetConfiguration = ({
                                     </Grid>}
                                 <Stack direction="row" spacing={2} sx={{alignItems: 'center', mb: 2}}>
                                     {newFile && !uploadSuccess && <>
-                                        <Typography sx={{ml: 'auto'}} component={'span'} variant={'h6'}>Day First</Typography>
+                                        <Typography sx={{ml: 'auto'}} component={'span'} variant={'h6'}>Day
+                                            First</Typography>
                                         <Checkbox
                                             disabled={executionLoading}
                                             checked={dayFirst}

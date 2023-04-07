@@ -1,8 +1,6 @@
 import React, {useState} from "react";
 import {styled} from '@mui/material/styles';
 
-import useAuthContext from "../hooks/useAuthContext";
-
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell, {tableCellClasses} from '@mui/material/TableCell';
@@ -13,7 +11,6 @@ import Paper from '@mui/material/Paper';
 import Link from '@mui/material/Link';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
-import Stack from '@mui/material/Stack';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Accordion from '@mui/material/Accordion';
@@ -25,6 +22,7 @@ import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import ArrowRightRoundedIcon from '@mui/icons-material/ArrowRightRounded';
 
 import Breadcrumb from "../components/layout/Breadcrumb";
+import {useKeycloak} from "@react-keycloak/web";
 
 const StyledTableCell = styled(TableCell)(({theme}) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -52,43 +50,10 @@ const StyledTableRow = styled(TableRow)(({theme}) => ({
 }));
 
 const UserProfile = () => {
-    const {user} = useAuthContext()
-    const roles = localStorage.getItem('roles').split(',')
-    const [firstName, setFirstName] = useState('')
-    const [lastName, setLastName] = useState('')
-    const [email, setEmail] = useState('')
-    const [userID, setUserID] = useState('')
-    // const [roles, setRoles] = useState([])
-    const [attributes, setAttributes] = useState([])
-
-    const [infoLoading, setInfoLoading] = useState(false)
-    const [rolesLoading, setRolesLoading] = useState(false)
-    const [attributesLoading, setAttributesLoading] = useState(false)
+    const {keycloak} = useKeycloak()
 
     const [userInfoExpanded, setUserInfoExpanded] = useState(true)
     const [rolesExpanded, setRolesExpanded] = useState(false)
-    const [attributesExpanded, setAttributesExpanded] = useState(false)
-
-    // Get user info on first load
-    // useEffect(() => {
-    //     setInfoLoading(true)
-    //     axios.get(`/user/get/username/${auth.username}`)
-    //         .then(response => {
-    //             if (response.data.attributes) {
-    //                 setAttributes(Object.entries(response.data.attributes))
-    //             }
-    //             setFirstName(response.data.firstName)
-    //             setLastName(response.data.lastName)
-    //             setEmail(response.data.email)
-    //             setUserID(response.data.id)
-    //             setInfoLoading(false)
-    //
-    //         })
-    //         .catch(error => {
-    //             setInfoLoading(false)
-    //             console.log(error)
-    //         })
-    // }, [])
 
     const breadcrumbs = [
         <Link fontSize={'20px'} underline="hover" key="1" color="inherit" href="/">
@@ -122,7 +87,7 @@ const UserProfile = () => {
                                 <FiberManualRecordIcon sx={{marginRight: '5px'}} color={'success'}
                                                        style={{marginTop: '5%'}}/>
                                 <Typography variant={'h6'}
-                                            sx={{color: 'text.secondary', fontWeight: 'bold'}}>{user?.username}
+                                            sx={{color: 'text.secondary', fontWeight: 'bold'}}>{keycloak.tokenParsed.preferred_username}
                                 </Typography>
                             </Box>
 
@@ -150,10 +115,7 @@ const UserProfile = () => {
                                         <TableHead>
                                             <TableRow>
                                                 <StyledTableCell align="center">Username</StyledTableCell>
-                                                <StyledTableCell align="center">User ID</StyledTableCell>
                                                 <StyledTableCell align="center">Roles</StyledTableCell>
-                                                <StyledTableCell align="center">Attributes</StyledTableCell>
-                                                <StyledTableCell align="center">Email</StyledTableCell>
                                                 <StyledTableCell align="center">First Name</StyledTableCell>
                                                 <StyledTableCell align="center">Last Name</StyledTableCell>
                                             </TableRow>
@@ -162,87 +124,52 @@ const UserProfile = () => {
                                             <StyledTableRow
                                                 sx={{'&:last-child td, &:last-child th': {border: 0}}}>
                                                 <TableCell sx={{fontSize: '18px', padding: '10px'}} align="center">
-                                                    <Typography fontSize={'large'}>{user?.username}</Typography>
+                                                    <Typography
+                                                        fontSize={'large'}>{keycloak.tokenParsed.preferred_username}</Typography>
                                                 </TableCell>
                                                 <TableCell sx={{fontSize: '18px', padding: '10px'}} align="center">
-                                                    <Typography fontSize={'large'}>{userID}</Typography>
-                                                </TableCell>
-                                                <TableCell sx={{fontSize: '18px', padding: '10px'}} align="center">
-                                                    {roles.length > 0 &&
-                                                    <Accordion expanded={rolesExpanded}
-                                                               onClick={() => setRolesExpanded(!rolesExpanded)}
-                                                    >
-                                                        <AccordionSummary
-                                                            expandIcon={<ExpandMoreIcon/>}
-                                                            aria-controls="panel2bh-content"
-                                                            id="panel2bh-header">
-                                                            <Container>
-                                                                <Typography fontSize={'large'} align={'center'}
-                                                                            fontWeight={'bold'}>
-                                                                    {roles.length} role{roles.length > 1 && 's'}.
-                                                                </Typography>
-                                                                {!rolesExpanded &&
-                                                                <Typography fontSize={'large'} overflow={'hidden'}
-                                                                            align={'center'}>{'Click to expand.'}
-                                                                </Typography>}
-                                                            </Container>
-                                                        </AccordionSummary>
+                                                    {keycloak.realmAccess.roles.length > 0 ?
+                                                        <Accordion expanded={rolesExpanded}
+                                                                   onClick={() => setRolesExpanded(!rolesExpanded)}
+                                                        >
+                                                            <AccordionSummary
+                                                                expandIcon={<ExpandMoreIcon/>}
+                                                                aria-controls="panel2bh-content"
+                                                                id="panel2bh-header">
+                                                                <Container>
+                                                                    <Typography fontSize={'large'} align={'center'}
+                                                                                fontWeight={'bold'}>
+                                                                        {keycloak.realmAccess.roles.length} role{(keycloak.realmAccess.roles.length > 1 || keycloak.realmAccess.roles.length === 0) && 's'}.
+                                                                    </Typography>
+                                                                    {!rolesExpanded &&
+                                                                        <Typography fontSize={'large'}
+                                                                                    overflow={'hidden'}
+                                                                                    align={'center'}>{'Click to expand.'}
+                                                                        </Typography>}
+                                                                </Container>
+                                                            </AccordionSummary>
 
-                                                        <AccordionDetails>
-                                                            {roles.map(role => (
-                                                                <Grid display={'flex'} padding={0} key={role}
-                                                                      sx={{overflow: 'hidden'}}>
-                                                                    <ArrowRightRoundedIcon/>
-                                                                    {role}<br/>
-                                                                </Grid>
-                                                            ))}
-                                                        </AccordionDetails>
-                                                    </Accordion>}
-                                                    {(roles.length === 0) &&
-                                                    <Typography fontSize={'large'}>No roles assigned.</Typography>}
-                                                </TableCell>
-                                                <TableCell sx={{fontSize: '18px', padding: '10px'}} align="center">
-                                                    {attributes.length > 0 &&
-                                                    <Accordion expanded={attributesExpanded}
-                                                               onClick={() => setAttributesExpanded(!attributesExpanded)}
-                                                    >
-                                                        <AccordionSummary
-                                                            expandIcon={<ExpandMoreIcon/>}
-                                                            aria-controls="panel2bh-content"
-                                                            id="panel2bh-header">
-                                                            <Container>
-                                                                <Typography fontSize={'large'} align={'center'}
-                                                                            fontWeight={'bold'}>
-                                                                    {attributes.length} attribute{attributes.length > 1 && 's'}.
-                                                                </Typography>
-                                                                {!attributesExpanded &&
-                                                                <Typography fontSize={'large'} overflow={'hidden'}
-                                                                            align={'center'}>{'Click to expand.'}
-                                                                </Typography>}
-                                                            </Container>
-                                                        </AccordionSummary>
+                                                            <AccordionDetails>
+                                                                {keycloak.realmAccess.roles.map(role => (
+                                                                    <Grid display={'flex'} padding={0} key={role}
+                                                                          sx={{overflow: 'hidden'}}>
+                                                                        <ArrowRightRoundedIcon/>
+                                                                        {role}<br/>
+                                                                    </Grid>
+                                                                ))}
+                                                            </AccordionDetails>
+                                                        </Accordion>
+                                                        :
+                                                        <Typography fontSize={'large'}>No roles assigned.</Typography>}
 
-                                                        <AccordionDetails>
-                                                            {attributes.map(attribute => (
-                                                                <Stack direction={'row'} key={attribute[0]}>
-                                                                    <Typography
-                                                                        fontWeight={'bold'}>{attribute[0]}</Typography>
-                                                                    <Typography>:&nbsp;</Typography>
-                                                                    <Typography>{attribute[1]} </Typography> </Stack>
-                                                            ))}
-                                                        </AccordionDetails>
-                                                    </Accordion>}
-                                                    {(attributes.length === 0) &&
-                                                    <Typography fontSize={'large'}>No attributes assigned.</Typography>}
                                                 </TableCell>
                                                 <TableCell sx={{fontSize: '18px', padding: '10px'}} align="center">
-                                                    <Typography fontSize={'large'}>{email ? email : '-'}</Typography>
+                                                    <Typography
+                                                        fontSize={'large'}>{keycloak.tokenParsed.given_name || '-'}</Typography>
                                                 </TableCell>
                                                 <TableCell sx={{fontSize: '18px', padding: '10px'}} align="center">
-                                                    <Typography fontSize={'large'}>{firstName ? firstName : '-'}</Typography>
-                                                </TableCell>
-                                                <TableCell sx={{fontSize: '18px', padding: '10px'}} align="center">
-                                                    <Typography fontSize={'large'}>{lastName ? lastName : '-'}</Typography>
+                                                    <Typography
+                                                        fontSize={'large'}>{keycloak.tokenParsed.family_name || '-'}</Typography>
                                                 </TableCell>
                                             </StyledTableRow>
                                         </TableBody>

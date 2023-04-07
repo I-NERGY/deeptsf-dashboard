@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 
 import {
@@ -25,6 +25,8 @@ import Box from '@mui/material/Box';
 import Breadcrumb from "../components/layout/Breadcrumb";
 import ByEvaluationMetric from "../components/metrics/ByEvaluationMetric";
 import ByRunID from "../components/metrics/ByRunId";
+import {useKeycloak} from "@react-keycloak/web";
+import {useNavigate} from "react-router-dom";
 
 function TabPanel(props) {
     const {children, value, index, ...other} = props;
@@ -83,7 +85,21 @@ const breadcrumbs = [
     </Typography>,];
 
 const ExperimentTracking = () => {
-    const [value, setValue] = React.useState(0);
+    const {keycloak, initialized} = useKeycloak()
+    const navigate = useNavigate();
+    const [allowed, setAllowed] = useState(false)
+
+    useEffect(() => {
+        if (initialized) {
+            let roles = keycloak.realmAccess.roles
+            if (roles.includes('energy_engineer') || roles.includes('inergy_admin')) {
+                setAllowed(true)
+            }
+            else navigate('/')
+        }
+    }, [initialized])
+
+    const [value, setValue] = useState(0);
 
     const handleChangeTab = (event, newValue) => {
         setValue(newValue);
@@ -92,8 +108,9 @@ const ExperimentTracking = () => {
     return (
         <>
             <Breadcrumb breadcrumbs={breadcrumbs} welcome_msg={''}/>
-            <Container maxWidth={'xl'} sx={{my: 5}}>
-                <Typography component={'span'} variant={'h4'} fontWeight={'bold'} sx={{mb: 3}}>Track your experiment</Typography>
+            {allowed && <Container maxWidth={'xl'} sx={{my: 5}}>
+                <Typography component={'span'} variant={'h4'} fontWeight={'bold'} sx={{mb: 3}}>Track your
+                    experiment</Typography>
                 <Box sx={{width: '100%', mt: 2}}>
                     <Box sx={{borderBottom: 1, borderColor: 'divider'}}>
                         <Tabs value={value} onChange={handleChangeTab} aria-label="basic tabs example">
@@ -108,7 +125,7 @@ const ExperimentTracking = () => {
                         <ByRunID/>
                     </TabPanel>
                 </Box>
-            </Container>
+            </Container>}
         </>
     );
     // eslint-disable

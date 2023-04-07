@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from 'react';
 import axios from "axios";
-import useAuthContext from "../hooks/useAuthContext";
 import {useNavigate} from "react-router-dom";
 
 // import {modelConfigurations} from "../modelConfigurations";
@@ -16,6 +15,7 @@ import DatasetConfiguration from "../components/loadForecastingPipeline/DatasetC
 import ModelTrainingSetup from "../components/loadForecastingPipeline/ModelTrainingSetup";
 import ModelEvaluationSetup from "../components/loadForecastingPipeline/ModelEvaluationSetup";
 import ExperimentExecution from "../components/loadForecastingPipeline/ExperimentExecution";
+import {useKeycloak} from "@react-keycloak/web";
 
 const AlertCustom = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -34,7 +34,8 @@ const breadcrumbs = [
     </Typography>,];
 
 const LoadForecast = () => {
-    const {roles} = useAuthContext()
+    const {keycloak} = useKeycloak()
+
     const navigate = useNavigate();
     const [allowed, setAllowed] = useState(null)
     const [newFile, setNewFile] = useState()
@@ -76,11 +77,21 @@ const LoadForecast = () => {
     const [seriesUri, setSeriesUri] = useState('')
 
     useEffect(() => {
-        if (roles) {
-            (roles.includes('data_scientist') || roles.includes('inergy_admin')) ? setAllowed(true) : navigate('/')
-        }
+        axios.get('/user/info', {
+            headers: {
+                'Authorization': `Bearer ${keycloak.token}`
+            },
+        })
+            .then((response => {
+                let roles = response.data.realm_access.roles
+                if (roles.includes('data_scientist') || roles.includes('inergy_admin')) {
+                    setAllowed(true)
+                } else {
+                    navigate('/')
+                }
+            }))
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [roles])
+    }, [])
 
     useEffect(() => {
         axios.get('/models/get_model_names')
