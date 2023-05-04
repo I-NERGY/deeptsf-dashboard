@@ -137,7 +137,7 @@ export default function Layout({children}) {
                     text: 'MLFlow',
                     icon: <img src="/images/mlflow_logo.jpg" alt="" width={'25px'} style={{borderRadius: '50%'}}/>,
                     path: location.pathname + ' ',
-                    link: 'http://131.154.97.48:5000/'
+                    link: 'http://131.154.97.48:8440/'
                 },
             )
             setMenu(menuItems)

@@ -76,10 +76,13 @@ const CpuUsageBarChart = () => {
     useEffect(() => {
         setLoading(true)
 
-        setInterval(() => {
+        const interval = setInterval(() => {
             cpuCount < liveRefreshMax && getCpuUsage()
             cpuCount >= liveRefreshMax && setTimeExceeded(true)
         }, 3000)
+
+        return () => clearInterval(interval);
+
     }, [])
 
     const restoreLiveFeed = () => {

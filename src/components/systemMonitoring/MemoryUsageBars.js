@@ -79,10 +79,13 @@ const MemoryUsageBars = () => {
         setLoading(true)
         setMemoryUsageError(false)
         getMemoryUsageData()
-        setInterval(() => {
+
+        const interval = setInterval(() => {
             memoryCount < liveRefreshMax && getMemoryUsageData()
             memoryCount >= liveRefreshMax && setTimeExceeded(true)
         }, 3000)
+
+        return () => clearInterval(interval);
     }, [])
 
     return (
