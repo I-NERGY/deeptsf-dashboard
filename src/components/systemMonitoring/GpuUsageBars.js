@@ -66,7 +66,7 @@ const GpuUsageBars = () => {
         }
         setTimeExceeded(false)
         gpuCount = 0
-        setInterval(() => {
+        const interval = setInterval(() => {
             gpuCount < liveRefreshMax && getGpuUsageData()
             gpuCount >= liveRefreshMax && setTimeExceeded(true)
         }, 3000)
@@ -76,10 +76,12 @@ const GpuUsageBars = () => {
         setLoading(true)
         setGpuUsageError(false)
         getGpuUsageData()
-        setInterval(() => {
+        const interval = setInterval(() => {
             gpuCount < liveRefreshMax && getGpuUsageData()
             gpuCount >= liveRefreshMax && setTimeExceeded(true)
         }, 2000)
+
+        return () => clearInterval(interval);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
