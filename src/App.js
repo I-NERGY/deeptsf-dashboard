@@ -14,8 +14,8 @@ import ExperimentTracking from "./pages/ExperimentTracking";
 import SystemMonitoring from "./pages/SystemMonitoring";
 
 axios.defaults.baseURL = 'http://131.154.97.48:8080';
-console.log(JSON.parse(localStorage.getItem('user')).accessToken)
-axios.defaults.headers.common['Authorization'] = `Bearer ${JSON.parse(localStorage.getItem('user')).accessToken}`;
+// console.log(JSON.parse(localStorage.getItem('user')).accessToken)
+axios.defaults.headers.common['Authorization'] = `Bearer ${JSON.parse(localStorage.getItem('user'))?.accessToken}`;
 
 
 // Set primary color here
