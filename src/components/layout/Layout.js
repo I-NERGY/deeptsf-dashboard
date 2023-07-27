@@ -132,7 +132,7 @@ export default function Layout({children}) {
         let roles = keycloak.realmAccess?.roles
         if (roles?.length > 0 && (roles.includes('data_scientist') || roles.includes('inergy_admin'))) {
             menuItems.push(
-                {text: 'Load Forecasting Pipeline', icon: <UpdateIcon color="secondary"/>, path: "/load-forecast"},
+                {text: 'Codeless Forecasting Pipeline', icon: <UpdateIcon color="secondary"/>, path: "/codeless-forecast"},
                 {
                     text: 'MLFlow',
                     icon: <img src="/images/mlflow_logo.jpg" alt="" width={'25px'} style={{borderRadius: '50%'}}/>,
@@ -175,7 +175,7 @@ export default function Layout({children}) {
                             sx={{mr: 2, color: 'white', ...(drawerOpen && {display: 'none'})}}>
                             <MenuIcon/>
                         </IconButton>
-                        <h3 style={{color: 'white'}}>I-NERGY Load Forecasting</h3>
+                        <h3 style={{color: 'white'}}>I-NERGY DeepTSF</h3>
                         {keycloak.authenticated === true && <React.Fragment>
                             <Typography style={{
                                 marginLeft: 'auto',

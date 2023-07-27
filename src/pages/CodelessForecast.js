@@ -30,11 +30,11 @@ const breadcrumbs = [
         color="secondary"
         fontSize={'20px'}
         fontWeight={600}>
-        Load Forecasting
+        Codeless Forecast
     </Typography>,
 ];
 
-const LoadForecast = () => {
+const CodelessForecast = () => {
     const {keycloak} = useKeycloak()
 
     const navigate = useNavigate();
@@ -260,4 +260,4 @@ const LoadForecast = () => {
     </div>);
 }
 
-export default LoadForecast;
+export default CodelessForecast;

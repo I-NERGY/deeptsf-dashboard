@@ -11,7 +11,7 @@ import RequireAuth from "./components/RequireAuth";
 // import RequireNotAuth from "./components/RequireNotAuth";
 
 import {ThemeProvider, createTheme} from '@mui/material/styles';
-import LoadForecast from "./pages/LoadForecast";
+import CodelessForecast from "./pages/CodelessForecast";
 import ExperimentTracking from "./pages/ExperimentTracking";
 import SystemMonitoring from "./pages/SystemMonitoring";
 
@@ -65,7 +65,7 @@ function App() {
                         </Route>
 
                         <Route element={<RequireAuth/>}>
-                            <Route path="/load-forecast" element={<LoadForecast/>}/>
+                            <Route path="/codeless-forecast" element={<CodelessForecast/>}/>
                         </Route>
 
                         <Route element={<RequireAuth/>}>
