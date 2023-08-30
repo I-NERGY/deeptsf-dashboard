@@ -50,7 +50,7 @@ const StyledTableRow = styled(TableRow)(({theme}) => ({
 }));
 
 const UserProfile = () => {
-    const {keycloak} = useKeycloak()
+    const {keycloak, initialized} = useKeycloak()
 
     const [userInfoExpanded, setUserInfoExpanded] = useState(true)
     const [rolesExpanded, setRolesExpanded] = useState(false)
@@ -68,7 +68,7 @@ const UserProfile = () => {
         <React.Fragment>
             <Breadcrumb breadcrumbs={breadcrumbs} welcome_msg={''}/>
 
-            <Box style={{display: 'flex'}} sx={{padding: 3, width: '100%'}}>
+            <Box style={{display: 'flex'}} sx={{padding: 3, width: '100%'}} data-testid={'useProfileMainSection'}>
                 <Accordion expanded={userInfoExpanded} sx={{width: '100%'}}>
                     <AccordionSummary
                         onClick={() => setUserInfoExpanded(!userInfoExpanded)}
@@ -87,7 +87,7 @@ const UserProfile = () => {
                                 <FiberManualRecordIcon sx={{marginRight: '5px'}} color={'success'}
                                                        style={{marginTop: '5%'}}/>
                                 <Typography variant={'h6'}
-                                            sx={{color: 'text.secondary', fontWeight: 'bold'}}>{keycloak.tokenParsed.preferred_username}
+                                            sx={{color: 'text.secondary', fontWeight: 'bold'}}>{initialized ? keycloak.tokenParsed.preferred_username : ''}
                                 </Typography>
                             </Box>
 
@@ -125,9 +125,9 @@ const UserProfile = () => {
                                                 sx={{'&:last-child td, &:last-child th': {border: 0}}}>
                                                 <TableCell sx={{fontSize: '18px', padding: '10px'}} align="center">
                                                     <Typography
-                                                        fontSize={'large'}>{keycloak.tokenParsed.preferred_username}</Typography>
+                                                        fontSize={'large'}>{initialized ? keycloak.tokenParsed.preferred_username : ''}</Typography>
                                                 </TableCell>
-                                                <TableCell sx={{fontSize: '18px', padding: '10px'}} align="center">
+                                                {initialized && <TableCell sx={{fontSize: '18px', padding: '10px'}} align="center">
                                                     {keycloak.realmAccess.roles.length > 0 ?
                                                         <Accordion expanded={rolesExpanded}
                                                                    onClick={() => setRolesExpanded(!rolesExpanded)}
@@ -137,10 +137,11 @@ const UserProfile = () => {
                                                                 aria-controls="panel2bh-content"
                                                                 id="panel2bh-header">
                                                                 <Container>
-                                                                    <Typography fontSize={'large'} align={'center'}
-                                                                                fontWeight={'bold'}>
-                                                                        {keycloak.realmAccess.roles.length} role{(keycloak.realmAccess.roles.length > 1 || keycloak.realmAccess.roles.length === 0) && 's'}.
-                                                                    </Typography>
+                                                                    {initialized &&
+                                                                        <Typography fontSize={'large'} align={'center'}
+                                                                                    fontWeight={'bold'}>
+                                                                            {keycloak.realmAccess.roles.length} role{(keycloak.realmAccess.roles.length > 1 || keycloak.realmAccess.roles.length === 0) && 's'}.
+                                                                        </Typography>}
                                                                     {!rolesExpanded &&
                                                                         <Typography fontSize={'large'}
                                                                                     overflow={'hidden'}
@@ -161,15 +162,14 @@ const UserProfile = () => {
                                                         </Accordion>
                                                         :
                                                         <Typography fontSize={'large'}>No roles assigned.</Typography>}
-
+                                                </TableCell>}
+                                                <TableCell sx={{fontSize: '18px', padding: '10px'}} align="center">
+                                                    <Typography
+                                                        fontSize={'large'}>{initialized ? (keycloak.tokenParsed.given_name || '-') : '-'}</Typography>
                                                 </TableCell>
                                                 <TableCell sx={{fontSize: '18px', padding: '10px'}} align="center">
                                                     <Typography
-                                                        fontSize={'large'}>{keycloak.tokenParsed.given_name || '-'}</Typography>
-                                                </TableCell>
-                                                <TableCell sx={{fontSize: '18px', padding: '10px'}} align="center">
-                                                    <Typography
-                                                        fontSize={'large'}>{keycloak.tokenParsed.family_name || '-'}</Typography>
+                                                        fontSize={'large'}>{initialized ? (keycloak.tokenParsed.family_name || '-') : '-'}</Typography>
                                                 </TableCell>
                                             </StyledTableRow>
                                         </TableBody>
