@@ -9,7 +9,6 @@ import CodelessForecast from "../pages/CodelessForecast";
 
 // To run the tests, comment and uncomment the needed lines in the main component
 // Guidance is offered in the component with comments
-
 it('renders Dataset Configuration section', () => {
     render(
         <ReactKeycloakProvider authClient={my_keycloak} initOptions={{ onLoad: 'login-required' }}>

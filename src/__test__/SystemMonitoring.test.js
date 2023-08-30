@@ -7,6 +7,9 @@ import {AuthContextProvider} from "../context/AuthContext";
 
 import SystemMonitoring from "../pages/SystemMonitoring";
 
+// To run the tests, comment and uncomment the needed lines in the main component
+// Guidance is offered in the component with comments
+
 it('renders CPU Usage section', () => {
     render(
         <ReactKeycloakProvider authClient={my_keycloak} initOptions={{onLoad: 'login-required'}}>
