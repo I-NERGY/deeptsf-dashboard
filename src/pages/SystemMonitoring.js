@@ -29,10 +29,10 @@ const SystemMonitoring = () => {
     const navigate = useNavigate();
 
     // Comment out the following line FOR TESTING
-    // const [allowed, setAllowed] = useState(null)
+    const [allowed, setAllowed] = useState(null)
 
     // Uncomment the following line FOR TESTING
-    const [allowed, setAllowed] = useState(true)
+    // const [allowed, setAllowed] = useState(true)
 
     useEffect(() => {
         if (initialized) {
