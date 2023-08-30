@@ -27,7 +27,12 @@ const breadcrumbs = [
 const SystemMonitoring = () => {
     const {keycloak, initialized} = useKeycloak()
     const navigate = useNavigate();
-    const [allowed, setAllowed] = useState(false)
+
+    // Comment out the following line FOR TESTING
+    // const [allowed, setAllowed] = useState(null)
+
+    // Uncomment the following line FOR TESTING
+    const [allowed, setAllowed] = useState(true)
 
     useEffect(() => {
         if (initialized) {

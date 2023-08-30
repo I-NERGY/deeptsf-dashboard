@@ -90,7 +90,7 @@ const MemoryUsageBars = () => {
 
     return (
         <>
-            <Accordion expanded={expanded} onChange={handleChange('panel1')} elevation={3}>
+            <Accordion expanded={expanded} onChange={handleChange('panel1')} elevation={3} data-testid={'systemMonitoringMemoryUsage'}>
                 <AccordionSummary className={'accordion'} sx={{backgroundColor: '#AABD5B'}}
                                   expandIcon={<ExpandMoreIcon/>}
                                   aria-controls="panel1bh-content"
