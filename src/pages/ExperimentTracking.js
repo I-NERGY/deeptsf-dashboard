@@ -1,5 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
+import {useKeycloak} from "@react-keycloak/web";
+
+import {Link, useNavigate} from "react-router-dom";
 
 import {
     Chart as ChartJS,
@@ -24,8 +27,6 @@ import Box from '@mui/material/Box';
 import Breadcrumb from "../components/layout/Breadcrumb";
 import ByEvaluationMetric from "../components/metrics/ByEvaluationMetric";
 import ByRunID from "../components/metrics/ByRunId";
-import {useKeycloak} from "@react-keycloak/web";
-import {Link, useNavigate} from "react-router-dom";
 
 function TabPanel(props) {
     const {children, value, index, ...other} = props;
@@ -88,7 +89,12 @@ const breadcrumbs = [
 const ExperimentTracking = () => {
     const {keycloak, initialized} = useKeycloak()
     const navigate = useNavigate();
-    const [allowed, setAllowed] = useState(false)
+
+    // Comment out the following line FOR TESTING
+    // const [allowed, setAllowed] = useState(null)
+
+    // Uncomment the following line FOR TESTING
+    const [allowed, setAllowed] = useState(true)
 
     useEffect(() => {
         if (initialized) {
@@ -108,7 +114,7 @@ const ExperimentTracking = () => {
     return (
         <>
             <Breadcrumb breadcrumbs={breadcrumbs} welcome_msg={''}/>
-            {allowed && <Container maxWidth={'xl'} sx={{my: 5}}>
+            {allowed && <Container maxWidth={'xl'} sx={{my: 5}} data-testid={'experimentTrackingTrackExperimentSection'}>
                 <Typography component={'span'} variant={'h4'} fontWeight={'bold'} sx={{mb: 3}}>Track your
                     experiment</Typography>
                 <Box sx={{width: '100%', mt: 2}}>
