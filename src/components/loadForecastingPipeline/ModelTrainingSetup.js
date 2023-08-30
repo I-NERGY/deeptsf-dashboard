@@ -42,7 +42,7 @@ const ModelTrainingSetup = ({
 
     return (
         <>
-            <Container maxWidth={'xl'} sx={{my: 5}}>
+            <Container maxWidth={'xl'} sx={{my: 5}} data-testid={'codelessForecastModelTraining'}>
                 <Typography variant={'h4'} fontWeight={'bold'} sx={{mb: 3}}>Model Training Setup</Typography>
                 <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
                     <Grid item xs={12} md={6}>

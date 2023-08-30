@@ -170,7 +170,7 @@ const DatasetConfiguration = ({
 
     return (
         <>
-            <Container maxWidth={'xl'} sx={{my: 5}}>
+            <Container maxWidth={'xl'} sx={{my: 5}} data-testid={'codelessForecastDatasetConfiguration'}>
                 <Typography variant={'h4'} fontWeight={'bold'} sx={{mb: 3}}>Dataset Configuration</Typography>
                 <Box sx={{width: '100%'}}>
                     <Box sx={{borderBottom: 1, borderColor: 'divider'}}>

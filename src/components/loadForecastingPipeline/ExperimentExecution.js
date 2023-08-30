@@ -50,8 +50,6 @@ const ExperimentExecution = ({
             ignore_previous_runs: ignorePrevious
         }
 
-        console.log(payload)
-
         axios.post('/experimentation_pipeline/run_all', payload)
             .then(response => {
                 console.log(response.data)
@@ -69,7 +67,7 @@ const ExperimentExecution = ({
 
     return (
         <>
-            <Container maxWidth={'xl'} sx={{my: 5}}>
+            <Container maxWidth={'xl'} sx={{my: 5}} data-testid={'codelessForecastExperimentExecution'}>
                 <Typography variant={'h4'} fontWeight={'bold'} sx={{mb: 3}}>Experiment Execution</Typography>
                 <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
                     <Grid item xs={12} md={6}>

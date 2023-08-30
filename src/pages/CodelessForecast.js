@@ -38,7 +38,7 @@ const CodelessForecast = () => {
     const {keycloak} = useKeycloak()
 
     const navigate = useNavigate();
-    const [allowed, setAllowed] = useState(null)
+    const [allowed, setAllowed] = useState(true)
     const [newFile, setNewFile] = useState()
     const [dayFirst, setDayFirst] = useState(false)
     const [models, setModels] = useState([])
@@ -146,118 +146,119 @@ const CodelessForecast = () => {
         setExecutionFailure(false)
     }
 
-    return (<div>
-        <Breadcrumb breadcrumbs={breadcrumbs} welcome_msg={''}/>
+    return (
+        <>
+            <Breadcrumb breadcrumbs={breadcrumbs} welcome_msg={''}/>
 
-        {allowed && <React.Fragment>
-            {/* Dataset Configuration */}
-            <DatasetConfiguration
-                executionLoading={executionLoading}
-                setNewFile={setNewFile}
-                newFile={newFile}
-                uploadSuccess={uploadSuccess}
-                dayFirst={dayFirst}
-                setDayFirst={setDayFirst}
-                experimentResolution={experimentResolution}
-                setExperimentResolution={setExperimentResolution}
-                resolutions={resolutions}
-                dateVal={dateVal}
-                minDate={minDate}
-                maxDate={maxDate}
-                dateTest={dateTest}
-                minDateTestStart={minDateTestStart}
-                maxDateTestStart={maxDateTestStart}
-                dateEnd={dateEnd}
-                minDateEndStart={minDateEndStart}
-                setDateVal={setDateVal}
-                setDateTest={setDateTest}
-                setDateEnd={setDateEnd}
-                setLoading={setLoading}
-                setUploadSuccess={setUploadSuccess}
-                setExecutionSuccess={setExecutionSuccess}
-                setExecutionFailure={setExecutionFailure}
-                setMinDate={setMinDate}
-                setMaxDate={setMaxDate}
-                setMaxDateTestStart={setMaxDateTestStart}
-                setSeriesUri={setSeriesUri}
-                setNewFileSuccess={setNewFileSuccess}
-                setNewFileFailure={setNewFileFailure}
-                setResolutions={setResolutions}
-                setErrorMessage={setErrorMessage}
-            />
-            <hr/>
+            {allowed && <>
+                {/* Dataset Configuration */}
+                <DatasetConfiguration
+                    executionLoading={executionLoading}
+                    setNewFile={setNewFile}
+                    newFile={newFile}
+                    uploadSuccess={uploadSuccess}
+                    dayFirst={dayFirst}
+                    setDayFirst={setDayFirst}
+                    experimentResolution={experimentResolution}
+                    setExperimentResolution={setExperimentResolution}
+                    resolutions={resolutions}
+                    dateVal={dateVal}
+                    minDate={minDate}
+                    maxDate={maxDate}
+                    dateTest={dateTest}
+                    minDateTestStart={minDateTestStart}
+                    maxDateTestStart={maxDateTestStart}
+                    dateEnd={dateEnd}
+                    minDateEndStart={minDateEndStart}
+                    setDateVal={setDateVal}
+                    setDateTest={setDateTest}
+                    setDateEnd={setDateEnd}
+                    setLoading={setLoading}
+                    setUploadSuccess={setUploadSuccess}
+                    setExecutionSuccess={setExecutionSuccess}
+                    setExecutionFailure={setExecutionFailure}
+                    setMinDate={setMinDate}
+                    setMaxDate={setMaxDate}
+                    setMaxDateTestStart={setMaxDateTestStart}
+                    setSeriesUri={setSeriesUri}
+                    setNewFileSuccess={setNewFileSuccess}
+                    setNewFileFailure={setNewFileFailure}
+                    setResolutions={setResolutions}
+                    setErrorMessage={setErrorMessage}
+                />
+                <hr/>
 
-            {/* Model Training Setup */}
-            <ModelTrainingSetup
-                experimentName={experimentName}
-                experimentNameError={experimentNameError}
-                setExperimentName={setExperimentName}
-                executionLoading={executionLoading}
-                ignorePrevious={ignorePrevious}
-                model={model}
-                setModel={setModel}
-                models={models}
-                availableConfigurations={availableConfigurations}
-                chosenConfiguration={chosenConfiguration}
-                setChosenConfiguration={setChosenConfiguration}
-                setIgnorePrevious={setIgnorePrevious}
-            />
-            <hr/>
+                {/* Model Training Setup */}
+                <ModelTrainingSetup
+                    experimentName={experimentName}
+                    experimentNameError={experimentNameError}
+                    setExperimentName={setExperimentName}
+                    executionLoading={executionLoading}
+                    ignorePrevious={ignorePrevious}
+                    model={model}
+                    setModel={setModel}
+                    models={models}
+                    availableConfigurations={availableConfigurations}
+                    chosenConfiguration={chosenConfiguration}
+                    setChosenConfiguration={setChosenConfiguration}
+                    setIgnorePrevious={setIgnorePrevious}
+                />
+                <hr/>
 
-            {/* Model Evaluation Setup */}
-            <ModelEvaluationSetup
-                forecastHorizon={forecastHorizon}
-                executionLoading={executionLoading}
-                setForecastHorizon={setForecastHorizon}
-            />
-            <hr/>
+                {/* Model Evaluation Setup */}
+                <ModelEvaluationSetup
+                    forecastHorizon={forecastHorizon}
+                    executionLoading={executionLoading}
+                    setForecastHorizon={setForecastHorizon}
+                />
+                <hr/>
 
-            {/* Experiment Execution */}
-            <ExperimentExecution
-                executionLoading={executionLoading}
-                uploadSuccess={uploadSuccess}
-                experimentResolution={experimentResolution}
-                dateVal={dateVal}
-                dateTest={dateTest}
-                dateEnd={dateEnd}
-                experimentName={experimentName}
-                model={model}
-                chosenConfiguration={chosenConfiguration}
-                forecastHorizon={forecastHorizon}
-                executionInitiated={executionInitiated}
-                setExecutionLoading={setExecutionLoading}
-                setExecutionInitiated={setExecutionInitiated}
-                setExecutionSuccess={setExecutionSuccess}
-                setExecutionFailure={setExecutionFailure}
-                availableConfigurations={availableConfigurations}
-                ignorePrevious={ignorePrevious}
-                seriesUri={seriesUri}
-            />
-        </React.Fragment>}
+                {/* Experiment Execution */}
+                <ExperimentExecution
+                    executionLoading={executionLoading}
+                    uploadSuccess={uploadSuccess}
+                    experimentResolution={experimentResolution}
+                    dateVal={dateVal}
+                    dateTest={dateTest}
+                    dateEnd={dateEnd}
+                    experimentName={experimentName}
+                    model={model}
+                    chosenConfiguration={chosenConfiguration}
+                    forecastHorizon={forecastHorizon}
+                    executionInitiated={executionInitiated}
+                    setExecutionLoading={setExecutionLoading}
+                    setExecutionInitiated={setExecutionInitiated}
+                    setExecutionSuccess={setExecutionSuccess}
+                    setExecutionFailure={setExecutionFailure}
+                    availableConfigurations={availableConfigurations}
+                    ignorePrevious={ignorePrevious}
+                    seriesUri={seriesUri}
+                />
+            </>}
 
-        {loading && <FullPageLoading/>}
-        <Snackbar open={newFileSuccess} autoHideDuration={3000} onClose={closeSnackbar}>
-            <AlertCustom onClose={closeSnackbar} severity="success" sx={{width: '100%', mb: 5}}>
-                The new file has been successfully uploaded!
-            </AlertCustom>
-        </Snackbar>
-        <Snackbar open={newFileFailure} autoHideDuration={3000} onClose={closeSnackbar}>
-            <AlertCustom onClose={closeSnackbar} severity="error" sx={{width: '100%', mb: 5}}>
-                {errorMessage}
-            </AlertCustom>
-        </Snackbar>
+            {loading && <FullPageLoading/>}
+            <Snackbar open={newFileSuccess} autoHideDuration={3000} onClose={closeSnackbar}>
+                <AlertCustom onClose={closeSnackbar} severity="success" sx={{width: '100%', mb: 5}}>
+                    The new file has been successfully uploaded!
+                </AlertCustom>
+            </Snackbar>
+            <Snackbar open={newFileFailure} autoHideDuration={3000} onClose={closeSnackbar}>
+                <AlertCustom onClose={closeSnackbar} severity="error" sx={{width: '100%', mb: 5}}>
+                    {errorMessage}
+                </AlertCustom>
+            </Snackbar>
 
-        <Snackbar open={executionSuccess} autoHideDuration={3000} onClose={closeSnackbar}>
-            <AlertCustom onClose={closeSnackbar} severity="success" sx={{width: '100%', mb: 5}}>
-                Execution initiated!
-            </AlertCustom>
-        </Snackbar>
-        <Snackbar open={executionFailure} autoHideDuration={3000} onClose={closeSnackbar}>
-            <AlertCustom onClose={closeSnackbar} severity="error" sx={{width: '100%', mb: 5}}>
-                Something went wrong with the execution! Please try again!
-            </AlertCustom>
-        </Snackbar>
-    </div>);
+            <Snackbar open={executionSuccess} autoHideDuration={3000} onClose={closeSnackbar}>
+                <AlertCustom onClose={closeSnackbar} severity="success" sx={{width: '100%', mb: 5}}>
+                    Execution initiated!
+                </AlertCustom>
+            </Snackbar>
+            <Snackbar open={executionFailure} autoHideDuration={3000} onClose={closeSnackbar}>
+                <AlertCustom onClose={closeSnackbar} severity="error" sx={{width: '100%', mb: 5}}>
+                    Something went wrong with the execution! Please try again!
+                </AlertCustom>
+            </Snackbar>
+        </>);
 }
 
 export default CodelessForecast;

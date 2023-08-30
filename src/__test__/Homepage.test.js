@@ -1,7 +1,6 @@
 import React from 'react';
 import {render, screen} from "@testing-library/react";
 import my_keycloak from "../Keycloak";
-
 import {ReactKeycloakProvider} from "@react-keycloak/web";
 import {BrowserRouter} from "react-router-dom";
 import {AuthContextProvider} from "../context/AuthContext";
