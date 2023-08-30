@@ -38,7 +38,13 @@ const CodelessForecast = () => {
     const {keycloak} = useKeycloak()
 
     const navigate = useNavigate();
-    const [allowed, setAllowed] = useState(true)
+
+    // Comment out the following line FOR TESTING
+    const [allowed, setAllowed] = useState(null)
+
+    // Uncomment the following line FOR TESTING
+    // const [allowed, setAllowed] = useState(true)
+
     const [newFile, setNewFile] = useState()
     const [dayFirst, setDayFirst] = useState(false)
     const [models, setModels] = useState([])
