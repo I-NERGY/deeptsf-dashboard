@@ -24,15 +24,16 @@ const Homepage = () => {
     }
 
     return (
-        <>
-            {initialized && servicesHomepage.map((service, index) => (
-                <HomepageItemFullWidth title={service.title} description={service.description} icon={service.icon}
-                                       image={service.image} link={service.link} index={index} key={service.id}
-                                       showLink={findCommonElement(keycloak.realmAccess.roles, service.roles)}
-                />
+        <div data-testid={"homepageOverall"}>
+            {servicesHomepage.map((service, index) => (
+                <div data-testid={"homepageItem"}>
+                    <HomepageItemFullWidth title={service.title} description={service.description} icon={service.icon}
+                                           image={service.image} link={service.link} index={index} key={service.id}
+                                           showLink={initialized ? findCommonElement(keycloak.realmAccess.roles, service.roles) : false}
+                    />
+                </div>
             ))}
-
-        </>
+        </div>
     );
 }
 
