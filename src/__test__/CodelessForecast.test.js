@@ -55,7 +55,7 @@ it('renders Model Evaluation section', () => {
     expect(codelessForecastModelEvaluationConfiguration).toBeInTheDocument();
 })
 
-it('renders Model Evaluation section', () => {
+it('renders Experiment Execution section', () => {
     render(
         <ReactKeycloakProvider authClient={my_keycloak} initOptions={{ onLoad: 'login-required' }}>
             <React.StrictMode>
