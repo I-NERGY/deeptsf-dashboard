@@ -1,4 +1,6 @@
 import React, {useState} from 'react';
+import {useKeycloak} from "@react-keycloak/web";
+
 import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
 import Stack from "@mui/material/Stack";
@@ -92,7 +94,7 @@ const DatasetConfiguration = ({
                                   setResolutions,
                                   setErrorMessage
                               }) => {
-
+    const {keycloak} = useKeycloak()
     const [value, setValue] = useState(0);
 
     const handleAddNewFile = file => setNewFile(file)
@@ -109,7 +111,7 @@ const DatasetConfiguration = ({
         data.append('file', newFile)
         data.append('day_first', dayFirst)
 
-        axios.post('/upload/uploadCSVfile/', data, {headers: {"Content-Type": "multipart/form-data"}})
+        axios.post('/upload/uploadCSVfile/', data, {headers: {"Content-Type": "multipart/form-data", "Authorization": `Bearer ${keycloak.token}`}})
             .then(response => {
                 setResolutions(response.data.allowed_resolutions)
                 setUploadSuccess(true)
