@@ -47,7 +47,7 @@ const SystemMonitoring = () => {
         <>
             <Breadcrumb breadcrumbs={breadcrumbs} welcome_msg={''}/>
 
-            {allowed && <>
+            {initialized && allowed && <>
                 <Container maxWidth={'xl'} sx={{mt: 5, mb: 2}}>
                     <MemoryUsageBars/>
                 </Container>
