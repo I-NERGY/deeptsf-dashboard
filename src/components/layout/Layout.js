@@ -112,7 +112,7 @@ export default function Layout({children}) {
     const navigate = useNavigate();
     const location = useLocation()
 
-    const menuItems = [{text: 'Home', icon: <HomeOutlinedIcon color="secondary"/>, path: "/",},]
+    const menuItems = [{text: 'Homepage', icon: <HomeOutlinedIcon color="secondary"/>, path: "/",},]
 
     const [menu, setMenu] = useState(menuItems)
 
