@@ -10,7 +10,7 @@ export const servicesHomepage = [
         'description': 'Train your Machine Learning models via a user intuitive UI.',
         'icon': <ModelTrainingIcon style={{color: 'white', fontSize: '80px'}}/>,
         'image': 'https://images.unsplash.com/photo-1639004643331-9526630beb3d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1141&q=80',
-        'link': '/load-forecast',
+        'link': '/codeless-forecast',
         'roles': ['inergy_admin', 'data_scientist']
     },
     {
