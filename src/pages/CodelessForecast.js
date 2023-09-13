@@ -35,7 +35,7 @@ const breadcrumbs = [
 ];
 
 const CodelessForecast = () => {
-    const {keycloak} = useKeycloak()
+    const {keycloak, initialized} = useKeycloak()
 
     const navigate = useNavigate();
 
@@ -84,26 +84,39 @@ const CodelessForecast = () => {
     const [seriesUri, setSeriesUri] = useState('')
 
     useEffect(() => {
-        axios.get('/user/info', {
-            headers: {
-                'Authorization': `Bearer ${keycloak.token}`
-            },
-        })
-            .then((response => {
-                let roles = response.data.realm_access.roles
-                if (roles.includes('data_scientist') || roles.includes('inergy_admin')) {
-                    setAllowed(true)
-                } else {
-                    navigate('/')
-                }
-            }))
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
+        if (initialized) {
+            let roles = keycloak.realmAccess.roles
+            if (roles.includes('energy_engineer') || roles.includes('inergy_admin')) {
+                setAllowed(true)
+            } else navigate('/')
+        }
+    }, [initialized])
+
+    // useEffect(() => {
+    //     axios.get('/user/info', {
+    //         headers: {
+    //             'Authorization': `Bearer ${keycloak.token}`
+    //         },
+    //     })
+    //         .then((response => {
+    //             let roles = response.data.realm_access.roles
+    //             console.log(roles)
+    //             if (roles.includes('data_scientist') || roles.includes('inergy_admin')) {
+    //                 setAllowed(true)
+    //             } else {
+    //                 navigate('/')
+    //             }
+    //         }))
+    //         .catch(() => console.log('error'))
+    //     // eslint-disable-next-line react-hooks/exhaustive-deps
+    // }, [])
 
     useEffect(() => {
-        axios.get('/models/get_model_names')
-            .then(response => setModels(response.data))
-            .catch(error => console.log(error))
+        if (initialized) {
+            axios.get('/models/get_model_names')
+                .then(response => setModels(response.data))
+                .catch(error => console.log('error'))
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 

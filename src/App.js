@@ -46,7 +46,6 @@ function App() {
     const {keycloak} = useKeycloak()
     axios.defaults.baseURL = 'http://131.154.97.48:8080';
     axios.defaults.headers.common['Authorization'] = `Bearer ${keycloak.token}` || '';
-
     return (
         <ThemeProvider theme={theme}>
             <div className="App">
