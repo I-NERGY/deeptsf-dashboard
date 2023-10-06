@@ -62,9 +62,11 @@ const CodelessForecast = () => {
 
     const [availableConfigurations, setAvailableConfigurations] = useState([])
     const [chosenConfiguration, setChosenConfiguration] = useState('')
+    const [hyperParams, setHyperParams] = useState('')
 
+    const [multiSeriesFile, setMultiSeriesFile] = useState(false)
+    const [removeOutliers, setRemoveOutliers] = useState(true)
     const [resolutions, setResolutions] = useState([])
-
     const [maxDate, setMaxDate] = useState(null)
     const [minDate, setMinDate] = useState(null)
     const [minDateTestStart, setMinDateTestStart] = useState(null)
@@ -112,13 +114,15 @@ const CodelessForecast = () => {
     // }, [])
 
     useEffect(() => {
-        if (initialized) {
-            axios.get('/models/get_model_names')
-                .then(response => setModels(response.data))
+        if (initialized && experimentResolution) {
+            axios.post('/models/get_model_names', {resolution: parseInt(experimentResolution)})
+                .then(response => {
+                    setModels(response.data)
+                })
                 .catch(error => console.log('error'))
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
+    }, [experimentResolution])
 
     useEffect(() => {
         setForecastHorizon(Math.floor(288 / (experimentResolution / 5)))
@@ -126,15 +130,17 @@ const CodelessForecast = () => {
     }, [experimentResolution])
 
     useEffect(() => {
-        axios.get('/experimentation_pipeline/training/hyperparameter_entrypoints')
-            .then(response => {
-                let myArray = Object.entries(response.data)
-                const myArrayFiltered = myArray.filter(element => (element[0].includes(model.search_term)))
-                setAvailableConfigurations(myArrayFiltered)
-                setChosenConfiguration('')
-            })
-            .catch(error => console.log(error))
-// eslint-disable-next-line react-hooks/exhaustive-deps
+        setChosenConfiguration(model.hparams)
+        // axios.get('/experimentation_pipeline/training/hyperparameter_entrypoints')
+        //     .then(response => {
+        //         console.log(response.data)
+        //         let myArray = Object.entries(response.data)
+        //         const myArrayFiltered = myArray.filter(element => (element[0].includes(model.search_term)))
+        //         setAvailableConfigurations(myArrayFiltered)
+        //         setChosenConfiguration('')
+        //     })
+        //     .catch(error => console.log(error))
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [model])
 
     useEffect(() => {
@@ -180,6 +186,10 @@ const CodelessForecast = () => {
                     setDayFirst={setDayFirst}
                     experimentResolution={experimentResolution}
                     setExperimentResolution={setExperimentResolution}
+                    multiSeriesFile={multiSeriesFile}
+                    setMultiSeriesFile={setMultiSeriesFile}
+                    removeOutliers={removeOutliers}
+                    setRemoveOutliers={setRemoveOutliers}
                     resolutions={resolutions}
                     dateVal={dateVal}
                     minDate={minDate}
@@ -204,6 +214,7 @@ const CodelessForecast = () => {
                     setNewFileFailure={setNewFileFailure}
                     setResolutions={setResolutions}
                     setErrorMessage={setErrorMessage}
+                    uploadSuccess={uploadSuccess}
                 />
                 <hr/>
 
@@ -217,8 +228,11 @@ const CodelessForecast = () => {
                     model={model}
                     setModel={setModel}
                     models={models}
-                    availableConfigurations={availableConfigurations}
+                    experimentResolution={experimentResolution}
+                    // availableConfigurations={availableConfigurations}
                     chosenConfiguration={chosenConfiguration}
+                    hyperParams={hyperParams}
+                    setHyperParams={setHyperParams}
                     setChosenConfiguration={setChosenConfiguration}
                     setIgnorePrevious={setIgnorePrevious}
                 />
@@ -243,6 +257,8 @@ const CodelessForecast = () => {
                     experimentName={experimentName}
                     model={model}
                     chosenConfiguration={chosenConfiguration}
+                    hyperParams={hyperParams}
+                    removeOutliers={removeOutliers}
                     forecastHorizon={forecastHorizon}
                     executionInitiated={executionInitiated}
                     setExecutionLoading={setExecutionLoading}
@@ -252,6 +268,7 @@ const CodelessForecast = () => {
                     availableConfigurations={availableConfigurations}
                     ignorePrevious={ignorePrevious}
                     seriesUri={seriesUri}
+                    multiSeriesFile={multiSeriesFile}
                 />
             </>}
 

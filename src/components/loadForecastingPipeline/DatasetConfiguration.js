@@ -1,21 +1,17 @@
 import React, {useState} from 'react';
 import {useKeycloak} from "@react-keycloak/web";
+import axios from "axios";
 
 import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
 import Stack from "@mui/material/Stack";
 import IconButton from "@mui/material/IconButton";
-import UploadFileOutlinedIcon from "@mui/icons-material/UploadFileOutlined";
 import Checkbox from "@mui/material/Checkbox";
 import Button from "@mui/material/Button";
-import BackspaceOutlinedIcon from "@mui/icons-material/BackspaceOutlined";
-import DataThresholdingIcon from "@mui/icons-material/DataThresholding";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
-import DateRangeIcon from "@mui/icons-material/DateRange";
-import DocumentScannerIcon from '@mui/icons-material/DocumentScanner';
 import {LocalizationProvider} from "@mui/x-date-pickers/LocalizationProvider";
 import {AdapterDateFns} from "@mui/x-date-pickers/AdapterDateFns";
 import {DesktopDatePicker} from "@mui/x-date-pickers/DesktopDatePicker";
@@ -25,7 +21,16 @@ import PropTypes from 'prop-types';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
-import axios from "axios";
+import FormGroup from '@mui/material/FormGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Alert from "@mui/material/Alert";
+
+import UploadFileOutlinedIcon from "@mui/icons-material/UploadFileOutlined";
+import BackspaceOutlinedIcon from "@mui/icons-material/BackspaceOutlined";
+import DataThresholdingIcon from "@mui/icons-material/DataThresholding";
+import DateRangeIcon from "@mui/icons-material/DateRange";
+import DocumentScannerIcon from '@mui/icons-material/DocumentScanner';
+import SettingsSuggestIcon from '@mui/icons-material/SettingsSuggest';
 
 function TabPanel(props) {
     const {children, value, index, ...other} = props;
@@ -69,6 +74,10 @@ const DatasetConfiguration = ({
                                   setDayFirst,
                                   experimentResolution,
                                   setExperimentResolution,
+                                  multiSeriesFile,
+                                  setMultiSeriesFile,
+                                  removeOutliers,
+                                  setRemoveOutliers,
                                   resolutions,
                                   dateVal,
                                   minDate,
@@ -92,7 +101,7 @@ const DatasetConfiguration = ({
                                   setNewFileSuccess,
                                   setNewFileFailure,
                                   setResolutions,
-                                  setErrorMessage
+                                  setErrorMessage,
                               }) => {
     const {keycloak} = useKeycloak()
     const [value, setValue] = useState(0);
@@ -100,6 +109,12 @@ const DatasetConfiguration = ({
     const handleAddNewFile = file => setNewFile(file)
     const handleDayFirstCheckBox = () => {
         setDayFirst(!dayFirst)
+    }
+    const handleMultiSeriesCheckBox = () => {
+        setMultiSeriesFile(!multiSeriesFile)
+    }
+    const handleOutliersCheckBox = () => {
+        setRemoveOutliers(!removeOutliers)
     }
     const handleUploadFile = () => {
         setLoading(true)
@@ -110,8 +125,14 @@ const DatasetConfiguration = ({
         const data = new FormData()
         data.append('file', newFile)
         data.append('day_first', dayFirst)
+        data.append('multiple', multiSeriesFile)
 
-        axios.post('/upload/uploadCSVfile/', data, {headers: {"Content-Type": "multipart/form-data", "Authorization": `Bearer ${keycloak.token}`}})
+        axios.post('/upload/uploadCSVfile/', data, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+                "Authorization": `Bearer ${keycloak.token}`
+            }
+        })
             .then(response => {
                 setResolutions(response.data.allowed_resolutions)
                 setUploadSuccess(true)
@@ -183,7 +204,7 @@ const DatasetConfiguration = ({
                     </Box>
                     <TabPanel value={value} index={0}>
                         <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
-                            <Grid item xs={12} md={8}>
+                            <Grid item xs={12} md={6}>
                                 <input
                                     accept=".csv"
                                     style={{display: 'none'}}
@@ -213,27 +234,42 @@ const DatasetConfiguration = ({
                                 </Stack>
                             </Grid>
 
-                            <Grid item xs={12} md={4}>
+                            <Grid item xs={12} md={6}>
                                 {newFile &&
                                     <Grid container display={'flex'} flexDirection={'row'} justifyContent={'center'}>
                                         <Typography variant={'h5'} color={'inherit'} align={'right'} component={'span'}
                                                     sx={{width: '100%'}}>
                                             Chosen file:
                                             <Typography fontWeight={'bold'} component={'span'}
-                                                        color={'secondary'}>{newFile.name}
+                                                        color={'secondary'}> {newFile.name}
                                             </Typography>
                                         </Typography>
                                     </Grid>}
-                                <Stack direction="row" spacing={2} sx={{alignItems: 'center', mb: 2}}>
+                                <Stack direction="row" spacing={2}
+                                       sx={{alignItems: 'center', justifyContent: 'end', mb: 2}}>
                                     {newFile && !uploadSuccess && <>
-                                        <Typography sx={{ml: 'auto'}} component={'span'} variant={'h6'}>Day
-                                            First</Typography>
-                                        <Checkbox
-                                            disabled={executionLoading}
-                                            checked={dayFirst}
-                                            onChange={handleDayFirstCheckBox}
-                                            sx={{'& .MuiSvgIcon-root': {fontSize: 28}}}
-                                        />
+                                        <FormGroup>
+                                            <FormControlLabel control={
+                                                <Checkbox
+                                                    disabled={executionLoading}
+                                                    checked={dayFirst}
+                                                    onChange={handleDayFirstCheckBox}
+                                                    sx={{'& .MuiSvgIcon-root': {fontSize: 28}}}
+                                                />
+                                            } label={<Typography sx={{ml: 'auto'}} component={'span'} variant={'h6'}>Day
+                                                First</Typography>}/>
+                                        </FormGroup>
+                                        <FormGroup>
+                                            <FormControlLabel control={
+                                                <Checkbox
+                                                    disabled={executionLoading}
+                                                    checked={multiSeriesFile}
+                                                    onChange={handleMultiSeriesCheckBox}
+                                                    sx={{'& .MuiSvgIcon-root': {fontSize: 28}}}
+                                                />
+                                            } label={<Typography sx={{ml: 'auto'}} component={'span'} variant={'h6'}>Multi
+                                                Series file</Typography>}/>
+                                        </FormGroup>
                                     </>}
                                     {newFile && !uploadSuccess &&
                                         <Button variant={'contained'} component={'span'} size={'large'}
@@ -300,7 +336,7 @@ const DatasetConfiguration = ({
                         </Stack>
                     </Grid>
                     <Grid item xs={12} md={4}>
-                        <FormControl fullWidth>
+                        {uploadSuccess && <FormControl fullWidth>
                             <InputLabel id="demo-simple-select-label">Dataset Resolution (Minutes)</InputLabel>
                             <Select
                                 disabled={executionLoading}
@@ -315,9 +351,39 @@ const DatasetConfiguration = ({
                                     <MenuItem key={resolution.value}
                                               value={resolution.value.toString()}>{resolution.display_value}</MenuItem>))}
                             </Select>
-                        </FormControl>
+                        </FormControl>}
+                        {!uploadSuccess &&
+                            <Alert severity="warning">Upload a file first to see the available resolutions!</Alert>}                    </Grid>
+                </Grid>
+
+                <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
+                    <Grid item xs={12} md={10}>
+                        <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
+                            <SettingsSuggestIcon fontSize="large"
+                                                 sx={{width: '60px', height: '60px', color: '#A1B927', ml: 2, my: 1}}/>
+                            <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>
+                                Outliers detection
+                            </Typography>
+                        </Stack>
+                    </Grid>
+                    <Grid item xs={12} md={2}>
+                        <FormGroup>
+                            <FormControlLabel control={
+                                <Checkbox
+                                    disabled={executionLoading}
+                                    checked={removeOutliers}
+                                    onChange={handleOutliersCheckBox}
+                                    sx={{'& .MuiSvgIcon-root': {fontSize: 28}}}
+                                />
+                            } label={
+                                <Typography sx={{ml: 'auto'}} component={'span'} variant={'h6'}>
+                                    Remove outliers
+                                </Typography>
+                            }/>
+                        </FormGroup>
                     </Grid>
                 </Grid>
+
                 <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
                     <Grid item xs={12} md={6}>
                         <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
