@@ -73,10 +73,11 @@ const CodelessForecast = () => {
     const [maxDateTestStart, setMaxDateTestStart] = useState(null)
     const [minDateEndStart, setMinDateEndStart] = useState(null)
 
-    // Parameter variables
     const [experimentName, setExperimentName] = useState('')
     const [experimentNameError, setExperimentNameError] = useState(false)
     const [experimentResolution, setExperimentResolution] = useState('')
+    const [defaultResolutionChosen, setDefaultResolutionChosen] = useState(false)
+    const [aggregationMethod, setAggregationMethod] = useState('averaging')
 
     const [dateVal, setDateVal] = useState(null)
     const [dateTest, setDateTest] = useState(null)
@@ -115,7 +116,7 @@ const CodelessForecast = () => {
 
     useEffect(() => {
         if (initialized && experimentResolution) {
-            axios.post('/models/get_model_names', {resolution: parseInt(experimentResolution)})
+            axios.get(`/models/get_model_names/${experimentResolution}/${multiSeriesFile}`)
                 .then(response => {
                     setModels(response.data)
                 })
@@ -181,7 +182,6 @@ const CodelessForecast = () => {
                     executionLoading={executionLoading}
                     setNewFile={setNewFile}
                     newFile={newFile}
-                    uploadSuccess={uploadSuccess}
                     dayFirst={dayFirst}
                     setDayFirst={setDayFirst}
                     experimentResolution={experimentResolution}
@@ -191,6 +191,10 @@ const CodelessForecast = () => {
                     removeOutliers={removeOutliers}
                     setRemoveOutliers={setRemoveOutliers}
                     resolutions={resolutions}
+                    defaultResolutionChosen={defaultResolutionChosen}
+                    setDefaultResolutionChosen={setDefaultResolutionChosen}
+                    aggregationMethod={aggregationMethod}
+                    setAggregationMethod={setAggregationMethod}
                     dateVal={dateVal}
                     minDate={minDate}
                     maxDate={maxDate}
@@ -258,6 +262,7 @@ const CodelessForecast = () => {
                     model={model}
                     chosenConfiguration={chosenConfiguration}
                     hyperParams={hyperParams}
+                    aggregationMethod={aggregationMethod}
                     removeOutliers={removeOutliers}
                     forecastHorizon={forecastHorizon}
                     executionInitiated={executionInitiated}

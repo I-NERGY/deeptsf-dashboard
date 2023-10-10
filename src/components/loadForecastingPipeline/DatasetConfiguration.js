@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useKeycloak} from "@react-keycloak/web";
 import axios from "axios";
 
@@ -22,8 +22,11 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
 import FormGroup from '@mui/material/FormGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
 import Alert from "@mui/material/Alert";
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormLabel from '@mui/material/FormLabel';
+import FormControlLabel from '@mui/material/FormControlLabel';
 
 import UploadFileOutlinedIcon from "@mui/icons-material/UploadFileOutlined";
 import BackspaceOutlinedIcon from "@mui/icons-material/BackspaceOutlined";
@@ -31,6 +34,7 @@ import DataThresholdingIcon from "@mui/icons-material/DataThresholding";
 import DateRangeIcon from "@mui/icons-material/DateRange";
 import DocumentScannerIcon from '@mui/icons-material/DocumentScanner';
 import SettingsSuggestIcon from '@mui/icons-material/SettingsSuggest';
+import SchemaIcon from '@mui/icons-material/Schema';
 
 function TabPanel(props) {
     const {children, value, index, ...other} = props;
@@ -79,6 +83,10 @@ const DatasetConfiguration = ({
                                   removeOutliers,
                                   setRemoveOutliers,
                                   resolutions,
+                                  defaultResolutionChosen,
+                                  setDefaultResolutionChosen,
+                                  aggregationMethod,
+                                  setAggregationMethod,
                                   dateVal,
                                   minDate,
                                   maxDate,
@@ -105,6 +113,17 @@ const DatasetConfiguration = ({
                               }) => {
     const {keycloak} = useKeycloak()
     const [value, setValue] = useState(0);
+
+    // Function to recognize if default resolution value is chosen
+    const findDefaultNumber = (arr, numToCheck) => {
+        for (let i = 0; i < arr.length; i++) {
+            const obj = arr[i];
+            if (obj.default === true && obj.value === numToCheck) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     const handleAddNewFile = file => setNewFile(file)
     const handleDayFirstCheckBox = () => {
@@ -135,6 +154,7 @@ const DatasetConfiguration = ({
         })
             .then(response => {
                 setResolutions(response.data.allowed_resolutions)
+                console.log('Resolutions: ', response.data.allowed_resolutions)
                 setUploadSuccess(true)
 
                 // console.log(response.data.allowed_validation_start, new Date(response.data.allowed_validation_start))
@@ -190,6 +210,14 @@ const DatasetConfiguration = ({
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
+
+    const handleRadioButton = event => {
+        setAggregationMethod(event.target.value)
+    }
+
+    useEffect(() => {
+        setDefaultResolutionChosen(findDefaultNumber(resolutions, experimentResolution))
+    }, [experimentResolution])
 
     return (
         <>
@@ -349,12 +377,50 @@ const DatasetConfiguration = ({
                             >
                                 {resolutions?.map(resolution => (
                                     <MenuItem key={resolution.value}
-                                              value={resolution.value.toString()}>{resolution.display_value}</MenuItem>))}
+                                              value={resolution.value.toString()}>{resolution.value}</MenuItem>))}
                             </Select>
                         </FormControl>}
                         {!uploadSuccess &&
-                            <Alert severity="warning">Upload a file first to see the available resolutions!</Alert>}                    </Grid>
+                            <Alert severity="warning">Upload a file first to see the available
+                                resolutions!</Alert>}                    </Grid>
                 </Grid>
+
+                {defaultResolutionChosen &&
+                    <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
+                        <Grid item xs={12} md={8}>
+                            <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
+                                <SchemaIcon fontSize="large"
+                                            sx={{width: '60px', height: '60px', color: '#A1B927', ml: 2, my: 1}}/>
+                                <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>
+                                    Select Aggregation Method
+                                </Typography>
+                            </Stack>
+                        </Grid>
+                        <Grid item xs={12} md={4} sx={{display: 'flex'}}>
+                            <FormControl sx={{ml: 'auto'}}>
+                                <RadioGroup
+                                    row
+                                    aria-labelledby="demo-row-radio-buttons-group-label"
+                                    name="row-radio-buttons-group"
+                                    value={aggregationMethod}
+                                    onChange={handleRadioButton}
+                                >
+                                    <FormControlLabel sx={{ml: 'auto'}} value="averaging" control={<Radio/>}
+                                                      label={
+                                                          <Typography sx={{ml: 'auto'}} component={'span'}
+                                                                      variant={'h6'}>Averaging</Typography>
+                                                      }
+                                    />
+                                    <FormControlLabel value="summation" control={<Radio/>}
+                                                      label={
+                                                          <Typography sx={{ml: 'auto'}} component={'span'}
+                                                                      variant={'h6'}>Summation</Typography>
+                                                      }
+                                    />
+                                </RadioGroup>
+                            </FormControl>
+                        </Grid>
+                    </Grid>}
 
                 <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
                     <Grid item xs={12} md={10}>

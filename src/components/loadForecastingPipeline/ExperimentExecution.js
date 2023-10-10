@@ -29,6 +29,7 @@ const ExperimentExecution = ({
                                  setExecutionSuccess,
                                  setExecutionFailure,
                                  availableConfigurations,
+                                 aggregationMethod,
                                  ignorePrevious,
                                  seriesUri,
                                  multiSeriesFile
@@ -52,6 +53,7 @@ const ExperimentExecution = ({
             // hyperparams_entrypoint: availableConfigurations[chosenConfiguration][0],
             hyperparams_entrypoint: hyperParams,
             rmv_outliers: removeOutliers,
+            resampling_agg_method: aggregationMethod,
             ignore_previous_runs: ignorePrevious,
             multiple: multiSeriesFile
         }
@@ -86,7 +88,7 @@ const ExperimentExecution = ({
                         <Button variant={'contained'} component={'span'} size={'large'} color={'success'}
                                 sx={{ml: 'auto'}} fullWidth
                                 endIcon={<ChevronRight/>} onClick={handleExecute}
-                            disabled={executionLoading || !uploadSuccess || !experimentResolution || !dateVal || !dateTest || !dateEnd || !experimentName || !model || chosenConfiguration === '' || !forecastHorizon}
+                                disabled={executionLoading || !uploadSuccess || !experimentResolution || !dateVal || !dateTest || !dateEnd || !experimentName || !model || chosenConfiguration === '' || !forecastHorizon}
                         >
                             <Typography variant={'h5'}>
                                 EXECUTE {executionLoading && <CircularProgress size={'26px'} sx={{color: 'white'}}/>}
