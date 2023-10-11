@@ -39,21 +39,17 @@ import SchemaIcon from '@mui/icons-material/Schema';
 function TabPanel(props) {
     const {children, value, index, ...other} = props;
 
-    return (
-        <div
+    return (<div
             role="tabpanel"
             hidden={value !== index}
             id={`simple-tabpanel-${index}`}
             aria-labelledby={`simple-tab-${index}`}
             {...other}
         >
-            {value === index && (
-                <Box sx={{p: 3}}>
+            {value === index && (<Box sx={{p: 3}}>
                     <Typography>{children}</Typography>
-                </Box>
-            )}
-        </div>
-    );
+                </Box>)}
+        </div>);
 }
 
 TabPanel.propTypes = {
@@ -64,8 +60,7 @@ TabPanel.propTypes = {
 
 function a11yProps(index) {
     return {
-        id: `simple-tab-${index}`,
-        'aria-controls': `simple-tabpanel-${index}`,
+        id: `simple-tab-${index}`, 'aria-controls': `simple-tabpanel-${index}`,
     };
 }
 
@@ -148,12 +143,12 @@ const DatasetConfiguration = ({
 
         axios.post('/upload/uploadCSVfile/', data, {
             headers: {
-                "Content-Type": "multipart/form-data",
-                "Authorization": `Bearer ${keycloak.token}`
+                "Content-Type": "multipart/form-data", "Authorization": `Bearer ${keycloak.token}`
             }
         })
             .then(response => {
                 setResolutions(response.data.allowed_resolutions)
+                setExperimentResolution(response.data.allowed_resolutions[0].value)
                 console.log('Resolutions: ', response.data.allowed_resolutions)
                 setUploadSuccess(true)
 
@@ -219,8 +214,7 @@ const DatasetConfiguration = ({
         setDefaultResolutionChosen(findDefaultNumber(resolutions, experimentResolution))
     }, [experimentResolution])
 
-    return (
-        <>
+    return (<>
             <Container maxWidth={'xl'} sx={{my: 5}} data-testid={'codelessForecastDatasetConfiguration'}>
                 <Typography variant={'h4'} fontWeight={'bold'} sx={{mb: 3}}>Dataset Configuration</Typography>
                 <Box sx={{width: '100%'}}>
@@ -277,25 +271,21 @@ const DatasetConfiguration = ({
                                        sx={{alignItems: 'center', justifyContent: 'end', mb: 2}}>
                                     {newFile && !uploadSuccess && <>
                                         <FormGroup>
-                                            <FormControlLabel control={
-                                                <Checkbox
-                                                    disabled={executionLoading}
-                                                    checked={dayFirst}
-                                                    onChange={handleDayFirstCheckBox}
-                                                    sx={{'& .MuiSvgIcon-root': {fontSize: 28}}}
-                                                />
-                                            } label={<Typography sx={{ml: 'auto'}} component={'span'} variant={'h6'}>Day
+                                            <FormControlLabel control={<Checkbox
+                                                disabled={executionLoading}
+                                                checked={dayFirst}
+                                                onChange={handleDayFirstCheckBox}
+                                                sx={{'& .MuiSvgIcon-root': {fontSize: 28}}}
+                                            />} label={<Typography sx={{ml: 'auto'}} component={'span'} variant={'h6'}>Day
                                                 First</Typography>}/>
                                         </FormGroup>
                                         <FormGroup>
-                                            <FormControlLabel control={
-                                                <Checkbox
-                                                    disabled={executionLoading}
-                                                    checked={multiSeriesFile}
-                                                    onChange={handleMultiSeriesCheckBox}
-                                                    sx={{'& .MuiSvgIcon-root': {fontSize: 28}}}
-                                                />
-                                            } label={<Typography sx={{ml: 'auto'}} component={'span'} variant={'h6'}>Multi
+                                            <FormControlLabel control={<Checkbox
+                                                disabled={executionLoading}
+                                                checked={multiSeriesFile}
+                                                onChange={handleMultiSeriesCheckBox}
+                                                sx={{'& .MuiSvgIcon-root': {fontSize: 28}}}
+                                            />} label={<Typography sx={{ml: 'auto'}} component={'span'} variant={'h6'}>Multi
                                                 Series file</Typography>}/>
                                         </FormGroup>
                                     </>}
@@ -375,19 +365,17 @@ const DatasetConfiguration = ({
                                 label="Dataset Resolution (Minutes)"
                                 onChange={e => setExperimentResolution(e.target.value)}
                             >
-                                {resolutions?.map(resolution => (
-                                    <MenuItem key={resolution.value}
-                                              value={resolution.value.toString()}>{resolution.value}</MenuItem>))}
+                                {resolutions?.map(resolution => (<MenuItem key={resolution.value}
+                                                                           value={resolution.value.toString()}>{resolution.value + `${findDefaultNumber(resolutions, resolution.value) ? ' (Current)' : ''}`}</MenuItem>))}
                             </Select>
                         </FormControl>}
-                        {!uploadSuccess &&
-                            <Alert severity="warning">Upload a file first to see the available
-                                resolutions!</Alert>}                    </Grid>
+                        {!uploadSuccess && <Alert severity="warning">Upload a file first to see the available
+                            resolutions!</Alert>}                    </Grid>
                 </Grid>
 
-                {defaultResolutionChosen &&
+                {!defaultResolutionChosen &&
                     <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
-                        <Grid item xs={12} md={8}>
+                        <Grid item xs={12} md={4}>
                             <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
                                 <SchemaIcon fontSize="large"
                                             sx={{width: '60px', height: '60px', color: '#A1B927', ml: 2, my: 1}}/>
@@ -396,7 +384,7 @@ const DatasetConfiguration = ({
                                 </Typography>
                             </Stack>
                         </Grid>
-                        <Grid item xs={12} md={4} sx={{display: 'flex'}}>
+                        <Grid item xs={12} md={8} sx={{display: 'flex', justifyContent: 'end', alignItems: 'end'}}>
                             <FormControl sx={{ml: 'auto'}}>
                                 <RadioGroup
                                     row
@@ -406,16 +394,16 @@ const DatasetConfiguration = ({
                                     onChange={handleRadioButton}
                                 >
                                     <FormControlLabel sx={{ml: 'auto'}} value="averaging" control={<Radio/>}
-                                                      label={
-                                                          <Typography sx={{ml: 'auto'}} component={'span'}
-                                                                      variant={'h6'}>Averaging</Typography>
-                                                      }
+                                                      label={<Typography sx={{ml: 'auto'}} component={'span'}
+                                                                         variant={'h6'}>Averaging</Typography>}
                                     />
                                     <FormControlLabel value="summation" control={<Radio/>}
-                                                      label={
-                                                          <Typography sx={{ml: 'auto'}} component={'span'}
-                                                                      variant={'h6'}>Summation</Typography>
-                                                      }
+                                                      label={<Typography sx={{ml: 'auto'}} component={'span'}
+                                                                         variant={'h6'}>Summation</Typography>}
+                                    />
+                                    <FormControlLabel value="downsampling" control={<Radio/>}
+                                                      label={<Typography sx={{ml: 'auto'}} component={'span'}
+                                                                         variant={'h6'}>Downsampling</Typography>}
                                     />
                                 </RadioGroup>
                             </FormControl>
@@ -434,18 +422,16 @@ const DatasetConfiguration = ({
                     </Grid>
                     <Grid item xs={12} md={2}>
                         <FormGroup>
-                            <FormControlLabel control={
-                                <Checkbox
-                                    disabled={executionLoading}
-                                    checked={removeOutliers}
-                                    onChange={handleOutliersCheckBox}
-                                    sx={{'& .MuiSvgIcon-root': {fontSize: 28}}}
-                                />
-                            } label={
-                                <Typography sx={{ml: 'auto'}} component={'span'} variant={'h6'}>
-                                    Remove outliers
-                                </Typography>
-                            }/>
+                            <FormControlLabel
+                                labelPlacement="start"
+                                control={<Checkbox
+                                disabled={executionLoading}
+                                checked={removeOutliers}
+                                onChange={handleOutliersCheckBox}
+                                sx={{'& .MuiSvgIcon-root': {fontSize: 28}}}
+                            />} label={<Typography sx={{ml: 'auto'}} component={'span'} variant={'h6'}>
+                                Remove outliers
+                            </Typography>}/>
                         </FormGroup>
                     </Grid>
                 </Grid>
@@ -512,8 +498,7 @@ const DatasetConfiguration = ({
                     </Grid>
                 </Grid>
             </Container>
-        </>
-    );
+        </>);
 }
 
 export default DatasetConfiguration;
