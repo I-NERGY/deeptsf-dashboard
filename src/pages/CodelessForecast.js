@@ -285,7 +285,7 @@ const CodelessForecast = () => {
             </Snackbar>
             <Snackbar open={newFileFailure} autoHideDuration={3000} onClose={closeSnackbar}>
                 <AlertCustom onClose={closeSnackbar} severity="error" sx={{width: '100%', mb: 5}}>
-                    {errorMessage}
+                    {errorMessage || 'Something went wrong! Please try again later.'}
                 </AlertCustom>
             </Snackbar>
 
