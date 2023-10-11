@@ -373,7 +373,7 @@ const DatasetConfiguration = ({
                             resolutions!</Alert>}                    </Grid>
                 </Grid>
 
-                {!defaultResolutionChosen &&
+                {!defaultResolutionChosen && experimentResolution &&
                     <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
                         <Grid item xs={12} md={4}>
                             <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
