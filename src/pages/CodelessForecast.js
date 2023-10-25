@@ -36,7 +36,7 @@ const breadcrumbs = [
 
 const CodelessForecast = () => {
     const {keycloak, initialized} = useKeycloak()
-
+    const authenticationEnabled = process.env.REACT_APP_AUTH === "true"
     const navigate = useNavigate();
 
     // Comment out the following line FOR TESTING
@@ -89,33 +89,18 @@ const CodelessForecast = () => {
     useEffect(() => {
         if (initialized) {
             let roles = keycloak.realmAccess.roles
-            if (roles.includes('energy_engineer') || roles.includes('inergy_admin')) {
+            if ((roles.includes('data_scientist') || roles.includes('inergy_admin'))) {
                 setAllowed(true)
             } else navigate('/')
         }
+
+        if (!authenticationEnabled) {
+            setAllowed(true)
+        }
     }, [initialized])
 
-    // useEffect(() => {
-    //     axios.get('/user/info', {
-    //         headers: {
-    //             'Authorization': `Bearer ${keycloak.token}`
-    //         },
-    //     })
-    //         .then((response => {
-    //             let roles = response.data.realm_access.roles
-    //             console.log(roles)
-    //             if (roles.includes('data_scientist') || roles.includes('inergy_admin')) {
-    //                 setAllowed(true)
-    //             } else {
-    //                 navigate('/')
-    //             }
-    //         }))
-    //         .catch(() => console.log('error'))
-    //     // eslint-disable-next-line react-hooks/exhaustive-deps
-    // }, [])
-
     useEffect(() => {
-        if (initialized && experimentResolution) {
+        if ((initialized && experimentResolution) || (!authenticationEnabled && experimentResolution)) {
             axios.get(`/models/get_model_names/${experimentResolution}/${multiSeriesFile}`)
                 .then(response => {
                     setModels(response.data)

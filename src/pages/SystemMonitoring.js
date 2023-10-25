@@ -25,6 +25,7 @@ const breadcrumbs = [
 ];
 
 const SystemMonitoring = () => {
+    const authenticationEnabled = process.env.REACT_APP_AUTH === "true"
     const {keycloak, initialized} = useKeycloak()
     const navigate = useNavigate();
 
@@ -41,13 +42,17 @@ const SystemMonitoring = () => {
                 setAllowed(true)
             } else navigate('/')
         }
+
+        if (!authenticationEnabled) {
+            setAllowed(true)
+        }
     }, [initialized])
 
     return (
         <>
             <Breadcrumb breadcrumbs={breadcrumbs} welcome_msg={''}/>
 
-            {initialized && allowed && <>
+            {(initialized || !authenticationEnabled) && allowed && <>
                 <Container maxWidth={'xl'} sx={{mt: 5, mb: 2}}>
                     <MemoryUsageBars/>
                 </Container>

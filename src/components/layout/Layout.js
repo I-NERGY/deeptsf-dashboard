@@ -128,22 +128,24 @@ export default function Layout({children}) {
     const handleDrawerOpen = () => setDrawerOpen(true);
     const handleDrawerClose = () => setDrawerOpen(false);
 
+    const authenticationEnabled = process.env.REACT_APP_AUTH === "true"
+
     useEffect(() => {
         let roles = keycloak.realmAccess?.roles
-        if (roles?.length > 0 && (roles.includes('data_scientist') || roles.includes('inergy_admin'))) {
+        if ((roles?.length > 0 && (roles.includes('data_scientist') || roles.includes('inergy_admin'))) || !authenticationEnabled) {
             menuItems.push(
                 {text: 'Codeless Forecasting Pipeline', icon: <UpdateIcon color="secondary"/>, path: "/codeless-forecast"},
                 {
                     text: 'MLFlow',
                     icon: <img src="/images/mlflow_logo.jpg" alt="" width={'25px'} style={{borderRadius: '50%'}}/>,
                     path: location.pathname + ' ',
-                    link: 'http://131.154.97.48:8440/'
+                    link: process.env.REACT_APP_MLFLOW
                 },
             )
             setMenu(menuItems)
         }
 
-        if (roles?.length > 0 && (roles.includes('energy_engineer') || roles.includes('inergy_admin'))) {
+        if ((roles?.length > 0 && (roles.includes('energy_engineer') || roles.includes('inergy_admin'))) || !authenticationEnabled) {
             menuItems.push({
                 text: 'Experiment Tracking',
                 icon: <QueryStatsIcon color="secondary"/>,
@@ -152,7 +154,7 @@ export default function Layout({children}) {
             setMenu(menuItems)
         }
 
-        if (roles?.includes('inergy_admin')) {
+        if (roles?.includes('inergy_admin') || !authenticationEnabled) {
             menuItems.push({
                 text: 'System Monitoring',
                 icon: <MonitorHeartIcon color="secondary"/>,

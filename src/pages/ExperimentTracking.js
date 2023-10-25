@@ -86,7 +86,9 @@ const breadcrumbs = [
 ];
 
 const ExperimentTracking = () => {
+
     const {keycloak, initialized} = useKeycloak()
+    const authenticationEnabled = process.env.REACT_APP_AUTH === "true"
     const navigate = useNavigate();
 
     // Comment out the following line FOR TESTING
@@ -102,6 +104,10 @@ const ExperimentTracking = () => {
                 setAllowed(true)
             } else navigate('/')
         }
+
+        if (!authenticationEnabled) {
+            setAllowed(true)
+        }
     }, [initialized])
 
     const [value, setValue] = useState(0);
@@ -113,24 +119,25 @@ const ExperimentTracking = () => {
     return (
         <>
             <Breadcrumb breadcrumbs={breadcrumbs} welcome_msg={''}/>
-            {allowed && <Container maxWidth={'xl'} sx={{my: 5}} data-testid={'experimentTrackingTrackExperimentSection'}>
-                <Typography component={'span'} variant={'h4'} fontWeight={'bold'} sx={{mb: 3}}>Track your
-                    experiment</Typography>
-                <Box sx={{width: '100%', mt: 2}}>
-                    <Box sx={{borderBottom: 1, borderColor: 'divider'}}>
-                        <Tabs value={value} onChange={handleChangeTab} aria-label="basic tabs example">
-                            <Tab label="By evaluation metric" {...a11yProps(0)} />
-                            <Tab label="By Run ID" {...a11yProps(1)} />
-                        </Tabs>
+            {allowed &&
+                <Container maxWidth={'xl'} sx={{my: 5}} data-testid={'experimentTrackingTrackExperimentSection'}>
+                    <Typography component={'span'} variant={'h4'} fontWeight={'bold'} sx={{mb: 3}}>Track your
+                        experiment</Typography>
+                    <Box sx={{width: '100%', mt: 2}}>
+                        <Box sx={{borderBottom: 1, borderColor: 'divider'}}>
+                            <Tabs value={value} onChange={handleChangeTab} aria-label="basic tabs example">
+                                <Tab label="By evaluation metric" {...a11yProps(0)} />
+                                <Tab label="By Run ID" {...a11yProps(1)} />
+                            </Tabs>
+                        </Box>
+                        <TabPanel value={value} index={0}>
+                            <ByEvaluationMetric/>
+                        </TabPanel>
+                        <TabPanel value={value} index={1}>
+                            <ByRunID/>
+                        </TabPanel>
                     </Box>
-                    <TabPanel value={value} index={0}>
-                        <ByEvaluationMetric/>
-                    </TabPanel>
-                    <TabPanel value={value} index={1}>
-                        <ByRunID/>
-                    </TabPanel>
-                </Box>
-            </Container>}
+                </Container>}
         </>
     );
     // eslint-disable

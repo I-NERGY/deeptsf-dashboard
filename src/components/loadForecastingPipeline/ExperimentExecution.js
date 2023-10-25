@@ -34,6 +34,7 @@ const ExperimentExecution = ({
                                  seriesUri,
                                  multiSeriesFile
                              }) => {
+    const authenticationEnabled = process.env.REACT_APP_AUTH === "true"
 
     const handleExecute = () => {
         setExecutionLoading(true)
@@ -109,7 +110,7 @@ const ExperimentExecution = ({
                             <Button variant={'contained'} component={'span'} size={'large'} color={'warning'}
                                     sx={{ml: 'auto'}} fullWidth
                                     endIcon={<ChevronRight/>}
-                                    onClick={() => window.open('https://131.154.97.48:8440/', '_blank')}
+                                    onClick={() => window.open(process.env.REACT_APP_MLFLOW, '_blank')}
                             >
                                 <Typography variant={'h6'}>Visit MLFlow Server</Typography>
                             </Button>

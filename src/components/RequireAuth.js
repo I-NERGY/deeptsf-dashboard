@@ -6,13 +6,11 @@ import {useKeycloak} from "@react-keycloak/web";
 
 const RequireAuth = () => {
     const {keycloak} = useKeycloak()
-    const allowed = keycloak.authenticated;
+    const allowed = process.env.REACT_APP_AUTH === "true" ? keycloak.authenticated : true;
 
     return (
         <React.Fragment>
-            {/*<Outlet/>*/}
             {allowed === true && <Outlet/>}
-            {/*{isLoggedIn === false && null}*/}
         </React.Fragment>
     )
 }

@@ -43,9 +43,13 @@ const theme = createTheme({
 });
 
 function App() {
+    const authenticationEnabled = process.env.REACT_APP_AUTH === "true"
     const {keycloak} = useKeycloak()
-    axios.defaults.baseURL = 'http://131.154.97.48:8080';
+    axios.defaults.baseURL = authenticationEnabled ? 'http://131.154.97.48:8080' : 'http://localhost:8080';
     axios.defaults.headers.common['Authorization'] = `Bearer ${keycloak.token}` || '';
+
+    console.log(process.env)
+
     return (
         <ThemeProvider theme={theme}>
             <div className="App">
@@ -53,12 +57,7 @@ function App() {
                     <Routes>
                         <Route path="/" element={<Homepage/>}/>
 
-                        {/* Routes not accessible to logged-in users */}
-                        {/*<Route element={<RequireNotAuth/>}>*/}
-                        {/*    <Route path="/signin" element={<SignIn/>}/>*/}
-                        {/*</Route>*/}
-
-                        {/* Routes not accessible to logged-out users */}
+                         Routes not accessible to logged-out users
                         <Route element={<RequireAuth/>}>
                             <Route path="/user/profile" element={<UserProfile/>}/>
                         </Route>

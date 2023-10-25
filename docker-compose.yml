@@ -3,7 +3,7 @@ version: "3.3"
 services:
   app:
     container_name: load-forecasting-dashboard
-    image: korbakis/load-forecasting-dashboard:0.1
+    #    image: korbakis/load-forecasting-dashboard:0.1
     restart: always
     build:
       context: ""
@@ -13,4 +13,8 @@ services:
       - '3000:3000'
     stdin_open: true
     env_file:
-      - config/.env-epu
+      - .env
+
+networks:
+  load-forecasting-net:
+    external: true
