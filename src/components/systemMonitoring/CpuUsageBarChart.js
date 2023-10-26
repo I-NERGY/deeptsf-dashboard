@@ -96,7 +96,7 @@ const CpuUsageBarChart = () => {
         }
         setTimeExceeded(false)
         cpuCount = 0
-        setInterval(() => {
+        const interval = setInterval(() => {
             cpuCount < liveRefreshMax && getCpuUsage()
             cpuCount >= liveRefreshMax && setTimeExceeded(true)
         }, 3000)

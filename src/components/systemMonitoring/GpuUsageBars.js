@@ -66,7 +66,7 @@ const GpuUsageBars = () => {
         }
         setTimeExceeded(false)
         gpuCount = 0
-        setInterval(() => {
+        const interval = setInterval(() => {
             gpuCount < liveRefreshMax && getGpuUsageData()
             gpuCount >= liveRefreshMax && setTimeExceeded(true)
         }, 3000)
