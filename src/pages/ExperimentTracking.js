@@ -1,5 +1,8 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
+import {useKeycloak} from "@react-keycloak/web";
+
+import {Link, useNavigate} from "react-router-dom";
 
 import {
     Chart as ChartJS,
@@ -16,11 +19,9 @@ import {
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 
-import Link from "@mui/material/Link";
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
-
 
 import Breadcrumb from "../components/layout/Breadcrumb";
 import ByEvaluationMetric from "../components/metrics/ByEvaluationMetric";
@@ -71,19 +72,45 @@ ChartJS.register(
 );
 
 const breadcrumbs = [
-    <Link fontSize={'20px'} underline="hover" key="1" color="inherit" href="/">
-        Dashboard
-    </Link>, <Typography
+    <Link className={'breadcrumbLink'} key="1" to="/">
+        Homepage
+    </Link>,
+    <Typography
         underline="hover"
         key="2"
         color="secondary"
         fontSize={'20px'}
         fontWeight={600}>
         Experiment Tracking
-    </Typography>,];
+    </Typography>
+];
 
 const ExperimentTracking = () => {
-    const [value, setValue] = React.useState(0);
+
+    const {keycloak, initialized} = useKeycloak()
+    const authenticationEnabled = process.env.REACT_APP_AUTH === "true"
+    const navigate = useNavigate();
+
+    // Comment out the following line FOR TESTING
+    const [allowed, setAllowed] = useState(null)
+
+    // Uncomment the following line FOR TESTING
+    // const [allowed, setAllowed] = useState(true)
+
+    useEffect(() => {
+        if (initialized) {
+            let roles = keycloak.realmAccess.roles
+            if (roles.includes('energy_engineer') || roles.includes('inergy_admin')) {
+                setAllowed(true)
+            } else navigate('/')
+        }
+
+        if (!authenticationEnabled) {
+            setAllowed(true)
+        }
+    }, [initialized])
+
+    const [value, setValue] = useState(0);
 
     const handleChangeTab = (event, newValue) => {
         setValue(newValue);
@@ -92,23 +119,25 @@ const ExperimentTracking = () => {
     return (
         <>
             <Breadcrumb breadcrumbs={breadcrumbs} welcome_msg={''}/>
-            <Container maxWidth={'xl'} sx={{my: 5}}>
-                <Typography component={'span'} variant={'h4'} fontWeight={'bold'} sx={{mb: 3}}>Track your experiment</Typography>
-                <Box sx={{width: '100%', mt: 2}}>
-                    <Box sx={{borderBottom: 1, borderColor: 'divider'}}>
-                        <Tabs value={value} onChange={handleChangeTab} aria-label="basic tabs example">
-                            <Tab label="By evaluation metric" {...a11yProps(0)} />
-                            <Tab label="By Run ID" {...a11yProps(1)} />
-                        </Tabs>
+            {allowed &&
+                <Container maxWidth={'xl'} sx={{my: 5}} data-testid={'experimentTrackingTrackExperimentSection'}>
+                    <Typography component={'span'} variant={'h4'} fontWeight={'bold'} sx={{mb: 3}}>Track your
+                        experiment</Typography>
+                    <Box sx={{width: '100%', mt: 2}}>
+                        <Box sx={{borderBottom: 1, borderColor: 'divider'}}>
+                            <Tabs value={value} onChange={handleChangeTab} aria-label="basic tabs example">
+                                <Tab label="By evaluation metric" {...a11yProps(0)} />
+                                <Tab label="By Run ID" {...a11yProps(1)} />
+                            </Tabs>
+                        </Box>
+                        <TabPanel value={value} index={0}>
+                            <ByEvaluationMetric/>
+                        </TabPanel>
+                        <TabPanel value={value} index={1}>
+                            <ByRunID/>
+                        </TabPanel>
                     </Box>
-                    <TabPanel value={value} index={0}>
-                        <ByEvaluationMetric/>
-                    </TabPanel>
-                    <TabPanel value={value} index={1}>
-                        <ByRunID/>
-                    </TabPanel>
-                </Box>
-            </Container>
+                </Container>}
         </>
     );
     // eslint-disable

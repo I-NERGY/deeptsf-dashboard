@@ -155,7 +155,7 @@ const ByRunId = () => {
             <Grid container direction="row" alignItems="center" justifyItems={'center'}>
                 <Typography variant={'h4'} display={'flex'} alignItems={'center'}>
                     <ChevronRightIcon
-                        fontSize={'large'}/> Forecasted vs Actual Load Series
+                        fontSize={'large'}/> Forecasted vs Actual Time Series
                 </Typography>
             </Grid>
             {noLineChart && <Alert severity="warning" sx={{my: 5}}>No data available for this experiment.</Alert>}

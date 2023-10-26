@@ -20,6 +20,8 @@ const ExperimentExecution = ({
                                  experimentName,
                                  model,
                                  chosenConfiguration,
+                                 hyperParams,
+                                 removeOutliers,
                                  forecastHorizon,
                                  executionInitiated,
                                  setExecutionLoading,
@@ -27,9 +29,12 @@ const ExperimentExecution = ({
                                  setExecutionSuccess,
                                  setExecutionFailure,
                                  availableConfigurations,
+                                 aggregationMethod,
                                  ignorePrevious,
-                                 seriesUri
+                                 seriesUri,
+                                 multiSeriesFile
                              }) => {
+    const authenticationEnabled = process.env.REACT_APP_AUTH === "true"
 
     const handleExecute = () => {
         setExecutionLoading(true)
@@ -46,15 +51,16 @@ const ExperimentExecution = ({
             test_end_date: new Date(dateEnd.getTime() - (dateEnd.getTimezoneOffset() * 60 * 1000)).toISOString().split('T')[0].replace(/-/g, ""),
             model: model.model_name,
             forecast_horizon: forecastHorizon,
-            hyperparams_entrypoint: availableConfigurations[chosenConfiguration][0],
-            ignore_previous_runs: ignorePrevious
+            // hyperparams_entrypoint: availableConfigurations[chosenConfiguration][0],
+            hyperparams_entrypoint: hyperParams,
+            rmv_outliers: removeOutliers,
+            resampling_agg_method: aggregationMethod,
+            ignore_previous_runs: ignorePrevious,
+            multiple: multiSeriesFile
         }
-
-        console.log(payload)
 
         axios.post('/experimentation_pipeline/run_all', payload)
             .then(response => {
-                console.log(response.data)
                 setExecutionSuccess(true)
                 setExecutionFailure(false)
                 setExecutionLoading(false)
@@ -69,7 +75,7 @@ const ExperimentExecution = ({
 
     return (
         <>
-            <Container maxWidth={'xl'} sx={{my: 5}}>
+            <Container maxWidth={'xl'} sx={{my: 5}} data-testid={'codelessForecastExperimentExecution'}>
                 <Typography variant={'h4'} fontWeight={'bold'} sx={{mb: 3}}>Experiment Execution</Typography>
                 <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
                     <Grid item xs={12} md={6}>
@@ -104,7 +110,7 @@ const ExperimentExecution = ({
                             <Button variant={'contained'} component={'span'} size={'large'} color={'warning'}
                                     sx={{ml: 'auto'}} fullWidth
                                     endIcon={<ChevronRight/>}
-                                    onClick={() => window.open('http://131.154.97.48:5000/', '_blank')}
+                                    onClick={() => window.open(process.env.REACT_APP_MLFLOW, '_blank')}
                             >
                                 <Typography variant={'h6'}>Visit MLFlow Server</Typography>
                             </Button>

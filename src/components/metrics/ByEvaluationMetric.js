@@ -228,16 +228,14 @@ const ByEvaluationMetric = () => {
 
             <Divider sx={{my: 4}}/>
 
-            {/*<Container maxWidth={'xl'} sx={{mt: 5, mb: 2}}>*/}
-                <Grid container direction="row" alignItems="center" justifyItems={'center'}>
-                    <Typography variant={'h4'} display={'flex'} alignItems={'center'}>
-                        <ChevronRightIcon
-                            fontSize={'large'}/> Model Evaluation Metrics
-                    </Typography>
-                </Grid>
-                {noBarChart && <Alert severity="warning" sx={{my: 5}}>No data available for this experiment.</Alert>}
-                {loadingBarChart && <Loading/>}
-            {/*</Container>*/}
+            <Grid container direction="row" alignItems="center" justifyItems={'center'}>
+                <Typography variant={'h4'} display={'flex'} alignItems={'center'}>
+                    <ChevronRightIcon
+                        fontSize={'large'}/> Model Evaluation Metrics
+                </Typography>
+            </Grid>
+            {noBarChart && <Alert severity="warning" sx={{my: 5}}>No data available for this experiment.</Alert>}
+            {loadingBarChart && <Loading/>}
 
             {barChartValues.length > 1 && !loadingBarChart && <React.Fragment>
                 <Container>
@@ -271,16 +269,14 @@ const ByEvaluationMetric = () => {
 
             <Divider sx={{my: 5}}/>
 
-            {/*<Container maxWidth={'xl'} sx={{my: 2}}>*/}
-                <Grid container direction="row" alignItems="center" justifyItems={'center'}>
-                    <Typography variant={'h4'} display={'flex'} alignItems={'center'}>
-                        <ChevronRightIcon
-                            fontSize={'large'}/> Forecasted vs Actual Load Series
-                    </Typography>
-                </Grid>
-                {noLineChart && <Alert severity="warning" sx={{my: 5}}>No data available for this experiment.</Alert>}
-                {loadingLineChart && <Loading/>}
-            {/*</Container>*/}
+            <Grid container direction="row" alignItems="center" justifyItems={'center'}>
+                <Typography variant={'h4'} display={'flex'} alignItems={'center'}>
+                    <ChevronRightIcon
+                        fontSize={'large'}/> Forecasted vs Actual Time Series
+                </Typography>
+            </Grid>
+            {noLineChart && <Alert severity="warning" sx={{my: 5}}>No data available for this experiment.</Alert>}
+            {loadingLineChart && <Loading/>}
 
             <Divider sx={{mt: 5}}/>
 

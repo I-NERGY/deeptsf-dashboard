@@ -36,6 +36,7 @@ import FooterContent from "../FooterContent";
 import MenuButton from "./MenuButton";
 
 import {appbarMenuButtonItems} from "../../appbarMenuButtonItems";
+import {useKeycloak} from "@react-keycloak/web";
 
 const drawerWidth = 260;
 
@@ -104,21 +105,22 @@ const DrawerHeader = styled('div')(({theme}) => ({
 }));
 
 export default function Layout({children}) {
-    const {user, roles} = useAuthContext()
+    const {keycloak, initialized} = useKeycloak();
     const {logout} = useLogout()
     const classes = useStyles;
     const theme = useTheme();
     const navigate = useNavigate();
     const location = useLocation()
 
-    const menuItems = [{text: 'Home', icon: <HomeOutlinedIcon color="secondary"/>, path: "/",},]
+    const menuItems = [{text: 'Homepage', icon: <HomeOutlinedIcon color="secondary"/>, path: "/",},]
 
     const [menu, setMenu] = useState(menuItems)
 
     const handleSignOut = () => {
         logout()
+        keycloak.logout()
         setMenu(menuItems)
-        navigate('/signin')
+        // navigate('/signin')
     }
 
     const [drawerOpen, setDrawerOpen] = React.useState(false);
@@ -126,114 +128,131 @@ export default function Layout({children}) {
     const handleDrawerOpen = () => setDrawerOpen(true);
     const handleDrawerClose = () => setDrawerOpen(false);
 
+    const authenticationEnabled = process.env.REACT_APP_AUTH === "true"
+
     useEffect(() => {
-        if (roles?.length > 0 && (roles.includes('data_scientist') || roles.includes('inergy_admin'))) {
+        let roles = keycloak.realmAccess?.roles
+        if ((roles?.length > 0 && (roles.includes('data_scientist') || roles.includes('inergy_admin'))) || !authenticationEnabled) {
             menuItems.push(
-                {text: 'Load Forecasting Pipeline', icon: <UpdateIcon color="secondary"/>, path: "/load-forecast"},
+                {text: 'Codeless Forecasting Pipeline', icon: <UpdateIcon color="secondary"/>, path: "/codeless-forecast"},
                 {
                     text: 'MLFlow',
                     icon: <img src="/images/mlflow_logo.jpg" alt="" width={'25px'} style={{borderRadius: '50%'}}/>,
                     path: location.pathname + ' ',
-                    link: 'http://131.154.97.48:5000/'
+                    link: process.env.REACT_APP_MLFLOW
                 },
-                {text: 'Experiment Tracking', icon: <QueryStatsIcon color="secondary"/>, path: "/experiment-tracking"}
             )
             setMenu(menuItems)
         }
 
-        if (roles?.length > 0 && roles.includes('energy_engineer')) {
-            menuItems.push({text: 'Experiment Tracking', icon: <QueryStatsIcon color="secondary"/>, path: "/experiment-tracking"})
+        if ((roles?.length > 0 && (roles.includes('energy_engineer') || roles.includes('inergy_admin'))) || !authenticationEnabled) {
+            menuItems.push({
+                text: 'Experiment Tracking',
+                icon: <QueryStatsIcon color="secondary"/>,
+                path: "/experiment-tracking"
+            })
             setMenu(menuItems)
         }
 
-        if (roles?.length > 1) {
-            menuItems.push({text: 'System Monitoring', icon: <MonitorHeartIcon color="secondary"/>, path: "/monitoring"})
+        if (roles?.includes('inergy_admin') || !authenticationEnabled) {
+            menuItems.push({
+                text: 'System Monitoring',
+                icon: <MonitorHeartIcon color="secondary"/>,
+                path: "/monitoring"
+            })
+            setMenu(menuItems)
         }
-    }, [roles])
+    }, [initialized])
 
+    return (
+        <React.Fragment>
+            <Box sx={{display: 'flex', minHeight: `calc(100vh - 60px)`}}>
+                <CssBaseline/>
+                <AppBar position="fixed" open={drawerOpen}>
+                    <Toolbar>
+                        <IconButton
+                            aria-label="open drawer"
+                            onClick={handleDrawerOpen}
+                            edge="start"
+                            sx={{mr: 2, color: 'white', ...(drawerOpen && {display: 'none'})}}>
+                            <MenuIcon/>
+                        </IconButton>
+                        <h3 style={{color: 'white'}}>I-NERGY DeepTSF</h3>
+                        {keycloak.authenticated === true && <React.Fragment>
+                            <Typography style={{
+                                marginLeft: 'auto',
+                                color: 'white'
+                            }}>Welcome, {keycloak?.tokenParsed?.given_name}</Typography>
+                            <MenuButton subLinks={appbarMenuButtonItems} signout={handleSignOut}/>
+                        </React.Fragment>}
+                    </Toolbar>
+                </AppBar>
 
-    return (<React.Fragment>
-        <Box sx={{display: 'flex', minHeight: `calc(100vh - 60px)`}}>
-            <CssBaseline/>
-            <AppBar position="fixed" open={drawerOpen}>
-                <Toolbar>
-                    <IconButton
-                        aria-label="open drawer"
-                        onClick={handleDrawerOpen}
-                        edge="start"
-                        sx={{mr: 2, color: 'white', ...(drawerOpen && {display: 'none'})}}>
-                        <MenuIcon/>
-                    </IconButton>
-                    <h3 style={{color: 'white'}}>I-NERGY Load Forecasting</h3>
-                    {user && <React.Fragment>
-                        <Typography style={{marginLeft: 'auto', color: 'white'}}>Welcome, {user.username}</Typography>
-                        <MenuButton subLinks={appbarMenuButtonItems} signout={handleSignOut}/>
-                    </React.Fragment>}
-                </Toolbar>
-            </AppBar>
+                <Drawer
+                    sx={{
+                        width: drawerWidth, flexShrink: 0, '& .MuiDrawer-paper': {
+                            width: drawerWidth, boxSizing: 'border-box',
+                        },
+                    }}
+                    variant="persistent"
+                    anchor="left"
+                    open={drawerOpen}>
+                    <DrawerHeader>
+                        {/* Drawer top left banner logo */}
+                        <img src="/images/i-nergy_logo_trans_back.png" alt="" height={'60px'}
+                             style={{objectFit: 'cover'}}/>
+                        <IconButton onClick={handleDrawerClose}>
+                            {theme.direction === 'ltr' ? <ChevronLeftIcon/> : <ChevronRightIcon/>}
+                        </IconButton>
+                    </DrawerHeader>
 
-            <Drawer
-                sx={{
-                    width: drawerWidth, flexShrink: 0, '& .MuiDrawer-paper': {
-                        width: drawerWidth, boxSizing: 'border-box',
-                    },
-                }}
-                variant="persistent"
-                anchor="left"
-                open={drawerOpen}>
-                <DrawerHeader>
-                    {/* Drawer top left banner logo */}
-                    <img src="/images/i-nergy_logo_trans_back.png" alt="" height={'60px'} style={{objectFit: 'cover'}}/>
-                    <IconButton onClick={handleDrawerClose}>
-                        {theme.direction === 'ltr' ? <ChevronLeftIcon/> : <ChevronRightIcon/>}
-                    </IconButton>
-                </DrawerHeader>
+                    <Divider/>
 
-                <Divider/>
+                    <List>
+                        {menu.map(item => (
+                            <div key={item.text}>
+                                <ListItemButton
+                                    onClick={item.handleNested ? item.handleNested : item.link ? () => window.open(item.link, '_blank') : () => navigate(item.path)}
+                                    key={item.text}
+                                    className={location.pathname === item.path ? 'menuItemActive' : null}
+                                >
+                                    <ListItemIcon>{item.icon}</ListItemIcon>
+                                    <ListItemText primary={item.text}></ListItemText>
+                                    {item.subItems && (item.collapsed ? <ExpandLessIcon/> : <ExpandMoreIcon/>)}
+                                </ListItemButton>
+                                {item.subItems && item.subItems.map(subItem => (<Link key={subItem.text}
+                                                                                      style={{
+                                                                                          textDecoration: 'none',
+                                                                                          color: '#000'
+                                                                                      }}>
+                                    <Collapse in={item.collapsed} timeout="auto" unmountOnExit>
+                                        <List component="div" disablePadding>
+                                            <ListItemButton sx={{pl: 4}}
+                                                            className={clsx(classes.nested, location.pathname === subItem.path ? 'menuItemActive' : null)}>
+                                                <ListItemIcon>
+                                                    {subItem.icon}
+                                                </ListItemIcon>
+                                                <ListItemText primary={subItem.text}/>
+                                            </ListItemButton>
+                                        </List>
+                                    </Collapse>
+                                </Link>))}
+                            </div>))}
+                    </List>
+                    <Divider/>
 
-                <List>
-                    {menu.map(item => (
-                        <div key={item.text}>
-                            <ListItemButton
-                                onClick={item.handleNested ? item.handleNested : item.link ? () => window.open(item.link, '_blank') : () => navigate(item.path)}
-                                key={item.text} className={location.pathname === item.path ? 'menuItemActive' : null}
-                            >
-                                <ListItemIcon>{item.icon}</ListItemIcon>
-                                <ListItemText primary={item.text}></ListItemText>
-                                {item.subItems && (item.collapsed ? <ExpandLessIcon/> : <ExpandMoreIcon/>)}
-                            </ListItemButton>
-                            {item.subItems && item.subItems.map(subItem => (<Link key={subItem.text}
-                                                                                  style={{
-                                                                                      textDecoration: 'none',
-                                                                                      color: '#000'
-                                                                                  }}>
-                                <Collapse in={item.collapsed} timeout="auto" unmountOnExit>
-                                    <List component="div" disablePadding>
-                                        <ListItemButton sx={{pl: 4}}
-                                                        className={clsx(classes.nested, location.pathname === subItem.path ? 'menuItemActive' : null)}>
-                                            <ListItemIcon>
-                                                {subItem.icon}
-                                            </ListItemIcon>
-                                            <ListItemText primary={subItem.text}/>
-                                        </ListItemButton>
-                                    </List>
-                                </Collapse>
-                            </Link>))}
-                        </div>))}
-                </List>
-                <Divider/>
+                    <List>
+                        {keycloak.authenticated === false && <SignedOutLinks navigate={navigate} location={location}/>}
+                        {keycloak.authenticated === true &&
+                            <SignedInLinks navigate={navigate} location={location} handleSignOut={handleSignOut}/>}
+                    </List>
 
-                <List>
-                    {!user && <SignedOutLinks navigate={navigate} location={location}/>}
-                    {user && <SignedInLinks navigate={navigate} location={location} handleSignOut={handleSignOut}/>}
-                </List>
-
-            </Drawer>
-            <Main open={drawerOpen} style={{overflow: 'hidden', paddingBottom: 0}}>
-                <DrawerHeader/>
-                {children}
-            </Main>
-        </Box>
-        <Footer sx={{position: 'sticky', mt: 'auto'}} open={drawerOpen}><FooterContent/></Footer>
-    </React.Fragment>);
+                </Drawer>
+                <Main open={drawerOpen} style={{overflow: 'hidden', paddingBottom: 0}}>
+                    <DrawerHeader/>
+                    {children}
+                </Main>
+            </Box>
+            <Footer sx={{position: 'sticky', mt: 'auto'}} open={drawerOpen}><FooterContent/></Footer>
+        </React.Fragment>);
 }
