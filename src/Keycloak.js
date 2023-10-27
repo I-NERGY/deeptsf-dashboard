@@ -2,7 +2,6 @@ import Keycloak from "keycloak-js";
 
 const createKeycloakInstance = (enabled) => {
     if (enabled) {
-        // Keycloak client for localhost
         return new Keycloak({
             realm: process.env.REACT_APP_KEYCLOAK_REALM,
             url: process.env.REACT_APP_KEYCLOAK_URL,
@@ -33,7 +32,7 @@ const createKeycloakInstance = (enabled) => {
     }
 };
 
-const shouldAuthenticate = process.env.REACT_APP_AUTH === "true";
+const shouldAuthenticate = process.env.REACT_APP_AUTH === "True";
 
 const my_keycloak = createKeycloakInstance(shouldAuthenticate);
 

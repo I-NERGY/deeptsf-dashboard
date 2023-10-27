@@ -88,7 +88,7 @@ const breadcrumbs = [
 const ExperimentTracking = () => {
 
     const {keycloak, initialized} = useKeycloak()
-    const authenticationEnabled = process.env.REACT_APP_AUTH === "true"
+    const authenticationEnabled = process.env.REACT_APP_AUTH === "True"
     const navigate = useNavigate();
 
     // Comment out the following line FOR TESTING

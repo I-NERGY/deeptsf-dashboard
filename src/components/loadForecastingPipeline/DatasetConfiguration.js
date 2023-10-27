@@ -25,7 +25,6 @@ import FormGroup from '@mui/material/FormGroup';
 import Alert from "@mui/material/Alert";
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
-import FormLabel from '@mui/material/FormLabel';
 import FormControlLabel from '@mui/material/FormControlLabel';
 
 import UploadFileOutlinedIcon from "@mui/icons-material/UploadFileOutlined";
@@ -149,7 +148,6 @@ const DatasetConfiguration = ({
             .then(response => {
                 setResolutions(response.data.allowed_resolutions)
                 setExperimentResolution(response.data.allowed_resolutions[0].value)
-                console.log('Resolutions: ', response.data.allowed_resolutions)
                 setUploadSuccess(true)
 
                 // console.log(response.data.allowed_validation_start, new Date(response.data.allowed_validation_start))
