@@ -128,7 +128,7 @@ export default function Layout({children}) {
     const handleDrawerOpen = () => setDrawerOpen(true);
     const handleDrawerClose = () => setDrawerOpen(false);
 
-    const authenticationEnabled = process.env.REACT_APP_AUTH === "true"
+    const authenticationEnabled = process.env.REACT_APP_AUTH === "True"
 
     useEffect(() => {
         let roles = keycloak.realmAccess?.roles

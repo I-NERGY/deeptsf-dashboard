@@ -25,7 +25,7 @@ const breadcrumbs = [
 ];
 
 const SystemMonitoring = () => {
-    const authenticationEnabled = process.env.REACT_APP_AUTH === "true"
+    const authenticationEnabled = process.env.REACT_APP_AUTH === "True"
     const {keycloak, initialized} = useKeycloak()
     const navigate = useNavigate();
 

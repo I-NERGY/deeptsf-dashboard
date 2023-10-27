@@ -34,7 +34,7 @@ const ExperimentExecution = ({
                                  seriesUri,
                                  multiSeriesFile
                              }) => {
-    const authenticationEnabled = process.env.REACT_APP_AUTH === "true"
+    const authenticationEnabled = process.env.REACT_APP_AUTH === "True"
 
     const handleExecute = () => {
         setExecutionLoading(true)
