@@ -134,12 +134,10 @@ export default function Layout({children}) {
         let roles = keycloak.realmAccess?.roles
         if ((roles?.length > 0 && (roles.includes('data_scientist') || roles.includes('inergy_admin'))) || !authenticationEnabled) {
             menuItems.push(
-                {text: 'Codeless Forecasting Pipeline', icon: <UpdateIcon color="secondary"/>, path: "/codeless-forecast"},
                 {
-                    text: 'MLFlow',
-                    icon: <img src="/images/mlflow_logo.jpg" alt="" width={'25px'} style={{borderRadius: '50%'}}/>,
-                    path: location.pathname + ' ',
-                    link: process.env.REACT_APP_MLFLOW
+                    text: 'Codeless Forecasting Pipeline',
+                    icon: <UpdateIcon color="secondary"/>,
+                    path: "/codeless-forecast"
                 },
             )
             setMenu(menuItems)
@@ -162,6 +160,25 @@ export default function Layout({children}) {
             })
             setMenu(menuItems)
         }
+
+        if ((roles?.length > 0 && (roles.includes('data_scientist') || roles.includes('inergy_admin'))) || !authenticationEnabled) {
+            menuItems.push(
+                {
+                    text: 'MLFlow',
+                    icon: <img src="/images/mlflow_logo.jpg" alt="" width={'25px'} style={{borderRadius: '50%'}}/>,
+                    path: location.pathname + ' ',
+                    link: process.env.REACT_APP_MLFLOW
+                },
+                {
+                    text: 'Workflows',
+                    icon: <img src="/images/dagster_logo.jpg" alt="" width={'25px'} style={{borderRadius: '50%'}}/>,
+                    path: location.pathname + ' ',
+                    link: process.env.REACT_APP_DAGSTER_ENDPOINT_URL
+                },
+            )
+            setMenu(menuItems)
+        }
+
     }, [initialized])
 
     return (
