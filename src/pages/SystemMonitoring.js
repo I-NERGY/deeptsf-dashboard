@@ -52,7 +52,11 @@ const SystemMonitoring = () => {
         <>
             <Breadcrumb breadcrumbs={breadcrumbs} welcome_msg={''}/>
 
+            {/* Comment out the following line FOR TESTING */}
             {(initialized || !authenticationEnabled) && allowed && <>
+
+                {/* Uncomment the following line FOR TESTING */}
+                {/*{allowed && <>*/}
                 <Container maxWidth={'xl'} sx={{mt: 5, mb: 2}}>
                     <MemoryUsageBars/>
                 </Container>
