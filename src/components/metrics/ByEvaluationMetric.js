@@ -215,7 +215,7 @@ const ByEvaluationMetric = () => {
                     {bestRun && <Button variant={'contained'} component={'span'} size={'large'} color={'warning'}
                                         sx={{ml: 'auto'}}
                                         endIcon={<ChevronRight/>}
-                                        onClick={() => window.open(`http://131.154.97.48:5000/#/experiments/${experimentChosen}/runs/${bestRun}`, '_blank')}
+                                        onClick={() => window.open(`${process.env.REACT_APP_MLFLOW}/${experimentChosen}/runs/${bestRun}`, '_blank')}
                     >
                         <Typography variant={'subtitle1'}>DETAILS ON MLFLOW</Typography>
                     </Button>}
