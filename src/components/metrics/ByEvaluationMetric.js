@@ -25,6 +25,8 @@ import Loading from "../layout/Loading";
 import {Bar, Line} from "react-chartjs-2";
 
 const ByEvaluationMetric = () => {
+    console.log(process.env.REACT_APP_MLFLOW)
+
     const [experiments, setExperiments] = useState([])
     const [experimentChosen, setExperimentChosen] = useState(0)
     const [bestRun, setBestRun] = useState('')
@@ -215,7 +217,7 @@ const ByEvaluationMetric = () => {
                     {bestRun && <Button variant={'contained'} component={'span'} size={'large'} color={'warning'}
                                         sx={{ml: 'auto'}}
                                         endIcon={<ChevronRight/>}
-                                        onClick={() => window.open(`${process.env.REACT_APP_MLFLOW}/${experimentChosen}/runs/${bestRun}`, '_blank')}
+                                        onClick={() => window.open(`${process.env.REACT_APP_MLFLOW}/#/experiments/${experimentChosen}/runs/${bestRun}`, '_blank')}
                     >
                         <Typography variant={'subtitle1'}>DETAILS ON MLFLOW</Typography>
                     </Button>}
