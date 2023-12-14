@@ -25,8 +25,6 @@ import Loading from "../layout/Loading";
 import {Bar, Line} from "react-chartjs-2";
 
 const ByEvaluationMetric = () => {
-    console.log(process.env.REACT_APP_MLFLOW)
-
     const [experiments, setExperiments] = useState([])
     const [experimentChosen, setExperimentChosen] = useState(0)
     const [bestRun, setBestRun] = useState('')
