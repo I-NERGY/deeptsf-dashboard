@@ -32,7 +32,11 @@ const ExperimentExecution = ({
                                  aggregationMethod,
                                  ignorePrevious,
                                  seriesUri,
-                                 multiSeriesFile
+                                 multiSeriesFile,
+                                 ucChosen,
+                                 tsUsedID,
+                                 evaluatedAllTs,
+                                 setEvaluatedAllTs
                              }) => {
     const authenticationEnabled = process.env.REACT_APP_AUTH === "True"
 
@@ -56,8 +60,25 @@ const ExperimentExecution = ({
             rmv_outliers: removeOutliers,
             resampling_agg_method: aggregationMethod,
             ignore_previous_runs: ignorePrevious,
-            multiple: multiSeriesFile
+            multiple: multiSeriesFile,
+            ts_used_id: tsUsedID,
+            evaluate_all_ts: evaluatedAllTs,
+            // uc: null
         }
+
+        if (ucChosen === 'uc2') {
+            payload.ts_used_id = null
+            payload.evaluate_all_ts = false
+            payload.uc = 2
+        }
+
+        if (ucChosen === 'uc6') {
+            payload.ts_used_id = tsUsedID
+            payload.evaluate_all_ts = false
+            payload.uc = 6
+        }
+
+        console.log(payload)
 
         axios.post('/experimentation_pipeline/run_all', payload)
             .then(response => {
@@ -89,7 +110,7 @@ const ExperimentExecution = ({
                         <Button variant={'contained'} component={'span'} size={'large'} color={'success'}
                                 sx={{ml: 'auto'}} fullWidth
                                 endIcon={<ChevronRight/>} onClick={handleExecute}
-                                disabled={executionLoading || !uploadSuccess || !experimentResolution || !dateVal || !dateTest || !dateEnd || !experimentName || !model || chosenConfiguration === '' || !forecastHorizon}
+                                disabled={(executionLoading || !uploadSuccess || !experimentResolution || !dateVal || !dateTest || !dateEnd || !experimentName || !model || chosenConfiguration === '' || !forecastHorizon) && !ucChosen}
                         >
                             <Typography variant={'h5'}>
                                 EXECUTE {executionLoading && <CircularProgress size={'26px'} sx={{color: 'white'}}/>}

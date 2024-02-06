@@ -157,6 +157,55 @@ const CodelessForecast = () => {
         setExecutionFailure(false)
     }
 
+
+    // USE CASES STUFF
+    const [uc7StartDate, setUc7StartDate] = useState(null)
+    const [uc7EndDate, setUc7EndDate] = useState(null)
+    const [ucChosen, setUcChosen] = useState('')
+    const [tsUsedID, setTsUsedId] = useState('')
+    const [evaluatedAllTs, setEvaluatedAllTs] = useState('')
+
+    const resetState = () => {
+        setNewFile(null);
+        setDayFirst(false);
+        setModels([]);
+        setModel('');
+        setErrorMessage('');
+        // setLoading(false);
+        setExecutionLoading(false);
+        setExecutionInitiated(false);
+        setUploadSuccess(false);
+        setNewFileSuccess(false);
+        setNewFileFailure(false);
+        setExecutionSuccess(false);
+        setExecutionFailure(false);
+        setAvailableConfigurations([]);
+        setChosenConfiguration('');
+        setHyperParams('');
+        setMultiSeriesFile(false);
+        setRemoveOutliers(true);
+        setResolutions([]);
+        setMaxDate(null);
+        setMinDate(null);
+        setMinDateTestStart(null);
+        setMaxDateTestStart(null);
+        setMinDateEndStart(null);
+        setExperimentName('');
+        setExperimentNameError(false);
+        setExperimentResolution('');
+        setDefaultResolutionChosen(false);
+        setAggregationMethod('averaging');
+        setDateVal(null);
+        setDateTest(null);
+        setDateEnd(null);
+        setForecastHorizon(24);
+        setIgnorePrevious(true);
+        setSeriesUri('');
+        setTsUsedId('')
+        setEvaluatedAllTs('')
+    };
+
+
     return (
         <>
             <Breadcrumb breadcrumbs={breadcrumbs} welcome_msg={''}/>
@@ -164,6 +213,7 @@ const CodelessForecast = () => {
             {allowed && <>
                 {/* Dataset Configuration */}
                 <DatasetConfiguration
+                    resetState={resetState}
                     executionLoading={executionLoading}
                     setNewFile={setNewFile}
                     newFile={newFile}
@@ -204,6 +254,16 @@ const CodelessForecast = () => {
                     setResolutions={setResolutions}
                     setErrorMessage={setErrorMessage}
                     uploadSuccess={uploadSuccess}
+                    uc7StartDate={uc7StartDate}
+                    setUc7StartDate={setUc7StartDate}
+                    uc7EndDate={uc7EndDate}
+                    setUc7EndDate={setUc7EndDate}
+                    ucChosen={ucChosen}
+                    setUcChosen={setUcChosen}
+                    tsUsedID={tsUsedID}
+                    setTsUsedId={setTsUsedId}
+                    evaluatedAllTs={evaluatedAllTs}
+                    setEvaluatedAllTs={setEvaluatedAllTs}
                 />
                 <hr/>
 
@@ -259,6 +319,10 @@ const CodelessForecast = () => {
                     ignorePrevious={ignorePrevious}
                     seriesUri={seriesUri}
                     multiSeriesFile={multiSeriesFile}
+                    tsUsedID={tsUsedID}
+                    evaluatedAllTs={evaluatedAllTs}
+                    setEvaluatedAllTs={setEvaluatedAllTs}
+                    ucChosen={ucChosen}
                 />
             </>}
 
