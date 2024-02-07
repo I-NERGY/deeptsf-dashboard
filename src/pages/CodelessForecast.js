@@ -159,8 +159,6 @@ const CodelessForecast = () => {
 
 
     // USE CASES STUFF
-    const [uc7StartDate, setUc7StartDate] = useState(null)
-    const [uc7EndDate, setUc7EndDate] = useState(null)
     const [ucChosen, setUcChosen] = useState('')
     const [tsUsedID, setTsUsedId] = useState('')
     const [evaluatedAllTs, setEvaluatedAllTs] = useState('')
@@ -254,10 +252,6 @@ const CodelessForecast = () => {
                     setResolutions={setResolutions}
                     setErrorMessage={setErrorMessage}
                     uploadSuccess={uploadSuccess}
-                    uc7StartDate={uc7StartDate}
-                    setUc7StartDate={setUc7StartDate}
-                    uc7EndDate={uc7EndDate}
-                    setUc7EndDate={setUc7EndDate}
                     ucChosen={ucChosen}
                     setUcChosen={setUcChosen}
                     tsUsedID={tsUsedID}

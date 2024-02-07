@@ -108,10 +108,6 @@ const DatasetConfiguration = ({
                                   setErrorMessage,
                                   ucChosen,
                                   setUcChosen,
-                                  // uc7StartDate,
-                                  // setUc7StartDate,
-                                  // uc7EndDate,
-                                  // setUc7EndDate
                                   tsUsedID,
                                   setTsUsedId,
                                   evaluatedAllTs,
@@ -252,13 +248,6 @@ const DatasetConfiguration = ({
 
         if (ucChosen === 'uc6') {
             url = '/db_integration/retrieve_dataset/uc6?series_name=W6 positive_active'
-        }
-
-        // TODO Add UC7 handling
-        if (ucChosen === 'uc7') {
-            // if (uc7StartDate && uc7EndDate) {
-            //     url = `/db_integration/retrieve_dataset/uc7/${uc7StartDate.toLocaleDateString('en-GB').split('/').reverse().join('')}/${uc7EndDate.toLocaleDateString('en-GB').split('/').reverse().join('')}`
-            // }
         }
 
         ucChosen !== '' && axios.get(url)
@@ -412,7 +401,6 @@ const DatasetConfiguration = ({
                                 >
                                     <MenuItem value={'uc2'}>Use Case 2</MenuItem>
                                     <MenuItem value={'uc6'}>Use Case 6</MenuItem>
-                                    <MenuItem value={'uc7'}>Use Case 7</MenuItem>
                                 </Select>
                             </FormControl>
                         </Grid>
@@ -456,54 +444,6 @@ const DatasetConfiguration = ({
                             <Alert severity="warning">Wait until the file has been validated.</Alert>}
                     </Grid>
                 </Grid>}
-
-            {/*{ucChosen === 'uc7' &&*/}
-            {/*    <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>*/}
-            {/*        <Grid item xs={12} md={6}>*/}
-            {/*            <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>*/}
-            {/*                <EventIcon fontSize="large"*/}
-            {/*                           sx={{width: '60px', height: '60px', color: '#A1B927', ml: 2, my: 1}}/>*/}
-            {/*                <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>Dataset Subset date*/}
-            {/*                    range</Typography>*/}
-            {/*            </Stack>*/}
-            {/*        </Grid>*/}
-            {/*        <Grid item xs={12} md={6}>*/}
-            {/*            <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>*/}
-            {/*                <Grid item xs={12} md={6}>*/}
-            {/*                    <LocalizationProvider dateAdapter={AdapterDateFns}>*/}
-            {/*                        <DesktopDatePicker*/}
-            {/*                            disabled={executionLoading}*/}
-            {/*                            inputFormat="dd/MM/yyyy"*/}
-            {/*                            label="Dataset Subset Start Date"*/}
-            {/*                            value={uc7StartDate}*/}
-            {/*                            minDate={minDate ? minDate : void (0)}*/}
-            {/*                            maxDate={maxDate ? maxDate : void (0)}*/}
-            {/*                            onChange={(newValue) => {*/}
-            {/*                                setUc7StartDate(newValue);*/}
-            {/*                            }}*/}
-            {/*                            renderInput={(params) => <TextField fullWidth {...params}/>}*/}
-            {/*                        />*/}
-            {/*                    </LocalizationProvider>*/}
-            {/*                </Grid>*/}
-            {/*                <Grid item xs={12} md={6}>*/}
-            {/*                    <LocalizationProvider dateAdapter={AdapterDateFns}>*/}
-            {/*                        <DesktopDatePicker*/}
-            {/*                            disabled={executionLoading}*/}
-            {/*                            inputFormat="dd/MM/yyyy"*/}
-            {/*                            label="Dataset Subset End Date"*/}
-            {/*                            value={uc7EndDate}*/}
-            {/*                            minDate={minDateTestStart ? minDateTestStart : void (0)}*/}
-            {/*                            maxDate={maxDateTestStart ? maxDateTestStart : void (0)}*/}
-            {/*                            onChange={(newValue) => {*/}
-            {/*                                setUc7EndDate(newValue);*/}
-            {/*                            }}*/}
-            {/*                            renderInput={(params) => <TextField fullWidth {...params} helperText={null}/>}*/}
-            {/*                        />*/}
-            {/*                    </LocalizationProvider>*/}
-            {/*                </Grid>*/}
-            {/*            </Grid>*/}
-            {/*        </Grid>*/}
-            {/*    </Grid>}*/}
 
             <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
                 <Grid item xs={12} md={8}>
