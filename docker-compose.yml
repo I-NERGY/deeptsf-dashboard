@@ -10,11 +10,13 @@ services:
     volumes:
       - ./src:/app/src
     ports:
-      - '3000:3000'
+      - '3003:3000'
     stdin_open: true
+    networks:
+      - inergy_network
 #    env_file:
 #      - .env
 
 networks:
-  load-forecasting-net:
-    external: true
+ inergy_network:
+   external: true

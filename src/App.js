@@ -45,7 +45,7 @@ const theme = createTheme({
 function App() {
     const authenticationEnabled = process.env.REACT_APP_AUTH === "True"
     const {keycloak} = useKeycloak()
-    axios.defaults.baseURL = authenticationEnabled ? 'http://131.154.97.48:8080' : 'http://localhost:8080';
+    axios.defaults.baseURL = authenticationEnabled ? 'https://inergy.epu.ntua.gr:8080' : 'http://localhost:8080';
     axios.defaults.headers.common['Authorization'] = `Bearer ${keycloak.token}` || '';
 
     return (
