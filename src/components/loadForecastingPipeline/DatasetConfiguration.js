@@ -35,6 +35,8 @@ import DocumentScannerIcon from '@mui/icons-material/DocumentScanner';
 import SettingsSuggestIcon from '@mui/icons-material/SettingsSuggest';
 import SchemaIcon from '@mui/icons-material/Schema';
 import AppRegistrationIcon from '@mui/icons-material/AppRegistration';
+import AutoGraphIcon from '@mui/icons-material/AutoGraph';
+import Auto from "chart.js/auto";
 
 function TabPanel(props) {
     const {children, value, index, ...other} = props;
@@ -111,7 +113,9 @@ const DatasetConfiguration = ({
                                   tsUsedID,
                                   setTsUsedId,
                                   evaluatedAllTs,
-                                  setEvaluatedAllTs
+                                  setEvaluatedAllTs,
+                                  imputationMethod,
+                                  setImputationMethod
                               }) => {
     const {keycloak} = useKeycloak()
     const [value, setValue] = useState(0);
@@ -540,6 +544,45 @@ const DatasetConfiguration = ({
                             Remove outliers
                         </Typography>}/>
                     </FormGroup>
+                </Grid>
+            </Grid>
+
+            <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
+                <Grid item xs={12} md={8}>
+                    <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
+                        <AutoGraphIcon fontSize="large"
+                                             sx={{width: '60px', height: '60px', color: '#A1B927', ml: 2, my: 1}}/>
+                        <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>
+                            Ιnterpolation Method
+                        </Typography>
+                    </Stack>
+                </Grid>
+                <Grid item xs={12} md={4}>
+                    <FormControl fullWidth>
+                        <InputLabel id="demo-simple-select-label">Choose the interpolation method</InputLabel>
+                        <Select
+                            labelId="demo-simple-select-label"
+                            id="demo-simple-select"
+                            value={imputationMethod}
+                            disabled={executionLoading}
+                            label="Choose the interpolation method"
+                            onChange={e => setImputationMethod(e.target.value)}
+                        >
+                            <MenuItem value={'linear'}>Linear</MenuItem>
+                            <MenuItem value={'time'}>Time</MenuItem>
+                            <MenuItem value={'pad'}>Pad</MenuItem>
+                            <MenuItem value={'nearest'}>Nearest</MenuItem>
+                            <MenuItem value={'polynomial'}>Polynomial</MenuItem>
+                            <MenuItem value={'spline'}>Spline</MenuItem>
+                            <MenuItem value={'peppanen'}>Peppanen</MenuItem>
+                            <MenuItem value={'krogh'}>Krogh</MenuItem>
+                            <MenuItem value={'piecewise_polynomial'}>Piecewise Polynomial</MenuItem>
+                            <MenuItem value={'spline'}>Spline</MenuItem>
+                            <MenuItem value={'pchip'}>PCHIP</MenuItem>
+                            <MenuItem value={'akima'}>Akima</MenuItem>
+                            <MenuItem value={'cubicspline'}>Cubic Spline</MenuItem>
+                        </Select>
+                    </FormControl>
                 </Grid>
             </Grid>
 

@@ -66,6 +66,7 @@ const CodelessForecast = () => {
 
     const [multiSeriesFile, setMultiSeriesFile] = useState(false)
     const [removeOutliers, setRemoveOutliers] = useState(true)
+    const [imputationMethod, setImputationMethod] = useState('')
     const [resolutions, setResolutions] = useState([])
     const [maxDate, setMaxDate] = useState(null)
     const [minDate, setMinDate] = useState(null)
@@ -258,6 +259,8 @@ const CodelessForecast = () => {
                     setTsUsedId={setTsUsedId}
                     evaluatedAllTs={evaluatedAllTs}
                     setEvaluatedAllTs={setEvaluatedAllTs}
+                    imputationMethod={imputationMethod}
+                    setImputationMethod={setImputationMethod}
                 />
                 <hr/>
 
@@ -317,6 +320,7 @@ const CodelessForecast = () => {
                     evaluatedAllTs={evaluatedAllTs}
                     setEvaluatedAllTs={setEvaluatedAllTs}
                     ucChosen={ucChosen}
+                    imputationMethod={imputationMethod}
                 />
             </>}
 

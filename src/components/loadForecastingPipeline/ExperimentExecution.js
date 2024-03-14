@@ -36,7 +36,8 @@ const ExperimentExecution = ({
                                  ucChosen,
                                  tsUsedID,
                                  evaluatedAllTs,
-                                 setEvaluatedAllTs
+                                 setEvaluatedAllTs,
+                                 imputationMethod
                              }) => {
     const authenticationEnabled = process.env.REACT_APP_AUTH === "True"
 
@@ -63,6 +64,7 @@ const ExperimentExecution = ({
             multiple: multiSeriesFile,
             ts_used_id: tsUsedID,
             evaluate_all_ts: evaluatedAllTs,
+            imputation_method: imputationMethod
             // uc: null
         }
 
@@ -77,8 +79,6 @@ const ExperimentExecution = ({
             payload.evaluate_all_ts = false
             payload.uc = 6
         }
-
-        console.log(payload)
 
         axios.post('/experimentation_pipeline/run_all', payload)
             .then(response => {
@@ -110,7 +110,7 @@ const ExperimentExecution = ({
                         <Button variant={'contained'} component={'span'} size={'large'} color={'success'}
                                 sx={{ml: 'auto'}} fullWidth
                                 endIcon={<ChevronRight/>} onClick={handleExecute}
-                                disabled={(executionLoading || !uploadSuccess || !experimentResolution || !dateVal || !dateTest || !dateEnd || !experimentName || !model || chosenConfiguration === '' || !forecastHorizon) && !ucChosen}
+                                disabled={(!imputationMethod || executionLoading || !uploadSuccess || !experimentResolution || !dateVal || !dateTest || !dateEnd || !experimentName || !model || chosenConfiguration === '' || !forecastHorizon) && !ucChosen}
                         >
                             <Typography variant={'h5'}>
                                 EXECUTE {executionLoading && <CircularProgress size={'26px'} sx={{color: 'white'}}/>}
