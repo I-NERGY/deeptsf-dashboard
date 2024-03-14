@@ -580,7 +580,7 @@ const DatasetConfiguration = ({
                             <MenuItem value={'spline'}>Spline</MenuItem>
                             <MenuItem value={'pchip'}>PCHIP</MenuItem>
                             <MenuItem value={'akima'}>Akima</MenuItem>
-                            <MenuItem value={'cubic_spline'}>Cubic Spline</MenuItem>
+                            <MenuItem value={'cubicspline'}>Cubic Spline</MenuItem>
                         </Select>
                     </FormControl>
                 </Grid>
