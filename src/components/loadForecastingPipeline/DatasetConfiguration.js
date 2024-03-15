@@ -115,10 +115,12 @@ const DatasetConfiguration = ({
                                   evaluatedAllTs,
                                   setEvaluatedAllTs,
                                   imputationMethod,
-                                  setImputationMethod
+                                  setImputationMethod,
                               }) => {
     const {keycloak} = useKeycloak()
     const [value, setValue] = useState(0);
+
+    console.log(multiSeriesFile)
 
     // Function to recognize if default resolution value is chosen
     const findDefaultNumber = (arr, numToCheck) => {
@@ -579,7 +581,7 @@ const DatasetConfiguration = ({
                             <MenuItem value={'piecewise_polynomial'}>Piecewise Polynomial</MenuItem>
                             <MenuItem value={'spline'}>Spline</MenuItem>
                             <MenuItem value={'pchip'}>PCHIP</MenuItem>
-                            <MenuItem value={'akima'}>Akima</MenuItem>
+                            {!multiSeriesFile && <MenuItem value={'akima'}>Akima</MenuItem>}
                             <MenuItem value={'cubicspline'}>Cubic Spline</MenuItem>
                         </Select>
                     </FormControl>
