@@ -36,7 +36,6 @@ import SettingsSuggestIcon from '@mui/icons-material/SettingsSuggest';
 import SchemaIcon from '@mui/icons-material/Schema';
 import AppRegistrationIcon from '@mui/icons-material/AppRegistration';
 import AutoGraphIcon from '@mui/icons-material/AutoGraph';
-import Auto from "chart.js/auto";
 
 function TabPanel(props) {
     const {children, value, index, ...other} = props;
@@ -116,11 +115,11 @@ const DatasetConfiguration = ({
                                   setEvaluatedAllTs,
                                   imputationMethod,
                                   setImputationMethod,
+                                  format,
+                                  setFormat
                               }) => {
     const {keycloak} = useKeycloak()
     const [value, setValue] = useState(0);
-
-    console.log(multiSeriesFile)
 
     // Function to recognize if default resolution value is chosen
     const findDefaultNumber = (arr, numToCheck) => {
@@ -152,6 +151,7 @@ const DatasetConfiguration = ({
         data.append('file', newFile)
         data.append('day_first', dayFirst)
         data.append('multiple', multiSeriesFile)
+        data.append('format', format)
 
         axios.post('/upload/uploadCSVfile/', data, {
             headers: {
@@ -159,7 +159,6 @@ const DatasetConfiguration = ({
             }
         })
             .then(response => {
-                console.log(response.data)
                 setResolutions(response.data.allowed_resolutions)
                 setExperimentResolution(response.data.allowed_resolutions[0].value)
                 setUploadSuccess(true)
@@ -187,7 +186,6 @@ const DatasetConfiguration = ({
                 document.getElementById('raised-button-file').value = ''
             })
             .catch(error => {
-                // TODO Fixes error handling
                 error.response?.status === 415 && setErrorMessage(error.response.data.detail)
                 setLoading(false)
                 setNewFileSuccess(false)
@@ -200,22 +198,6 @@ const DatasetConfiguration = ({
 
     const handleClearNewFile = () => {
         resetState()
-        // setNewFile('')
-        // setUploadSuccess(false)
-        // // Set MIN/MAX values for date fields
-        // setMinDate(null)
-        // setMaxDate(null)
-        // setMaxDateTestStart(null)
-        //
-        // // Re-initialize date fields
-        // setDateVal(null)
-        // setDateTest(null)
-        // setDateEnd(null)
-        //
-        // setSeriesUri('')
-        //
-        // setNewFileSuccess(false)
-        // setNewFileFailure(false)
     }
 
     const handleChange = (event, newValue) => {
@@ -277,113 +259,174 @@ const DatasetConfiguration = ({
                 setDateVal(new Date(response.data.allowed_validation_start))
                 setDateTest(new Date(new Date(response.data.allowed_validation_start).getTime() + (10 * 24 * 60 * 60 * 1000)))
                 setDateEnd(new Date(response.data.dataset_end))
-
-
             })
-
-
     }, [ucChosen])
 
-    return (<>
-        <Container maxWidth={'xl'} sx={{my: 5}} data-testid={'codelessForecastDatasetConfiguration'}>
-            <Typography variant={'h4'} fontWeight={'bold'} sx={{mb: 3}}>Dataset Configuration</Typography>
-            <Box sx={{width: '100%'}}>
-                <Box sx={{borderBottom: 1, borderColor: 'divider'}}>
-                    <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
-                        <Tab label="UPLOAD YOUR OWN FILE" {...a11yProps(0)} />
-                        <Tab label="TRAIN MODELS ON I-NERGY USE CASES" {...a11yProps(1)} />
-                    </Tabs>
-                </Box>
-                {/* UPLOAD FILE option */}
-                <TabPanel value={value} index={0}>
-                    <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
-                        <Grid item xs={12} md={6}>
-                            <input
-                                accept=".csv"
-                                style={{display: 'none'}}
-                                id="raised-button-file"
-                                type="file"
-                                disabled={executionLoading}
-                                onChange={(event) => handleAddNewFile(event.target.files[0])}
-                            />
+    const handleChangeFormat = event => {
+        setFormat(event.target.value);
+    };
 
-                            <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
-                                <label htmlFor="raised-button-file">
-                                    <IconButton component={'span'} size={'large'}>
-                                        <UploadFileOutlinedIcon fontSize="large"
-                                                                sx={{
-                                                                    width: '60px',
-                                                                    height: '60px',
-                                                                    color: '#A1B927',
-                                                                    mr: '-8px',
-                                                                    my: 1
-                                                                }}/>
-                                    </IconButton>
-                                </label>
-                                <Typography component={'span'} variant={'h5'} color={'inherit'}
-                                            sx={{width: '100%'}}>
-                                    Upload your .csv file
-                                </Typography>
-                            </Stack>
-                        </Grid>
+    return (
+        <>
+            <Container maxWidth={'xl'} sx={{my: 5}} data-testid={'codelessForecastDatasetConfiguration'}>
+                <Typography variant={'h4'} fontWeight={'bold'} sx={{mb: 3}}>Dataset Configuration</Typography>
+                <Box sx={{width: '100%'}}>
+                    <Box sx={{borderBottom: 1, borderColor: 'divider'}}>
+                        <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
+                            <Tab label="UPLOAD YOUR OWN FILE" {...a11yProps(0)} />
+                            <Tab label="TRAIN MODELS ON I-NERGY USE CASES" {...a11yProps(1)} />
+                        </Tabs>
+                    </Box>
+                    {/* UPLOAD FILE option */}
+                    <TabPanel value={value} index={0}>
+                        <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
+                            <Grid item xs={12} md={4}>
+                                <input
+                                    accept=".csv"
+                                    style={{display: 'none'}}
+                                    id="raised-button-file"
+                                    type="file"
+                                    disabled={executionLoading}
+                                    onChange={(event) => handleAddNewFile(event.target.files[0])}
+                                />
 
-                        <Grid item xs={12} md={6}>
-                            {newFile &&
-                                <Grid container display={'flex'} flexDirection={'row'} justifyContent={'center'}>
-                                    <Typography variant={'h5'} color={'inherit'} align={'right'} component={'span'}
+                                <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
+                                    <label htmlFor="raised-button-file">
+                                        <IconButton component={'span'} size={'large'}>
+                                            <UploadFileOutlinedIcon fontSize="large"
+                                                                    sx={{
+                                                                        width: '60px',
+                                                                        height: '60px',
+                                                                        color: '#A1B927',
+                                                                        mr: '-8px',
+                                                                        my: 1
+                                                                    }}/>
+                                        </IconButton>
+                                    </label>
+                                    <Typography component={'span'} variant={'h5'} color={'inherit'}
                                                 sx={{width: '100%'}}>
-                                        Chosen file:
-                                        <Typography fontWeight={'bold'} component={'span'}
-                                                    color={'secondary'}> {newFile.name}
-                                        </Typography>
+                                        Upload your .csv file
                                     </Typography>
-                                </Grid>}
-                            <Stack direction="row" spacing={2}
-                                   sx={{alignItems: 'center', justifyContent: 'end', mb: 2}}>
-                                {newFile && !uploadSuccess && <>
-                                    <FormGroup>
-                                        <FormControlLabel control={<Checkbox
-                                            disabled={executionLoading}
-                                            checked={dayFirst}
-                                            onChange={handleDayFirstCheckBox}
-                                            sx={{'& .MuiSvgIcon-root': {fontSize: 28}}}
-                                        />} label={<Typography sx={{ml: 'auto'}} component={'span'} variant={'h6'}>Day
-                                            First</Typography>}/>
-                                    </FormGroup>
-                                    <FormGroup>
-                                        <FormControlLabel control={<Checkbox
-                                            disabled={executionLoading}
-                                            checked={multiSeriesFile}
-                                            onChange={handleMultiSeriesCheckBox}
-                                            sx={{'& .MuiSvgIcon-root': {fontSize: 28}}}
-                                        />} label={<Typography sx={{ml: 'auto'}} component={'span'} variant={'h6'}>Multi
-                                            Series file</Typography>}/>
-                                    </FormGroup>
-                                </>}
-                                {newFile && !uploadSuccess &&
-                                    <Button variant={'contained'} component={'span'} size={'large'}
-                                            color={'success'}
-                                            sx={{ml: 'auto'}} disabled={executionLoading}
-                                            endIcon={<UploadFileOutlinedIcon/>} onClick={handleUploadFile}>
-                                        Upload file
-                                    </Button>}
-                                {uploadSuccess &&
-                                    <Button variant={'contained'} component={'span'} size={'medium'} color={'error'}
-                                            endIcon={<BackspaceOutlinedIcon/>} sx={{ml: 'auto'}}
-                                            onClick={handleClearNewFile}>
-                                        Clear
-                                    </Button>}
-                            </Stack>
-                        </Grid>
-                    </Grid>
-                </TabPanel>
+                                </Stack>
+                            </Grid>
 
-                {/* CHOOSE FROM UPLOADED FILES option*/}
-                <TabPanel value={value} index={1}>
+                            <Grid item xs={12} md={8}>
+                                {newFile &&
+                                    <Grid container display={'flex'} flexDirection={'row'} justifyContent={'center'}>
+                                        <Typography variant={'h5'} color={'inherit'} align={'right'} component={'span'}
+                                                    sx={{width: '100%'}}>
+                                            Chosen file:
+                                            <Typography fontWeight={'bold'} component={'span'}
+                                                        color={'secondary'}> {newFile.name}
+                                            </Typography>
+                                        </Typography>
+                                    </Grid>}
+                                <Stack direction="row" spacing={2}
+                                       sx={{alignItems: 'center', justifyContent: 'end', mb: 2}}>
+                                    <>
+                                        <FormGroup>
+                                            <FormControlLabel control={<Checkbox
+                                                disabled={executionLoading}
+                                                checked={dayFirst}
+                                                onChange={handleDayFirstCheckBox}
+                                                sx={{'& .MuiSvgIcon-root': {fontSize: 28}}}
+                                            />} label={<Typography sx={{ml: 'auto'}} component={'span'} variant={'h6'}>
+                                                Day First
+                                            </Typography>}/>
+                                        </FormGroup>
+                                        <FormGroup>
+                                            <FormControlLabel control={<Checkbox
+                                                disabled={executionLoading}
+                                                checked={multiSeriesFile}
+                                                onChange={handleMultiSeriesCheckBox}
+                                                sx={{'& .MuiSvgIcon-root': {fontSize: 28}}}
+                                            />} label={<Typography sx={{ml: 'auto'}} component={'span'} variant={'h6'}>Multi
+                                                Series file</Typography>}/>
+                                        </FormGroup>
+                                        <FormControl sx={{mb: 5}}>
+                                            <Typography variant={'h6'}>Timeseries Format</Typography>
+                                            <RadioGroup
+                                                row
+                                                value={format}
+                                                onChange={handleChangeFormat}
+                                            >
+                                                <FormControlLabel
+                                                    value="long"
+                                                    control={<Radio/>}
+                                                    label={<Typography variant="body1">Long</Typography>}
+                                                    labelPlacement="end"
+                                                />
+                                                <FormControlLabel
+                                                    value="short"
+                                                    control={<Radio/>}
+                                                    label={<Typography variant="body1">Short</Typography>}
+                                                    labelPlacement="end"
+                                                />
+                                            </RadioGroup>
+                                        </FormControl>
+                                    </>
+                                </Stack>
+                                <Stack direction="row" spacing={2}
+                                       sx={{alignItems: 'center', justifyContent: 'end', mb: 2}}>
+                                    {newFile && !uploadSuccess &&
+                                        <Button variant={'contained'} component={'span'} size={'large'}
+                                                color={'success'}
+                                                sx={{ml: 'auto'}} disabled={executionLoading}
+                                                endIcon={<UploadFileOutlinedIcon/>} onClick={handleUploadFile}>
+                                            Upload file
+                                        </Button>}
+                                    {uploadSuccess &&
+                                        <Button variant={'contained'} component={'span'} size={'medium'} color={'error'}
+                                                endIcon={<BackspaceOutlinedIcon/>} sx={{ml: 'auto'}}
+                                                onClick={handleClearNewFile}>
+                                            Clear
+                                        </Button>}
+                                </Stack>
+                            </Grid>
+                        </Grid>
+                    </TabPanel>
+
+                    {/* CHOOSE FROM UPLOADED FILES option*/}
+                    <TabPanel value={value} index={1}>
+                        <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
+                            <Grid item xs={12} md={8}>
+                                <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
+                                    <DocumentScannerIcon fontSize="large"
+                                                         sx={{
+                                                             width: '60px',
+                                                             height: '60px',
+                                                             color: '#A1B927',
+                                                             ml: 2,
+                                                             my: 1
+                                                         }}/>
+                                    <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>
+                                        Choose a Use Case from the dropdown
+                                    </Typography>
+                                </Stack>
+                            </Grid>
+                            <Grid item xs={12} md={4}>
+                                <FormControl fullWidth>
+                                    <InputLabel id="demo-simple-select-label">Choose a Use Case</InputLabel>
+                                    <Select
+                                        labelId="demo-simple-select-label"
+                                        id="demo-simple-select"
+                                        label="Choose a Use Case"
+                                        onChange={handleChangeUseCase}
+                                    >
+                                        <MenuItem value={'uc2'}>Use Case 2</MenuItem>
+                                        <MenuItem value={'uc6'}>Use Case 6</MenuItem>
+                                    </Select>
+                                </FormControl>
+                            </Grid>
+                        </Grid>
+                    </TabPanel>
+                </Box>
+
+                {ucChosen === 'uc6' &&
                     <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
                         <Grid item xs={12} md={8}>
                             <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
-                                <DocumentScannerIcon fontSize="large"
+                                <AppRegistrationIcon fontSize="large"
                                                      sx={{
                                                          width: '60px',
                                                          height: '60px',
@@ -392,265 +435,236 @@ const DatasetConfiguration = ({
                                                          my: 1
                                                      }}/>
                                 <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>
-                                    Choose a Use Case from the dropdown
+                                    Select Timeseries to train your model
                                 </Typography>
                             </Stack>
                         </Grid>
                         <Grid item xs={12} md={4}>
-                            <FormControl fullWidth>
-                                <InputLabel id="demo-simple-select-label">Choose a Use Case</InputLabel>
+                            {ucConfirmation && <FormControl fullWidth>
+                                <InputLabel id="demo-simple-select-label">Select Timeseries ID</InputLabel>
                                 <Select
+                                    disabled={executionLoading}
+                                    fullWidth
                                     labelId="demo-simple-select-label"
                                     id="demo-simple-select"
-                                    label="Choose a Use Case"
-                                    onChange={handleChangeUseCase}
+                                    value={tsUsedID}
+                                    label="Select Timeseries ID"
+                                    onChange={e => setTsUsedId(e.target.value)}
                                 >
-                                    <MenuItem value={'uc2'}>Use Case 2</MenuItem>
-                                    <MenuItem value={'uc6'}>Use Case 6</MenuItem>
+                                    <MenuItem value={'W6 positive_reactive'}>W6 positive_reactive</MenuItem>
+                                    <MenuItem value={'W6 positive_active'}>W6 positive_active</MenuItem>
+                                    <MenuItem value={'W4 positive_reactive'}>W4 positive_reactive</MenuItem>
+                                    <MenuItem value={'W4 positive_active'}>W4 positive_active</MenuItem>
                                 </Select>
-                            </FormControl>
+                            </FormControl>}
+                            {(!uploadSuccess && value === 0) &&
+                                <Alert severity="warning">Upload a file first to see the available
+                                    resolutions!</Alert>}
+                            {(!ucConfirmation && value === 1) &&
+                                <Alert severity="warning">Wait until the file has been validated.</Alert>}
                         </Grid>
-                    </Grid>
-                </TabPanel>
-            </Box>
+                    </Grid>}
 
-            {ucChosen === 'uc6' &&
                 <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
                     <Grid item xs={12} md={8}>
                         <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
-                            <AppRegistrationIcon fontSize="large"
-                                                 sx={{width: '60px', height: '60px', color: '#A1B927', ml: 2, my: 1}}/>
+                            <DataThresholdingIcon fontSize="large"
+                                                  sx={{width: '60px', height: '60px', color: '#A1B927', ml: 2, my: 1}}/>
                             <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>
-                                Select Timeseries to train your model
+                                Timeseries Resolution
                             </Typography>
                         </Stack>
                     </Grid>
                     <Grid item xs={12} md={4}>
-                        {ucConfirmation && <FormControl fullWidth>
-                            <InputLabel id="demo-simple-select-label">Select Timeseries ID</InputLabel>
+                        {(uploadSuccess || ucConfirmation) && <FormControl fullWidth>
+                            <InputLabel id="demo-simple-select-label">Dataset Resolution (Minutes)</InputLabel>
                             <Select
                                 disabled={executionLoading}
                                 fullWidth
                                 labelId="demo-simple-select-label"
                                 id="demo-simple-select"
-                                value={tsUsedID}
-                                label="Select Timeseries ID"
-                                onChange={e => setTsUsedId(e.target.value)}
+                                value={experimentResolution}
+                                label="Dataset Resolution (Minutes)"
+                                onChange={e => setExperimentResolution(e.target.value)}
                             >
-                                <MenuItem value={'W6 positive_reactive'}>W6 positive_reactive</MenuItem>
-                                <MenuItem value={'W6 positive_active'}>W6 positive_active</MenuItem>
-                                <MenuItem value={'W4 positive_reactive'}>W4 positive_reactive</MenuItem>
-                                <MenuItem value={'W4 positive_active'}>W4 positive_active</MenuItem>
+                                {resolutions?.map(resolution => (<MenuItem key={resolution.value}
+                                                                           value={resolution.value.toString()}>{resolution.value + `${findDefaultNumber(resolutions, resolution.value) ? ' (Current)' : ''}`}</MenuItem>))}
                             </Select>
                         </FormControl>}
                         {(!uploadSuccess && value === 0) &&
                             <Alert severity="warning">Upload a file first to see the available
                                 resolutions!</Alert>}
                         {(!ucConfirmation && value === 1) &&
-                            <Alert severity="warning">Wait until the file has been validated.</Alert>}
+                            <Alert severity="warning">Upload select a Use Case first to see the available
+                                resolutions!</Alert>}
                     </Grid>
-                </Grid>}
-
-            <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
-                <Grid item xs={12} md={8}>
-                    <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
-                        <DataThresholdingIcon fontSize="large"
-                                              sx={{width: '60px', height: '60px', color: '#A1B927', ml: 2, my: 1}}/>
-                        <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>
-                            Select Timeseries Resolution
-                        </Typography>
-                    </Stack>
                 </Grid>
-                <Grid item xs={12} md={4}>
-                    {(uploadSuccess || ucConfirmation) && <FormControl fullWidth>
-                        <InputLabel id="demo-simple-select-label">Dataset Resolution (Minutes)</InputLabel>
-                        <Select
-                            disabled={executionLoading}
-                            fullWidth
-                            labelId="demo-simple-select-label"
-                            id="demo-simple-select"
-                            value={experimentResolution}
-                            label="Dataset Resolution (Minutes)"
-                            onChange={e => setExperimentResolution(e.target.value)}
-                        >
-                            {resolutions?.map(resolution => (<MenuItem key={resolution.value}
-                                                                       value={resolution.value.toString()}>{resolution.value + `${findDefaultNumber(resolutions, resolution.value) ? ' (Current)' : ''}`}</MenuItem>))}
-                        </Select>
-                    </FormControl>}
-                    {(!uploadSuccess && value === 0) &&
-                        <Alert severity="warning">Upload a file first to see the available
-                            resolutions!</Alert>}
-                    {(!ucConfirmation && value === 1) &&
-                        <Alert severity="warning">Upload select a Use Case first to see the available
-                            resolutions!</Alert>}
-                </Grid>
-            </Grid>
 
-            {!defaultResolutionChosen && experimentResolution &&
+                {!defaultResolutionChosen && experimentResolution &&
+                    <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
+                        <Grid item xs={12} md={4}>
+                            <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
+                                <SchemaIcon fontSize="large"
+                                            sx={{width: '60px', height: '60px', color: '#A1B927', ml: 2, my: 1}}/>
+                                <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>
+                                    Select Aggregation Method
+                                </Typography>
+                            </Stack>
+                        </Grid>
+                        <Grid item xs={12} md={8} sx={{display: 'flex', justifyContent: 'end', alignItems: 'end'}}>
+                            <FormControl sx={{ml: 'auto'}}>
+                                <RadioGroup
+                                    row
+                                    aria-labelledby="demo-row-radio-buttons-group-label"
+                                    name="row-radio-buttons-group"
+                                    value={aggregationMethod}
+                                    onChange={handleRadioButton}
+                                >
+                                    <FormControlLabel sx={{ml: 'auto'}} value="averaging" control={<Radio/>}
+                                                      label={<Typography sx={{ml: 'auto'}} component={'span'}
+                                                                         variant={'h6'}>Averaging</Typography>}
+                                    />
+                                    <FormControlLabel value="summation" control={<Radio/>}
+                                                      label={<Typography sx={{ml: 'auto'}} component={'span'}
+                                                                         variant={'h6'}>Summation</Typography>}
+                                    />
+                                    <FormControlLabel value="downsampling" control={<Radio/>}
+                                                      label={<Typography sx={{ml: 'auto'}} component={'span'}
+                                                                         variant={'h6'}>Downsampling</Typography>}
+                                    />
+                                </RadioGroup>
+                            </FormControl>
+                        </Grid>
+                    </Grid>}
+
                 <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
-                    <Grid item xs={12} md={4}>
+                    <Grid item xs={12} md={10}>
                         <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
-                            <SchemaIcon fontSize="large"
-                                        sx={{width: '60px', height: '60px', color: '#A1B927', ml: 2, my: 1}}/>
+                            <SettingsSuggestIcon fontSize="large"
+                                                 sx={{width: '60px', height: '60px', color: '#A1B927', ml: 2, my: 1}}/>
                             <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>
-                                Select Aggregation Method
+                                Outliers detection
                             </Typography>
                         </Stack>
                     </Grid>
-                    <Grid item xs={12} md={8} sx={{display: 'flex', justifyContent: 'end', alignItems: 'end'}}>
-                        <FormControl sx={{ml: 'auto'}}>
-                            <RadioGroup
-                                row
-                                aria-labelledby="demo-row-radio-buttons-group-label"
-                                name="row-radio-buttons-group"
-                                value={aggregationMethod}
-                                onChange={handleRadioButton}
+                    <Grid item xs={12} md={2}>
+                        <FormGroup>
+                            <FormControlLabel
+                                labelPlacement="start"
+                                control={<Checkbox
+                                    disabled={executionLoading}
+                                    checked={removeOutliers}
+                                    onChange={handleOutliersCheckBox}
+                                    sx={{'& .MuiSvgIcon-root': {fontSize: 28}}}
+                                />} label={<Typography sx={{ml: 'auto'}} component={'span'} variant={'h6'}>
+                                Remove outliers
+                            </Typography>}/>
+                        </FormGroup>
+                    </Grid>
+                </Grid>
+
+                <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
+                    <Grid item xs={12} md={8}>
+                        <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
+                            <AutoGraphIcon fontSize="large"
+                                           sx={{width: '60px', height: '60px', color: '#A1B927', ml: 2, my: 1}}/>
+                            <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>
+                                Ιnterpolation Method
+                            </Typography>
+                        </Stack>
+                    </Grid>
+                    <Grid item xs={12} md={4}>
+                        <FormControl fullWidth>
+                            <InputLabel id="demo-simple-select-label">Choose the interpolation method</InputLabel>
+                            <Select
+                                labelId="demo-simple-select-label"
+                                id="demo-simple-select"
+                                value={imputationMethod}
+                                disabled={executionLoading}
+                                label="Choose the interpolation method"
+                                onChange={e => setImputationMethod(e.target.value)}
                             >
-                                <FormControlLabel sx={{ml: 'auto'}} value="averaging" control={<Radio/>}
-                                                  label={<Typography sx={{ml: 'auto'}} component={'span'}
-                                                                     variant={'h6'}>Averaging</Typography>}
-                                />
-                                <FormControlLabel value="summation" control={<Radio/>}
-                                                  label={<Typography sx={{ml: 'auto'}} component={'span'}
-                                                                     variant={'h6'}>Summation</Typography>}
-                                />
-                                <FormControlLabel value="downsampling" control={<Radio/>}
-                                                  label={<Typography sx={{ml: 'auto'}} component={'span'}
-                                                                     variant={'h6'}>Downsampling</Typography>}
-                                />
-                            </RadioGroup>
+                                <MenuItem value={'linear'}>Linear</MenuItem>
+                                <MenuItem value={'time'}>Time</MenuItem>
+                                <MenuItem value={'pad'}>Pad</MenuItem>
+                                <MenuItem value={'nearest'}>Nearest</MenuItem>
+                                <MenuItem value={'polynomial'}>Polynomial</MenuItem>
+                                <MenuItem value={'spline'}>Spline</MenuItem>
+                                <MenuItem value={'peppanen'}>Peppanen</MenuItem>
+                                <MenuItem value={'krogh'}>Krogh</MenuItem>
+                                <MenuItem value={'piecewise_polynomial'}>Piecewise Polynomial</MenuItem>
+                                <MenuItem value={'spline'}>Spline</MenuItem>
+                                <MenuItem value={'pchip'}>PCHIP</MenuItem>
+                                {!multiSeriesFile && <MenuItem value={'akima'}>Akima</MenuItem>}
+                                <MenuItem value={'cubicspline'}>Cubic Spline</MenuItem>
+                            </Select>
                         </FormControl>
                     </Grid>
-                </Grid>}
+                </Grid>
 
-            <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
-                <Grid item xs={12} md={10}>
-                    <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
-                        <SettingsSuggestIcon fontSize="large"
-                                             sx={{width: '60px', height: '60px', color: '#A1B927', ml: 2, my: 1}}/>
-                        <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>
-                            Outliers detection
-                        </Typography>
-                    </Stack>
-                </Grid>
-                <Grid item xs={12} md={2}>
-                    <FormGroup>
-                        <FormControlLabel
-                            labelPlacement="start"
-                            control={<Checkbox
-                                disabled={executionLoading}
-                                checked={removeOutliers}
-                                onChange={handleOutliersCheckBox}
-                                sx={{'& .MuiSvgIcon-root': {fontSize: 28}}}
-                            />} label={<Typography sx={{ml: 'auto'}} component={'span'} variant={'h6'}>
-                            Remove outliers
-                        </Typography>}/>
-                    </FormGroup>
-                </Grid>
-            </Grid>
-
-            <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
-                <Grid item xs={12} md={8}>
-                    <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
-                        <AutoGraphIcon fontSize="large"
-                                             sx={{width: '60px', height: '60px', color: '#A1B927', ml: 2, my: 1}}/>
-                        <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>
-                            Ιnterpolation Method
-                        </Typography>
-                    </Stack>
-                </Grid>
-                <Grid item xs={12} md={4}>
-                    <FormControl fullWidth>
-                        <InputLabel id="demo-simple-select-label">Choose the interpolation method</InputLabel>
-                        <Select
-                            labelId="demo-simple-select-label"
-                            id="demo-simple-select"
-                            value={imputationMethod}
-                            disabled={executionLoading}
-                            label="Choose the interpolation method"
-                            onChange={e => setImputationMethod(e.target.value)}
-                        >
-                            <MenuItem value={'linear'}>Linear</MenuItem>
-                            <MenuItem value={'time'}>Time</MenuItem>
-                            <MenuItem value={'pad'}>Pad</MenuItem>
-                            <MenuItem value={'nearest'}>Nearest</MenuItem>
-                            <MenuItem value={'polynomial'}>Polynomial</MenuItem>
-                            <MenuItem value={'spline'}>Spline</MenuItem>
-                            <MenuItem value={'peppanen'}>Peppanen</MenuItem>
-                            <MenuItem value={'krogh'}>Krogh</MenuItem>
-                            <MenuItem value={'piecewise_polynomial'}>Piecewise Polynomial</MenuItem>
-                            <MenuItem value={'spline'}>Spline</MenuItem>
-                            <MenuItem value={'pchip'}>PCHIP</MenuItem>
-                            {!multiSeriesFile && <MenuItem value={'akima'}>Akima</MenuItem>}
-                            <MenuItem value={'cubicspline'}>Cubic Spline</MenuItem>
-                        </Select>
-                    </FormControl>
-                </Grid>
-            </Grid>
-
-            <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
-                <Grid item xs={12} md={6}>
-                    <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
-                        <DateRangeIcon fontSize="large"
-                                       sx={{width: '60px', height: '60px', color: '#A1B927', ml: 2, my: 1}}/>
-                        <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>Dataset Split</Typography>
-                    </Stack>
-                </Grid>
-                <Grid item xs={12} md={6}>
-                    <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
-                        <Grid item xs={12} md={4}>
-                            <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                <DesktopDatePicker
-                                    disabled={executionLoading || (!uploadSuccess && !ucConfirmation)}
-                                    inputFormat="dd/MM/yyyy"
-                                    label="Validation Start Date"
-                                    value={dateVal}
-                                    minDate={minDate ? minDate : void (0)}
-                                    maxDate={maxDate ? maxDate : void (0)}
-                                    onChange={(newValue) => {
-                                        setDateVal(newValue);
-                                    }}
-                                    renderInput={(params) => <TextField fullWidth {...params}/>}
-                                />
-                            </LocalizationProvider>
-                        </Grid>
-                        <Grid item xs={12} md={4}>
-                            <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                <DesktopDatePicker
-                                    disabled={executionLoading || (!uploadSuccess && !ucConfirmation)}
-                                    inputFormat="dd/MM/yyyy"
-                                    label="Test Start Date"
-                                    value={dateTest}
-                                    minDate={minDateTestStart ? minDateTestStart : void (0)}
-                                    maxDate={maxDateTestStart ? maxDateTestStart : void (0)}
-                                    onChange={(newValue) => {
-                                        setDateTest(newValue);
-                                    }}
-                                    renderInput={(params) => <TextField fullWidth {...params} helperText={null}/>}
-                                />
-                            </LocalizationProvider>
-                        </Grid>
-                        <Grid item xs={12} md={4}>
-                            <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                <DesktopDatePicker
-                                    disabled={executionLoading || (!uploadSuccess && !ucConfirmation)}
-                                    inputFormat="dd/MM/yyyy"
-                                    label="Test End Date"
-                                    value={dateEnd}
-                                    minDate={minDateEndStart ? minDateEndStart : void (0)}
-                                    maxDate={maxDate ? maxDate : void (0)}
-                                    onChange={(newValue) => {
-                                        setDateEnd(newValue);
-                                    }}
-                                    renderInput={(params) => <TextField fullWidth {...params} helperText={null}/>}
-                                />
-                            </LocalizationProvider>
+                <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
+                    <Grid item xs={12} md={6}>
+                        <Stack direction="row" spacing={2} sx={{alignItems: 'center'}}>
+                            <DateRangeIcon fontSize="large"
+                                           sx={{width: '60px', height: '60px', color: '#A1B927', ml: 2, my: 1}}/>
+                            <Typography variant={'h5'} color={'inherit'} sx={{width: '100%'}}>Dataset Split</Typography>
+                        </Stack>
+                    </Grid>
+                    <Grid item xs={12} md={6}>
+                        <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
+                            <Grid item xs={12} md={4}>
+                                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                    <DesktopDatePicker
+                                        disabled={executionLoading || (!uploadSuccess && !ucConfirmation)}
+                                        inputFormat="dd/MM/yyyy"
+                                        label="Validation Start Date"
+                                        value={dateVal}
+                                        minDate={minDate ? minDate : void (0)}
+                                        maxDate={maxDate ? maxDate : void (0)}
+                                        onChange={(newValue) => {
+                                            setDateVal(newValue);
+                                        }}
+                                        renderInput={(params) => <TextField fullWidth {...params}/>}
+                                    />
+                                </LocalizationProvider>
+                            </Grid>
+                            <Grid item xs={12} md={4}>
+                                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                    <DesktopDatePicker
+                                        disabled={executionLoading || (!uploadSuccess && !ucConfirmation)}
+                                        inputFormat="dd/MM/yyyy"
+                                        label="Test Start Date"
+                                        value={dateTest}
+                                        minDate={minDateTestStart ? minDateTestStart : void (0)}
+                                        maxDate={maxDateTestStart ? maxDateTestStart : void (0)}
+                                        onChange={(newValue) => {
+                                            setDateTest(newValue);
+                                        }}
+                                        renderInput={(params) => <TextField fullWidth {...params} helperText={null}/>}
+                                    />
+                                </LocalizationProvider>
+                            </Grid>
+                            <Grid item xs={12} md={4}>
+                                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                    <DesktopDatePicker
+                                        disabled={executionLoading || (!uploadSuccess && !ucConfirmation)}
+                                        inputFormat="dd/MM/yyyy"
+                                        label="Test End Date"
+                                        value={dateEnd}
+                                        minDate={minDateEndStart ? minDateEndStart : void (0)}
+                                        maxDate={maxDate ? maxDate : void (0)}
+                                        onChange={(newValue) => {
+                                            setDateEnd(newValue);
+                                        }}
+                                        renderInput={(params) => <TextField fullWidth {...params} helperText={null}/>}
+                                    />
+                                </LocalizationProvider>
+                            </Grid>
                         </Grid>
                     </Grid>
                 </Grid>
-            </Grid>
-        </Container>
-    </>);
+            </Container>
+        </>);
 }
 
 export default DatasetConfiguration;

@@ -37,7 +37,8 @@ const ExperimentExecution = ({
                                  tsUsedID,
                                  evaluatedAllTs,
                                  setEvaluatedAllTs,
-                                 imputationMethod
+                                 imputationMethod,
+                                 format
                              }) => {
     const authenticationEnabled = process.env.REACT_APP_AUTH === "True"
 
@@ -64,7 +65,8 @@ const ExperimentExecution = ({
             multiple: multiSeriesFile,
             ts_used_id: tsUsedID,
             evaluate_all_ts: evaluatedAllTs,
-            imputation_method: imputationMethod
+            imputation_method: imputationMethod,
+            format: format
             // uc: null
         }
 

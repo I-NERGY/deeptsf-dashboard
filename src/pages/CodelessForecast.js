@@ -73,6 +73,7 @@ const CodelessForecast = () => {
     const [minDateTestStart, setMinDateTestStart] = useState(null)
     const [maxDateTestStart, setMaxDateTestStart] = useState(null)
     const [minDateEndStart, setMinDateEndStart] = useState(null)
+    const [format, setFormat] = useState('long')
 
     const [experimentName, setExperimentName] = useState('')
     const [experimentNameError, setExperimentNameError] = useState(false)
@@ -202,6 +203,7 @@ const CodelessForecast = () => {
         setSeriesUri('');
         setTsUsedId('')
         setEvaluatedAllTs('')
+        setFormat('long')
     };
 
 
@@ -261,6 +263,8 @@ const CodelessForecast = () => {
                     setEvaluatedAllTs={setEvaluatedAllTs}
                     imputationMethod={imputationMethod}
                     setImputationMethod={setImputationMethod}
+                    format={format}
+                    setFormat={setFormat}
                 />
                 <hr/>
 
@@ -321,6 +325,7 @@ const CodelessForecast = () => {
                     setEvaluatedAllTs={setEvaluatedAllTs}
                     ucChosen={ucChosen}
                     imputationMethod={imputationMethod}
+                    format={format}
                 />
             </>}
 
