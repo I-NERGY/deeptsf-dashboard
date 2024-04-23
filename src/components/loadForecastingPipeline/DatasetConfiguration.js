@@ -271,12 +271,12 @@ const DatasetConfiguration = ({
             <Container maxWidth={'xl'} sx={{my: 5}} data-testid={'codelessForecastDatasetConfiguration'}>
                 <Typography variant={'h4'} fontWeight={'bold'} sx={{mb: 3}}>Dataset Configuration</Typography>
                 <Box sx={{width: '100%'}}>
-                    <Box sx={{borderBottom: 1, borderColor: 'divider'}}>
-                        <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
-                            <Tab label="UPLOAD YOUR OWN FILE" {...a11yProps(0)} />
-                            <Tab label="TRAIN MODELS ON I-NERGY USE CASES" {...a11yProps(1)} />
-                        </Tabs>
-                    </Box>
+                    {/*<Box sx={{borderBottom: 1, borderColor: 'divider'}}>*/}
+                    {/*    <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">*/}
+                    {/*        <Tab label="UPLOAD YOUR OWN FILE" {...a11yProps(0)} />*/}
+                    {/*        <Tab label="TRAIN MODELS ON I-NERGY USE CASES" {...a11yProps(1)} />*/}
+                    {/*    </Tabs>*/}
+                    {/*</Box>*/}
                     {/* UPLOAD FILE option */}
                     <TabPanel value={value} index={0}>
                         <Grid container spacing={2} display={'flex'} justifyContent={'center'} alignItems={'center'}>
